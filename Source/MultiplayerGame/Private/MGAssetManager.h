@@ -15,5 +15,6 @@ class UMGAssetManager : public UAssetManager
 {
 	GENERATED_BODY()
 
-	void StartInitialLoading() override; 
+	void StartInitialLoading() override;
+	void InitializeAbilitySystem();
 };

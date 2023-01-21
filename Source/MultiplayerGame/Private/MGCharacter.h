@@ -3,11 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
+#include "MGInputConfig.h"
+#include "MGAbilitySystemComponent.h"
+#include "EnhancedInput/Public/InputMappingContext.h"
 #include "MGCharacter.generated.h"
 
 UCLASS()
-class AMGCharacter : public ACharacter
+class AMGCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -30,5 +34,24 @@ public:
 
 	virtual void PossessedBy(AController* NewController) override;
 
-	void OnRep_PlayerState() override;
+	virtual void OnRep_PlayerState() override;
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	void InputAbilityInputTagPressed(FGameplayTag InputTag);
+
+	void InputAbilityInputTagReleased(FGameplayTag InputTag);
+
+	void InputMove(const FInputActionValue& Value);
+
+	void InputLook(const FInputActionValue& Value);
+
+	void InputJump(const FInputActionValue& Value);
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UMGInputConfig* InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
+    UInputMappingContext* InputMapping;
 };

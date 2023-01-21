@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"
-#include "AbilitySystemComponent.h"
+#include "MGAbilitySet.h"
+#include "MGAbilitySystemComponent.h"
 #include "MGPlayerState.generated.h"
 
 /**
@@ -20,10 +21,15 @@ public:
 	AMGPlayerState();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
-	UAbilitySystemComponent* AbilitySystemComponent;
+	UMGAbilitySystemComponent* AbilitySystemComponent;
 
-	UAbilitySystemComponent* GetAbilitySystemComponent() const override
+	UMGAbilitySystemComponent* GetAbilitySystemComponent() const override
     {
         return AbilitySystemComponent;
     }
+
+	UPROPERTY(EditDefaultsOnly, Category = Abilities)
+	UMGAbilitySet* AbilitySet;
+
+	virtual void PostInitializeComponents() override;
 };
