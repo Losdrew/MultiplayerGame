@@ -5,7 +5,65 @@
 
 #include "MGAbilitySystemComponent.h"
 
-void UMGAbilitySet::GiveToAbilitySystem(UMGAbilitySystemComponent* MGASC, UObject* SourceObject) const
+
+void FMGAbilitySet_GrantedHandles::AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle)
+{
+	if (Handle.IsValid())
+	{
+		AbilitySpecHandles.Add(Handle);
+	}
+}
+
+void FMGAbilitySet_GrantedHandles::AddGameplayEffectHandle(const FActiveGameplayEffectHandle& Handle)
+{
+	if (Handle.IsValid())
+	{
+		GameplayEffectHandles.Add(Handle);
+	}
+}
+
+void FMGAbilitySet_GrantedHandles::AddAttributeSet(UAttributeSet* Set)
+{
+	GrantedAttributeSets.Add(Set);
+}
+
+void FMGAbilitySet_GrantedHandles::TakeFromAbilitySystem(UMGAbilitySystemComponent* MGASC)
+{
+	check(MGASC);
+
+	if (!MGASC->IsOwnerActorAuthoritative())
+	{
+		// Must be authoritative to give or take ability sets.
+		return;
+	}
+
+	for (const FGameplayAbilitySpecHandle& Handle : AbilitySpecHandles)
+	{
+		if (Handle.IsValid())
+		{
+			MGASC->ClearAbility(Handle);
+		}
+	}
+
+	for (const FActiveGameplayEffectHandle& Handle : GameplayEffectHandles)
+	{
+		if (Handle.IsValid())
+		{
+			MGASC->RemoveActiveGameplayEffect(Handle);
+		}
+	}
+
+	for (UAttributeSet* Set : GrantedAttributeSets)
+	{
+		MGASC->RemoveSpawnedAttribute(Set);
+	}
+
+	AbilitySpecHandles.Reset();
+	GameplayEffectHandles.Reset();
+	GrantedAttributeSets.Reset();
+}
+
+void UMGAbilitySet::GiveToAbilitySystem(UMGAbilitySystemComponent* MGASC, FMGAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject) const
 {
 	check(MGASC);
 
@@ -27,11 +85,35 @@ void UMGAbilitySet::GiveToAbilitySystem(UMGAbilitySystemComponent* MGASC, UObjec
 
 		UMGGameplayAbility* Ability = AbilityToGrant.Ability->GetDefaultObject<UMGGameplayAbility>();
 
-		FGameplayAbilitySpec AbilitySpec(Ability, 1);
+		FGameplayAbilitySpec AbilitySpec(Ability, AbilityToGrant.AbilityLevel);
 		AbilitySpec.SourceObject = SourceObject;
 		AbilitySpec.DynamicAbilityTags.AddTag(AbilityToGrant.InputTag);
 
-		MGASC->GiveAbility(AbilitySpec);
+		const FGameplayAbilitySpecHandle AbilitySpecHandle = MGASC->GiveAbility(AbilitySpec);
+
+		if (OutGrantedHandles)
+		{
+			OutGrantedHandles->AddAbilitySpecHandle(AbilitySpecHandle);
+		}
+	}
+
+	// Grant the gameplay effects.
+	for (int32 EffectIndex = 0; EffectIndex < GrantedGameplayEffects.Num(); ++EffectIndex)
+	{
+		const FMGAbilitySet_GameplayEffect& EffectToGrant = GrantedGameplayEffects[EffectIndex];
+
+		if (!IsValid(EffectToGrant.GameplayEffect))
+		{
+			continue;
+		}
+
+		const UGameplayEffect* GameplayEffect = EffectToGrant.GameplayEffect->GetDefaultObject<UGameplayEffect>();
+		const FActiveGameplayEffectHandle GameplayEffectHandle = MGASC->ApplyGameplayEffectToSelf(GameplayEffect, EffectToGrant.EffectLevel, MGASC->MakeEffectContext());
+
+		if (OutGrantedHandles)
+		{
+			OutGrantedHandles->AddGameplayEffectHandle(GameplayEffectHandle);
+		}
 	}
 
 	// Grant the attribute sets.
@@ -46,5 +128,10 @@ void UMGAbilitySet::GiveToAbilitySystem(UMGAbilitySystemComponent* MGASC, UObjec
 
 		UAttributeSet* NewSet = NewObject<UAttributeSet>(MGASC->GetOwner(), SetToGrant.AttributeSet);
 		MGASC->AddAttributeSetSubobject(NewSet);
+
+		if (OutGrantedHandles)
+		{
+			OutGrantedHandles->AddAttributeSet(NewSet);
+		}
 	}
 }

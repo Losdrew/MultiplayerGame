@@ -18,5 +18,5 @@ void AMGPlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, this);
+	AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
 }
