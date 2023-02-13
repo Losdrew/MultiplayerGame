@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "MGInputConfig.h"
 #include "MGAbilitySystemComponent.h"
+#include "MGEquipmentManagerComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "MGCharacter.generated.h"
 
@@ -52,6 +53,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMGAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY()
+	TObjectPtr<UMGEquipmentManagerComponent> EquipmentManagerComponent;
 
 public:
 
