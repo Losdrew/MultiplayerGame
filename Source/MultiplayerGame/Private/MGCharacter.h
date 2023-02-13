@@ -48,7 +48,13 @@ public:
 
 	void InputJump(const FInputActionValue& Value);
 
+protected:
+
+	UPROPERTY()
+	TObjectPtr<UMGAbilitySystemComponent> AbilitySystemComponent;
+
 public:
+
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	UMGInputConfig* InputConfig;
 

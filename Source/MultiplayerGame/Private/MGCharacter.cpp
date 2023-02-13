@@ -58,6 +58,8 @@ void AMGCharacter::InitPlayer()
 {
 	if (AMGPlayerState* PS = GetPlayerState<AMGPlayerState>())
 	{
+        AbilitySystemComponent = Cast<UMGAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 	}
 }
@@ -76,23 +78,17 @@ void AMGCharacter::OnRep_PlayerState()
 
 UAbilitySystemComponent* AMGCharacter::GetAbilitySystemComponent() const
 {
-	return GetPlayerState<AMGPlayerState>()->GetAbilitySystemComponent();
+	return AbilitySystemComponent;
 }
 
 void AMGCharacter::InputAbilityInputTagPressed(FGameplayTag InputTag)
 {
-	if (AMGPlayerState* PS = GetPlayerState<AMGPlayerState>())
-	{
-		PS->AbilitySystemComponent->AbilityInputTagPressed(InputTag);
-	}
+	AbilitySystemComponent->AbilityInputTagPressed(InputTag);
 }
 
 void AMGCharacter::InputAbilityInputTagReleased(FGameplayTag InputTag)
 {
-	if (AMGPlayerState* PS = GetPlayerState<AMGPlayerState>())
-	{
-		PS->AbilitySystemComponent->AbilityInputTagReleased(InputTag);
-	}
+	AbilitySystemComponent->AbilityInputTagReleased(InputTag);
 }
 
 void AMGCharacter::InputMove(const FInputActionValue& Value)
