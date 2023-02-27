@@ -15,6 +15,7 @@ AMGCharacter::AMGCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
     EquipmentManagerComponent = CreateDefaultSubobject<UMGEquipmentManagerComponent>(TEXT("EquipmentManagerComponent"));
+    HealthComponent = CreateDefaultSubobject<UMGHealthComponent>(TEXT("HealthComponent"));
 }
 
 // Called when the game starts or when spawned
@@ -64,6 +65,8 @@ void AMGCharacter::InitPlayer()
 
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 	}
+
+    HealthComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
 }
 
 void AMGCharacter::PossessedBy(AController * NewController)

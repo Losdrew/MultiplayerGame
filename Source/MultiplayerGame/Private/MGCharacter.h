@@ -8,6 +8,7 @@
 #include "MGInputConfig.h"
 #include "MGAbilitySystemComponent.h"
 #include "MGEquipmentManagerComponent.h"
+#include "MGHealthComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "MGCharacter.generated.h"
 
@@ -56,6 +57,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMGEquipmentManagerComponent> EquipmentManagerComponent;
+
+	UPROPERTY()
+	TObjectPtr<UMGHealthComponent> HealthComponent;
 
 public:
 
