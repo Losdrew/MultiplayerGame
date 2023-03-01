@@ -27,7 +27,6 @@ struct FMGGameplayTags
 	FGameplayTag Ability_ActivateFail_TagsBlocked;
 	FGameplayTag Ability_ActivateFail_TagsMissing;
 	FGameplayTag Ability_ActivateFail_Networking;
-	FGameplayTag Ability_ActivateFail_ActivationGroup;
 
 	FGameplayTag Ability_Behavior_SurvivesDeath;
 
