@@ -7,6 +7,8 @@
 #include "MGGameplayTags.h"
 #include "MGPlayerState.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMGCharacter::AMGCharacter()
@@ -15,7 +17,10 @@ AMGCharacter::AMGCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
     EquipmentManagerComponent = CreateDefaultSubobject<UMGEquipmentManagerComponent>(TEXT("EquipmentManagerComponent"));
+
     HealthComponent = CreateDefaultSubobject<UMGHealthComponent>(TEXT("HealthComponent"));
+	HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::OnDeathStarted);
+	HealthComponent->OnDeathFinished.AddDynamic(this, &ThisClass::OnDeathFinished);
 }
 
 // Called when the game starts or when spawned
@@ -147,4 +152,82 @@ void AMGCharacter::InputJump(const FInputActionValue& Value)
     {
         Jump();
     }
+}
+
+void AMGCharacter::OnDeathStarted(AActor*)
+{
+	DisableMovementAndCollision();
+}
+
+void AMGCharacter::OnDeathFinished(AActor*)
+{
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::UninitializeAndDestroy);
+}
+
+void AMGCharacter::DisableMovementAndCollision()
+{
+    if (Controller)
+	{
+		Controller->SetIgnoreMoveInput(true);
+	}
+
+	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+	check(CapsuleComp);
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	CapsuleComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+
+	UCharacterMovementComponent* CharacterMovementComponent = CastChecked<UCharacterMovementComponent>(GetCharacterMovement());
+	CharacterMovementComponent->StopMovementImmediately();
+	CharacterMovementComponent->DisableMovement();
+}
+
+void AMGCharacter::UninitializeAndDestroy()
+{
+	if (GetLocalRole() == ROLE_Authority)
+	{
+		DetachFromControllerPendingDestroy();
+		SetLifeSpan(0.1f);
+	}
+
+	// Uninitialize the ASC if we're still the avatar actor (otherwise another pawn already did it when they became the avatar actor)
+	if (const UAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+	{
+		if (ASC->GetAvatarActor() == this)
+		{
+			UninitializeAbilitySystem();
+		}
+	}
+
+	SetActorHiddenInGame(true);
+}
+
+void AMGCharacter::UninitializeAbilitySystem()
+{
+	if (!AbilitySystemComponent)
+	{
+		return;
+	}
+
+	// Uninitialize the ASC if we're still the avatar actor (otherwise another pawn already did it when they became the avatar actor)
+	if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
+	{
+		FGameplayTagContainer AbilityTypesToIgnore;
+		AbilityTypesToIgnore.AddTag(FMGGameplayTags::Get().Ability_Behavior_SurvivesDeath);
+
+		AbilitySystemComponent->CancelAbilities(nullptr, &AbilityTypesToIgnore);
+		AbilitySystemComponent->ClearAbilityInput();
+		AbilitySystemComponent->RemoveAllGameplayCues();
+
+		if (AbilitySystemComponent->GetOwnerActor() != nullptr)
+		{
+			AbilitySystemComponent->SetAvatarActor(nullptr);
+		}
+		else
+		{
+			// If the ASC doesn't have a valid owner actor, we need to clear all actor info
+			AbilitySystemComponent->ClearActorInfo();
+		}
+	}
+
+	AbilitySystemComponent = nullptr;
 }

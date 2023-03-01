@@ -122,6 +122,13 @@ void UMGAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 	InputReleasedSpecHandles.Reset();
 }
 
+void UMGAbilitySystemComponent::ClearAbilityInput()
+{
+	InputPressedSpecHandles.Reset();
+	InputReleasedSpecHandles.Reset();
+	InputHeldSpecHandles.Reset();
+}
+
 void UMGAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputPressed(Spec);
