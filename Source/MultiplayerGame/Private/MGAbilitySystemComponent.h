@@ -20,10 +20,14 @@ public:
 
 	void ClearAbilityInput();
 
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+
 protected:
 
 	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
 	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
+
+	void TryActivateAbilitiesOnSpawn();
 
 protected:
 

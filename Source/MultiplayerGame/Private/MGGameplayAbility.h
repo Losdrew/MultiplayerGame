@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MGPlayerController.h"
 #include "Abilities/GameplayAbility.h"
 #include "MGGameplayAbility.generated.h"
 
@@ -37,7 +38,29 @@ class UMGGameplayAbility : public UGameplayAbility
 
 public:
 
+	UFUNCTION(BlueprintCallable)
+	APlayerController* GetPlayerControllerFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable)
+	AMGPlayerController* GetMGPlayerControllerFromActorInfo() const;
+
+	// ~UGameplayAbility interface
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	// ~End of UGameplayAbility interface
+
 	EMGAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
+
+	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
+
+	void OnPawnAvatarSet();
+
+	/** Called when this ability is granted to the ability system component. */
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnAbilityAdded")
+	void K2_OnAbilityAdded();
+
+	/** Called when the ability system is initialized with a pawn avatar. */
+	UFUNCTION(BlueprintImplementableEvent, Category = Ability, DisplayName = "OnPawnAvatarSet")
+	void K2_OnPawnAvatarSet();
 
 protected:
 

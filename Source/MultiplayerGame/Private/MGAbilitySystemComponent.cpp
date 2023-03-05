@@ -129,6 +129,52 @@ void UMGAbilitySystemComponent::ClearAbilityInput()
 	InputHeldSpecHandles.Reset();
 }
 
+void UMGAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
+{
+	const FGameplayAbilityActorInfo* ActorInfo = AbilityActorInfo.Get();
+	check(ActorInfo);
+	check(InOwnerActor);
+
+	const bool bHasNewPawnAvatar = Cast<APawn>(InAvatarActor) && (InAvatarActor != ActorInfo->AvatarActor);
+
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+
+	if (bHasNewPawnAvatar)
+	{
+		// Notify all abilities that a new pawn avatar has been set
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		{
+			UMGGameplayAbility* MGAbilityCDO = CastChecked<UMGGameplayAbility>(AbilitySpec.Ability);
+
+			if (MGAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+			{
+				TArray<UGameplayAbility*> Instances = AbilitySpec.GetAbilityInstances();
+				for (UGameplayAbility* AbilityInstance : Instances)
+				{
+					UMGGameplayAbility* MGAbilityInstance = CastChecked<UMGGameplayAbility>(AbilityInstance);
+					MGAbilityInstance->OnPawnAvatarSet();
+				}
+			}
+			else
+			{
+				MGAbilityCDO->OnPawnAvatarSet();
+			}
+		}
+
+		TryActivateAbilitiesOnSpawn();
+	}
+}
+
+void UMGAbilitySystemComponent::TryActivateAbilitiesOnSpawn()
+{
+	ABILITYLIST_SCOPE_LOCK();
+	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		const UMGGameplayAbility* AbilityCDO = CastChecked<UMGGameplayAbility>(AbilitySpec.Ability);
+		AbilityCDO->TryActivateAbilityOnSpawn(AbilityActorInfo.Get(), AbilitySpec);
+	}
+}
+
 void UMGAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputPressed(Spec);
