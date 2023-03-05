@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MGPlayerState.h"
-#include "GameFramework/PlayerController.h"
 #include "MGPlayerController.generated.h"
+
+class AMGPlayerState;
+class UMGAbilitySystemComponent;
 
 /**
  * 
@@ -14,6 +15,8 @@ UCLASS()
 class AMGPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+public:
 
 	AMGPlayerState* GetMGPlayerState() const;
 
