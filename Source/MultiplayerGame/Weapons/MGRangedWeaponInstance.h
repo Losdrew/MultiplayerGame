@@ -53,10 +53,10 @@ protected:
 	FRuntimeFloatCurve DistanceDamageFalloff;
 
 public:
-	UPROPERTY(BlueprintReadOnly, Transient, Replicated)
+	UPROPERTY(BlueprintReadWrite, Transient, Replicated)
 	int CurrentAmmoInClip;
 
-	UPROPERTY(BlueprintReadOnly, Transient, Replicated)
+	UPROPERTY(BlueprintReadWrite, Transient, Replicated)
 	int CurrentAmmoTotal;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
