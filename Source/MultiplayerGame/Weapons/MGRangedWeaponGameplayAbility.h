@@ -3,26 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MGGameplayAbility.h"
 #include "MGRangedWeaponInstance.h"
+#include "MGEquipmentGameplayAbility.h"
 #include "MGRangedWeaponGameplayAbility.generated.h"
 
 /**
- * 
+ *  UMGEquipmentGameplayAbility
+ *
+ *	An ability granted by and associated with ranged weapon instance
  */
 UCLASS()
-class UMGRangedWeaponGameplayAbility : public UMGGameplayAbility
+class UMGRangedWeaponGameplayAbility : public UMGEquipmentGameplayAbility
 {
 	GENERATED_BODY()
 
 public:
 
-	UFUNCTION(BlueprintCallable, Category="Lyra|Ability")
+	UFUNCTION(BlueprintCallable)
 	UMGRangedWeaponInstance* GetWeaponInstance() const;
-
-	virtual bool CanActivateAbility(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
-
-	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
-
-	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 };
