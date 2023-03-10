@@ -7,10 +7,44 @@ public class MultiplayerGame : ModuleRules
 	public MultiplayerGame(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-	
-        PublicDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks", "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "NetCore" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "GameplayAbilities", "GameplayTags", "GameplayTasks", "EnhancedInput" });
+        PrivateIncludePaths.AddRange(new string[]
+        {
+            "MultiplayerGame", 
+            "MultiplayerGame/AbilitySystem",
+            "MultiplayerGame/AbilitySystem/Abilities",
+            "MultiplayerGame/AbilitySystem/Attributes",
+            "MultiplayerGame/AbilitySystem/Executions",
+            "MultiplayerGame/Character",
+            "MultiplayerGame/Equipment",
+            "MultiplayerGame/GameModes",
+            "MultiplayerGame/Input",
+            "MultiplayerGame/Physics",
+            "MultiplayerGame/Player",
+            "MultiplayerGame/System",
+            "MultiplayerGame/Weapons", 
+        });
+	
+        PublicDependencyModuleNames.AddRange(new string[] 
+        {
+            "GameplayAbilities",
+            "GameplayTags",
+            "GameplayTasks",
+            "Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "HeadMountedDisplay",
+            "NetCore"
+        });
+
+		PrivateDependencyModuleNames.AddRange(new string[]
+        {
+            "GameplayAbilities",
+            "GameplayTags",
+            "GameplayTasks",
+            "EnhancedInput"
+        });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
