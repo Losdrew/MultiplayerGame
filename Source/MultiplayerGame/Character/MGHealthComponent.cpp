@@ -6,6 +6,8 @@
 #include "MGGameplayTags.h"
 #include "Delegates/Delegate.h"
 #include "GameFramework/Actor.h"
+#include "GameplayEffect.h"
+#include "GameplayEffectExtension.h"
 
 #include "Net/UnrealNetwork.h"
 
@@ -44,17 +46,51 @@ void UMGHealthComponent::InitializeWithAbilitySystem(UMGAbilitySystemComponent* 
 	}
 
 	// Register to listen for attribute changes.
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HealthSet->GetHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
+	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HealthSet->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::HandleMaxHealthChanged);
 	HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 
-	// TEMP: Reset attributes to default values.  Eventually this will be driven by a spread sheet.
+	// Reset attributes to default values.
 	AbilitySystemComponent->SetNumericAttributeBase(UMGHealthSet::GetHealthAttribute(), HealthSet->GetMaxHealth());
 
 	ClearGameplayTags();
+
+	OnHealthChanged.Broadcast(this, HealthSet->GetHealth(), HealthSet->GetHealth(), nullptr);
+	OnMaxHealthChanged.Broadcast(this, HealthSet->GetMaxHealth(), HealthSet->GetMaxHealth(), nullptr);
+}
+
+void UMGHealthComponent::UninitializeFromAbilitySystem()
+{
+	ClearGameplayTags();
+
+	if (HealthSet)
+	{
+		HealthSet->OnOutOfHealth.RemoveAll(this);
+	}
+
+	HealthSet = nullptr;
+	AbilitySystemComponent = nullptr;
 }
 
 float UMGHealthComponent::GetHealth() const
 {
 	return (HealthSet ? HealthSet->GetHealth() : 0.0f);
+}
+
+float UMGHealthComponent::GetHealthNormalized() const
+{
+	if (HealthSet)
+	{
+		const float Health = HealthSet->GetHealth();
+		const float MaxHealth = HealthSet->GetMaxHealth();
+
+		if (MaxHealth > 0.0f)
+		{
+			return Health / MaxHealth;
+		}
+	}
+
+	return 0.0f;
 }
 
 float UMGHealthComponent::GetMaxHealth() const
@@ -139,6 +175,13 @@ void UMGHealthComponent::OnRep_DeathState(EMGDeathState OldDeathState)
 	}
 }
 
+void UMGHealthComponent::OnUnregister()
+{
+	Super::OnUnregister();
+
+	UninitializeFromAbilitySystem();
+}
+
 void UMGHealthComponent::ClearGameplayTags()
 {
 	if (AbilitySystemComponent)
@@ -148,6 +191,16 @@ void UMGHealthComponent::ClearGameplayTags()
 		AbilitySystemComponent->SetLooseGameplayTagCount(GameplayTags.Status_Death_Dying, 0);
 		AbilitySystemComponent->SetLooseGameplayTagCount(GameplayTags.Status_Death_Dead, 0);
 	}
+}
+
+void UMGHealthComponent::HandleHealthChanged(const FOnAttributeChangeData& ChangeData)
+{
+	OnHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, nullptr);
+}
+
+void UMGHealthComponent::HandleMaxHealthChanged(const FOnAttributeChangeData& ChangeData)
+{
+	OnMaxHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, nullptr);
 }
 
 void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude)

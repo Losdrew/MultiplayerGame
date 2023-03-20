@@ -45,9 +45,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitializeWithAbilitySystem(UMGAbilitySystemComponent* InASC);
 
+	// Uninitialize the component, clearing any references to the ability system.
+	UFUNCTION(BlueprintCallable)
+	void UninitializeFromAbilitySystem();
+
 	// Returns the current health value.
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const;
+
+	// Returns the normalized current health value.
+	UFUNCTION(BlueprintCallable)
+	float GetHealthNormalized() const;
 
 	// Returns the current maximum health value.
 	UFUNCTION(BlueprintCallable)
@@ -85,12 +93,16 @@ public:
 
 protected:
 
-	UFUNCTION()
-	virtual void OnRep_DeathState(EMGDeathState OldDeathState);
+	virtual void OnUnregister() override;
 
 	void ClearGameplayTags();
 
+	virtual void HandleHealthChanged(const FOnAttributeChangeData& ChangeData);
+	virtual void HandleMaxHealthChanged(const FOnAttributeChangeData& ChangeData);
 	virtual void HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude);
+
+	UFUNCTION()
+	virtual void OnRep_DeathState(EMGDeathState OldDeathState);
 
 protected:
 

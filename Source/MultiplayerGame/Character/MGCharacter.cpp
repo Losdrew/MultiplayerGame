@@ -227,6 +227,9 @@ void AMGCharacter::UninitializeAbilitySystem()
 			// If the ASC doesn't have a valid owner actor, we need to clear all actor info
 			AbilitySystemComponent->ClearActorInfo();
 		}
+
+		// Make sure the health component is uninitialized too
+		HealthComponent->UninitializeFromAbilitySystem();
 	}
 
 	AbilitySystemComponent = nullptr;
