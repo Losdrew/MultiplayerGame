@@ -13,7 +13,8 @@
 				"EnhancedInput",
 				"GameplayAbilities",
 				"CoreUObject",
-				"PhysicsCore"
+				"PhysicsCore",
+				"UMG"
 			]
 		}
 	],

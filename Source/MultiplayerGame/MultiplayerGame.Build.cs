@@ -22,7 +22,8 @@ public class MultiplayerGame : ModuleRules
             "MultiplayerGame/Physics",
             "MultiplayerGame/Player",
             "MultiplayerGame/System",
-            "MultiplayerGame/Weapons", 
+            "MultiplayerGame/UI",
+            "MultiplayerGame/Weapons" 
         });
 	
         PublicDependencyModuleNames.AddRange(new string[] 
@@ -46,8 +47,11 @@ public class MultiplayerGame : ModuleRules
             "EnhancedInput"
         });
 
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		PrivateDependencyModuleNames.AddRange(new string[]
+        {
+            "Slate",
+            "SlateCore"
+        });
 		
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
