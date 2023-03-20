@@ -12,6 +12,9 @@ AMGPlayerState::AMGPlayerState()
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	AbilitySet = CreateDefaultSubobject<UMGAbilitySet>(TEXT("AbilitySet"));
+
+	// AbilitySystemComponent needs to be updated at a high frequency
+	NetUpdateFrequency = 100.0f;
 }
 
 void AMGPlayerState::PostInitializeComponents()
