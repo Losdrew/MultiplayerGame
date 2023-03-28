@@ -117,24 +117,31 @@ void UMGEquipmentManagerComponent::GetLifetimeReplicatedProps(TArray< FLifetimeP
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, EquipmentList);
+	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, EquippedItem, COND_OwnerOnly, REPNOTIFY_OnChanged);
 }
 
 UMGEquipmentInstance* UMGEquipmentManagerComponent::EquipItem(TSubclassOf<UMGEquipmentDefinition> EquipmentClass)
 {
-	UMGEquipmentInstance* Result = nullptr;
-	if (EquipmentClass != nullptr)
-	{
-		Result = EquipmentList.AddEntry(EquipmentClass);
-		if (Result != nullptr)
-		{
-			Result->OnEquipped();
+	ensure(EquipmentClass);
 
-			if (IsUsingRegisteredSubObjectList() && IsReadyForReplication())
-			{
-				AddReplicatedSubObject(Result);
-			}
+	UMGEquipmentInstance* Result = nullptr;
+
+	Result = EquipmentList.AddEntry(EquipmentClass);
+
+	if (Result != nullptr)
+	{
+		Result->OnEquipped();
+
+		if (IsUsingRegisteredSubObjectList() && IsReadyForReplication())
+		{
+			AddReplicatedSubObject(Result);
 		}
 	}
+
+	EquippedItem = Result;
+
+	OnEquipped.Broadcast(this, Result);
+
 	return Result;
 }
 
@@ -149,7 +156,14 @@ void UMGEquipmentManagerComponent::UnequipItem(UMGEquipmentInstance* ItemInstanc
 
 		ItemInstance->OnUnequipped();
 		EquipmentList.RemoveEntry(ItemInstance);
+		UnequipCurrentItem();
 	}
+}
+
+void UMGEquipmentManagerComponent::UnequipCurrentItem()
+{
+	EquippedItem = nullptr;
+	OnUnequipped.Broadcast(this, nullptr);
 }
 
 bool UMGEquipmentManagerComponent::ReplicateSubobjects(UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags)
@@ -174,11 +188,11 @@ void UMGEquipmentManagerComponent::InitializeComponent()
 	Super::InitializeComponent();
 }
 
-void UMGEquipmentManagerComponent::	UninitializeComponent()
+void UMGEquipmentManagerComponent::UninitializeComponent()
 {
 	TArray<UMGEquipmentInstance*> AllEquipmentInstances;
 
-	// gathering all instances before removal to avoid side effects affecting the equipment list iterator	
+	// Gathering all instances before removal to avoid side effects affecting the equipment list iterator	
 	for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
 	{
 		AllEquipmentInstances.Add(Entry.Instance);
@@ -187,6 +201,7 @@ void UMGEquipmentManagerComponent::	UninitializeComponent()
 	for (UMGEquipmentInstance* EquipInstance : AllEquipmentInstances)
 	{
 		UnequipItem(EquipInstance);
+		UnequipCurrentItem();
 	}
 
 	Super::UninitializeComponent();
@@ -196,7 +211,7 @@ void UMGEquipmentManagerComponent::ReadyForReplication()
 {
 	Super::ReadyForReplication();
 
-	// Register existing MGEquipmentInstances
+	// Register existing UMGEquipmentInstances
 	if (IsUsingRegisteredSubObjectList())
 	{
 		for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
@@ -241,4 +256,16 @@ TArray<UMGEquipmentInstance*> UMGEquipmentManagerComponent::GetEquipmentInstance
 		}
 	}
 	return Results;
+}
+
+void UMGEquipmentManagerComponent::OnRep_EquippedItem()
+{
+	if (EquippedItem != nullptr)
+	{
+		OnEquipped.Broadcast(this, EquippedItem);
+	}
+	else
+	{
+		OnUnequipped.Broadcast(this, nullptr);
+	}
 }

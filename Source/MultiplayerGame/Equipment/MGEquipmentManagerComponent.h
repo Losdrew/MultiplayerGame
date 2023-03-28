@@ -10,6 +10,8 @@
 struct FMGEquipmentList;
 class UMGEquipmentManagerComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGEquippedChanged, UMGEquipmentManagerComponent*, EquipmentManagerComponent, UMGEquipmentInstance*, EquipmentInstance);
+
 /** A single piece of applied equipment */
 USTRUCT(BlueprintType)
 struct FMGAppliedEquipmentEntry : public FFastArraySerializerItem
@@ -103,17 +105,16 @@ public:
 	//~End of UObject interface
 
 	//~UActorComponent interface
-	//virtual void EndPlay() override;
 	virtual void InitializeComponent() override;
 	virtual void UninitializeComponent() override;
 	virtual void ReadyForReplication() override;
 	//~End of UActorComponent interface
 
-	/** Returns the first equipped instance of a given type, or nullptr if none are found */
+	// Returns the first equipped instance of a given type, or nullptr if none are found
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UMGEquipmentInstance* GetFirstInstanceOfType(TSubclassOf<UMGEquipmentInstance> InstanceType);
 
- 	/** Returns all equipped instances of a given type, or an empty array if none are found */
+ 	// Returns all equipped instances of a given type, or an empty array if none are found
  	UFUNCTION(BlueprintCallable, BlueprintPure)
 	TArray<UMGEquipmentInstance*> GetEquipmentInstancesOfType(TSubclassOf<UMGEquipmentInstance> InstanceType) const;
 
@@ -123,7 +124,28 @@ public:
 		return (T*)GetFirstInstanceOfType(T::StaticClass());
 	}
 
+protected:
+
+	UFUNCTION()
+	void OnRep_EquippedItem();
+
+private:
+
+	void UnequipCurrentItem();
+
+public:
+	// Delegate fired when a new item is equipped
+	UPROPERTY(BlueprintAssignable)
+	FMGEquippedChanged OnEquipped;
+
+	// Delegate fired when equipped item is unequipped
+	UPROPERTY(BlueprintAssignable)
+	FMGEquippedChanged OnUnequipped;
+
 private:
 	UPROPERTY(Replicated)
 	FMGEquipmentList EquipmentList;
+
+	UPROPERTY(ReplicatedUsing=OnRep_EquippedItem)
+	UMGEquipmentInstance* EquippedItem;
 };

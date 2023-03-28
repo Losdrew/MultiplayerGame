@@ -183,6 +183,8 @@ void AMGCharacter::DisableMovementAndCollision()
 
 void AMGCharacter::UninitializeAndDestroy()
 {
+	EquipmentManagerComponent->UninitializeComponent();
+
 	if (GetLocalRole() == ROLE_Authority)
 	{
 		DetachFromControllerPendingDestroy();
