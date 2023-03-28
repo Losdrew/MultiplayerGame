@@ -2,8 +2,8 @@
 
 
 #include "MGEquipmentInstance.h"
-#include "MGEquipmentDefinition.h"
 
+#include "MGEquipmentDefinition.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"

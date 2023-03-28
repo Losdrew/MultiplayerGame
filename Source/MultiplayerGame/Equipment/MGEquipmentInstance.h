@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/Texture2D.h"
 
 #include "MGEquipmentInstance.generated.h"
 
@@ -37,6 +38,10 @@ public:
 	virtual void OnEquipped();
 	virtual void OnUnequipped();
 
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category=Appearance)
+	UTexture2D* Icon;
 
 private:
 	UFUNCTION()
