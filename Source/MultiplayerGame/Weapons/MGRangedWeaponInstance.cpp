@@ -47,3 +47,13 @@ float UMGRangedWeaponInstance::GetPhysicalMaterialAttenuation(const UPhysicalMat
 
 	return Multiplier;
 }
+
+void UMGRangedWeaponInstance::OnRep_CurrentAmmo()
+{
+	OnCurrentAmmoChanged.Broadcast(this, CurrentAmmo);
+}
+
+void UMGRangedWeaponInstance::OnRep_TotalAmmo()
+{
+	OnTotalAmmoChanged.Broadcast(this, TotalAmmo);
+}

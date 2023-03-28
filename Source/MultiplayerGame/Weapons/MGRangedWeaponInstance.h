@@ -11,6 +11,10 @@
 
 #include "MGRangedWeaponInstance.generated.h"
 
+class UMGRangedWeaponInstance;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGRangedWeaponAttributeChanged, UMGRangedWeaponInstance*, WeaponInstance, int, NewValue);
+
 /**
  * 
  */
@@ -51,6 +55,7 @@ public:
 	{
 		const int OldValue = CurrentAmmo;
 		CurrentAmmo = NewValue;
+		OnCurrentAmmoChanged.Broadcast(this, CurrentAmmo);
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -64,6 +69,7 @@ public:
 	{
 		const int OldValue = TotalAmmo;
 		TotalAmmo = NewValue;
+		OnTotalAmmoChanged.Broadcast(this, TotalAmmo);
 	}
 
 	UFUNCTION(BlueprintCallable)
@@ -85,6 +91,23 @@ public:
 	}
 
 protected:
+
+	UFUNCTION()
+	void OnRep_CurrentAmmo();
+
+	UFUNCTION()
+	void OnRep_TotalAmmo();
+
+public:
+	// Delegate fired when current ammo is changed
+	UPROPERTY(BlueprintAssignable)
+	FMGRangedWeaponAttributeChanged OnCurrentAmmoChanged;
+
+	// Delegate fired when total ammo is changed
+	UPROPERTY(BlueprintAssignable)
+	FMGRangedWeaponAttributeChanged OnTotalAmmoChanged;
+
+protected:
 	// List of tags with damage multipliers associated with them
 	// These tags are compared to the physical material of the thing that is hit
 	// Multipliers are used in damage calculation
@@ -98,10 +121,10 @@ protected:
 
 private:
 
-	UPROPERTY(Transient, Replicated)
+	UPROPERTY(Transient, ReplicatedUsing=OnRep_CurrentAmmo)
 	int CurrentAmmo;
 
-	UPROPERTY(Transient, Replicated)
+	UPROPERTY(Transient, ReplicatedUsing=OnRep_TotalAmmo)
 	int TotalAmmo;
 
 	UPROPERTY(EditAnywhere, Category = "Ammo")
