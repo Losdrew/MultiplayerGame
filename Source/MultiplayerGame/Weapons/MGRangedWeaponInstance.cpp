@@ -10,8 +10,8 @@ void UMGRangedWeaponInstance::GetLifetimeReplicatedProps(TArray< FLifetimeProper
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(UMGRangedWeaponInstance, CurrentAmmoInClip, COND_OwnerOnly);
-	DOREPLIFETIME_CONDITION(UMGRangedWeaponInstance, CurrentAmmoTotal, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMGRangedWeaponInstance, CurrentAmmo, COND_OwnerOnly, REPNOTIFY_OnChanged);
+	DOREPLIFETIME_CONDITION_NOTIFY(UMGRangedWeaponInstance, TotalAmmo, COND_OwnerOnly, REPNOTIFY_OnChanged);
 }
 
 void UMGRangedWeaponInstance::OnEquipped()

@@ -24,7 +24,7 @@ bool UMGWeaponFireGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Ha
 
 	if (const UMGRangedWeaponInstance* WeaponInstance = GetWeaponInstance())
 	{
-		bCanApplyCost = WeaponInstance->CurrentAmmoInClip - WeaponInstance->BulletsInOneShot >= 0;
+		bCanApplyCost = WeaponInstance->GetCurrentAmmo() - WeaponInstance->GetBulletsInOneShot() >= 0;
 	}
 
 	return bCanApplyCost;
@@ -38,7 +38,9 @@ void UMGWeaponFireGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Ha
 	{
 		if (UMGRangedWeaponInstance* WeaponInstance = GetWeaponInstance())
 		{
-			WeaponInstance->CurrentAmmoInClip -= WeaponInstance->BulletsInOneShot;
+			const int CurrentAmmo = WeaponInstance->GetCurrentAmmo();
+			const int BulletsInOneShot = WeaponInstance->GetBulletsInOneShot();
+			WeaponInstance->SetCurrentAmmo(CurrentAmmo - BulletsInOneShot);
 		}
 	}
 }

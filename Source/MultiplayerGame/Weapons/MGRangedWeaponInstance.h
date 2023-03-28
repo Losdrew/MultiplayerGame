@@ -24,8 +24,8 @@ public:
 	{
 		Super::PostInitProperties();
 
-		CurrentAmmoInClip = ClipSize;
-		CurrentAmmoTotal = MaxAmmo;
+		CurrentAmmo = ClipSize;
+		TotalAmmo = MaxAmmo;
 	};
 
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
@@ -40,31 +40,76 @@ public:
 	virtual float GetPhysicalMaterialAttenuation(const UPhysicalMaterial* PhysicalMaterial) const override;
 	//~End of IMGAbilitySourceInterface interface
 
+	UFUNCTION(BlueprintCallable)
+	int GetCurrentAmmo() const
+	{
+		return CurrentAmmo;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void SetCurrentAmmo(int NewValue)
+	{
+		const int OldValue = CurrentAmmo;
+		CurrentAmmo = NewValue;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int GetTotalAmmo() const
+	{
+		return TotalAmmo;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	void SetTotalAmmo(int NewValue)
+	{
+		const int OldValue = TotalAmmo;
+		TotalAmmo = NewValue;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int GetClipSize() const
+	{
+		return ClipSize;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int GetMaxAmmo() const
+	{
+		return MaxAmmo;
+	}
+
+	UFUNCTION(BlueprintCallable)
+	int GetBulletsInOneShot() const
+	{
+		return BulletsInOneShot;
+	}
+
 protected:
 	// List of tags with damage multipliers associated with them
 	// These tags are compared to the physical material of the thing that is hit
 	// Multipliers are used in damage calculation
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Damage")
 	TMap<FGameplayTag, float> MaterialDamageMultiplier;
 
 	// A curve that maps the distance (in cm) to a multiplier on the base damage
 	// If there is no data in this curve, then the weapon is assumed to have no falloff with distance
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Damage")
 	FRuntimeFloatCurve DistanceDamageFalloff;
 
-public:
-	UPROPERTY(BlueprintReadWrite, Transient, Replicated)
-	int CurrentAmmoInClip;
+private:
 
-	UPROPERTY(BlueprintReadWrite, Transient, Replicated)
-	int CurrentAmmoTotal;
+	UPROPERTY(Transient, Replicated)
+	int CurrentAmmo;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	UPROPERTY(Transient, Replicated)
+	int TotalAmmo;
+
+	UPROPERTY(EditAnywhere, Category = "Ammo")
 	int ClipSize;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, Category = "Ammo")
 	int MaxAmmo;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, Category = "Ammo")
 	int BulletsInOneShot;
 };
