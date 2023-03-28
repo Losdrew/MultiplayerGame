@@ -5,7 +5,7 @@
 
 void UMGHealthBar::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 
 	if (APlayerController* PlayerController = GetOwningPlayer())
 	{
@@ -25,18 +25,18 @@ void UMGHealthBar::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 	{
 		if (UMGHealthComponent* HealthComponent = PlayerCharacter->FindComponentByClass<UMGHealthComponent>())
 		{
-			HealthComponent->OnHealthChanged.RemoveDynamic(this, &ThisClass::HandleHealthChanged);
-			HealthComponent->OnMaxHealthChanged.RemoveDynamic(this, &ThisClass::HandleMaxHealthChanged);
+			HealthComponent->OnHealthChanged.RemoveDynamic(this, &ThisClass::OnHealthChanged);
+			HealthComponent->OnMaxHealthChanged.RemoveDynamic(this, &ThisClass::OnMaxHealthChanged);
 		}
 	}
 
-	// Bind health event to new pawn's health component, save health values and initialize HealthBar visuals
+	// Bind health events to new pawn's health component, save health values and initialize HealthBar visuals
 	if (const AMGCharacter* PlayerCharacter = Cast<AMGCharacter>(NewPawn))
 	{
 		if (UMGHealthComponent* HealthComponent = PlayerCharacter->FindComponentByClass<UMGHealthComponent>())
 		{
-			HealthComponent->OnHealthChanged.AddDynamic(this, &ThisClass::HandleHealthChanged);
-			HealthComponent->OnMaxHealthChanged.AddDynamic(this, &ThisClass::HandleMaxHealthChanged);
+			HealthComponent->OnHealthChanged.AddUniqueDynamic(this, &ThisClass::OnHealthChanged);
+			HealthComponent->OnMaxHealthChanged.AddUniqueDynamic(this, &ThisClass::OnMaxHealthChanged);
 
 			Health = HealthComponent->GetHealth();
 			HealthNormalized = HealthComponent->GetHealthNormalized();
@@ -47,7 +47,7 @@ void UMGHealthBar::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 	}
 }
 
-void UMGHealthBar::HandleHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator)
+void UMGHealthBar::OnHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator)
 {
 	if (HealthBar)
 	{
@@ -65,7 +65,7 @@ void UMGHealthBar::HandleHealthChanged(UMGHealthComponent* HealthComponent, floa
 	}
 }
 
-void UMGHealthBar::HandleMaxHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator)
+void UMGHealthBar::OnMaxHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator)
 {
 	if (SizeBox)
 	{

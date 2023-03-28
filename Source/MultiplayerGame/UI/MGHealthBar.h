@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/HorizontalBox.h"
 #include "Components/SizeBox.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
@@ -25,22 +24,19 @@ public:
 	void OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn);
 
 	UFUNCTION()
-	void HandleHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator);
-
-	UFUNCTION()
-	void HandleMaxHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator);
-
-	UFUNCTION()
 	void InitializeHealthBarVisuals();
 
 protected:
 
+	UFUNCTION(BlueprintCallable)
+	void OnHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator);
+
+	UFUNCTION(BlueprintCallable)
+	void OnMaxHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator);
+
 	virtual void NativeConstruct() override;
 
 public:
-
-	UPROPERTY(meta = (BindWidget))
-	UHorizontalBox* HorizontalBox;
 
 	UPROPERTY(meta = (BindWidget))
 	USizeBox* SizeBox;
@@ -50,9 +46,6 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* HealthNumber;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* HealthDivider;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MaxHealthNumber;
