@@ -33,7 +33,7 @@ void FMGAbilitySet_GrantedHandles::TakeFromAbilitySystem(UMGAbilitySystemCompone
 
 	if (!MGASC->IsOwnerActorAuthoritative())
 	{
-		// Must be authoritative to give or take ability sets.
+		// Must be authoritative to give or take ability sets
 		return;
 	}
 
@@ -69,11 +69,11 @@ void UMGAbilitySet::GiveToAbilitySystem(UMGAbilitySystemComponent* MGASC, FMGAbi
 
 	if (!MGASC->IsOwnerActorAuthoritative())
 	{
-		// Must be authoritative to give or take ability sets.
+		// Must be authoritative to give or take ability sets
 		return;
 	}
 
-	// Grant the gameplay abilities.
+	// Grant the gameplay abilities
 	for (int32 AbilityIndex = 0; AbilityIndex < GrantedGameplayAbilities.Num(); ++AbilityIndex)
 	{
 		const FMGAbilitySet_GameplayAbility& AbilityToGrant = GrantedGameplayAbilities[AbilityIndex];
@@ -97,7 +97,7 @@ void UMGAbilitySet::GiveToAbilitySystem(UMGAbilitySystemComponent* MGASC, FMGAbi
 		}
 	}
 
-	// Grant the gameplay effects.
+	// Grant the gameplay effects
 	for (int32 EffectIndex = 0; EffectIndex < GrantedGameplayEffects.Num(); ++EffectIndex)
 	{
 		const FMGAbilitySet_GameplayEffect& EffectToGrant = GrantedGameplayEffects[EffectIndex];
@@ -116,7 +116,7 @@ void UMGAbilitySet::GiveToAbilitySystem(UMGAbilitySystemComponent* MGASC, FMGAbi
 		}
 	}
 
-	// Grant the attribute sets.
+	// Grant the attribute sets
 	for (int32 SetIndex = 0; SetIndex < GrantedAttributes.Num(); ++SetIndex)
 	{
 		const FMGAbilitySet_AttributeSet& SetToGrant = GrantedAttributes[SetIndex];

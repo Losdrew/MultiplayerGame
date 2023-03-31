@@ -56,9 +56,7 @@ void UMGAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 		}
 	}
 
-	//
-	// Process all abilities that had their input pressed this frame.
-	//
+	// Process all abilities that had their input pressed this frame
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputPressedSpecHandles)
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
@@ -69,7 +67,7 @@ void UMGAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 
 				if (AbilitySpec->IsActive())
 				{
-					// Ability is active so pass along the input event.
+					// Ability is active so pass along the input event
 					AbilitySpecInputPressed(*AbilitySpec);
 				}
 				else
@@ -85,19 +83,15 @@ void UMGAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 		}
 	}
 
-	//
 	// Try to activate all the abilities that are from presses and holds.
 	// We do it all at once so that held inputs don't activate the ability
-	// and then also send a input event to the ability because of the press.
-	//
+	// and then also send an input event to the ability because of the press.
 	for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : AbilitiesToActivate)
 	{
 		TryActivateAbility(AbilitySpecHandle);
 	}
 
-	//
-	// Process all abilities that had their input released this frame.
-	//
+	// Process all abilities that had their input released this frame
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputReleasedSpecHandles)
 	{
 		if (FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
@@ -108,16 +102,14 @@ void UMGAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 
 				if (AbilitySpec->IsActive())
 				{
-					// Ability is active so pass along the input event.
+					// Ability is active so pass along the input event
 					AbilitySpecInputReleased(*AbilitySpec);
 				}
 			}
 		}
 	}
 
-	//
-	// Clear the cached ability handles.
-	//
+	// Clear the cached ability handles
 	InputPressedSpecHandles.Reset();
 	InputReleasedSpecHandles.Reset();
 }
@@ -179,11 +171,12 @@ void UMGAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Sp
 {
 	Super::AbilitySpecInputPressed(Spec);
 
-	// We don't support UGameplayAbility::bReplicateInputDirectly.
-	// Use replicated events instead so that the WaitInputPress ability task works.
+	// We don't support UGameplayAbility::bReplicateInputDirectly
+	// Use replicated events instead so that the WaitInputPress ability task works
 	if (Spec.IsActive())
 	{
-		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
+		// Invoke the InputPressed event
+		// If someone is listening, they may replicate the InputPressed event to the server
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}
 }
@@ -192,11 +185,12 @@ void UMGAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& S
 {
 	Super::AbilitySpecInputReleased(Spec);
 
-	// We don't support UGameplayAbility::bReplicateInputDirectly.
-	// Use replicated events instead so that the WaitInputRelease ability task works.
+	// We don't support UGameplayAbility::bReplicateInputDirectly
+	// Use replicated events instead so that the WaitInputRelease ability task works
 	if (Spec.IsActive())
 	{
-		// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputReleased event to the server.
+		// Invoke the InputReleased event
+		// If someone is listening, they may replicate the InputReleased event to the server
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}
 }

@@ -12,25 +12,28 @@
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "MGCharacter.generated.h"
 
+/**
+ * AMGCharacter
+ *
+ *	The base character pawn class used by this project
+ */
 UCLASS()
 class AMGCharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+
 	AMGCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	//~IAbilitySystemInterface interface
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	//~End of IAbilitySystemInterface interface
+
+	UAbilitySystemComponent* GetMGAbilitySystemComponent() const;
 
 	void InitPlayer();
 
@@ -38,16 +41,11 @@ public:
 
 	virtual void OnRep_PlayerState() override;
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
 	void InputAbilityInputTagPressed(FGameplayTag InputTag);
-
 	void InputAbilityInputTagReleased(FGameplayTag InputTag);
 
 	void InputMove(const FInputActionValue& Value);
-
 	void InputLook(const FInputActionValue& Value);
-
 	void InputJump(const FInputActionValue& Value);
 
 	// Begins the death sequence for the character (disables collision, disables movement, etc...)
@@ -57,6 +55,10 @@ public:
 	// Ends the death sequence for the character (detaches controller, destroys pawn, etc...)
 	UFUNCTION()
 	virtual void OnDeathFinished(AActor* OwningActor);
+
+	// Called when the death sequence for the character has completed
+	UFUNCTION(BlueprintImplementableEvent, Meta = (DisplayName = "OnDeathFinished"))
+	void K2_OnDeathFinished();
 
 	void DisableMovementAndCollision();
 	void UninitializeAndDestroy();
@@ -73,11 +75,11 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UMGHealthComponent> HealthComponent;
 
-public:
+private:
 
-	UPROPERTY(EditDefaultsOnly, Category = Input)
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UMGInputConfig* InputConfig;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input)
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
     UInputMappingContext* InputMapping;
 };

@@ -65,7 +65,7 @@ void UMGDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 		}
 	}
 
-	// If there is no hit result or hit result not returning an actor
+	// If there is no hit result or hit result not returning an actor, get targeted actor directly
 	UAbilitySystemComponent* TargetAbilitySystemComponent = ExecutionParams.GetTargetAbilitySystemComponent();
 	if (!HitActor)
 	{
@@ -76,9 +76,8 @@ void UMGDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 		}
 	}
 
-	// Determine distance
+	// Determine distance between the effect's origin/causer and impact location
 	double Distance = WORLD_MAX;
-
 	if (EffectContext->HasOrigin())
 	{
 		Distance = FVector::Dist(EffectContext->GetOrigin(), ImpactLocation);
@@ -88,7 +87,7 @@ void UMGDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 		Distance = FVector::Dist(EffectCauser->GetActorLocation(), ImpactLocation);
 	}
 
-	// Apply ability source modifiers
+	// Apply modifiers related to physical material hit and distance falloff
 	float PhysicalMaterialAttenuation = 1.0f;
 	float DistanceAttenuation = 1.0f;
 	if (const IMGAbilitySourceInterface* AbilitySource = Cast<IMGAbilitySourceInterface>(Spec.GetContext().GetSourceObject()))

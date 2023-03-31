@@ -8,7 +8,7 @@
 #include "MGEquipmentGameplayAbility.generated.h"
 
 /**
- * 	UMGEquipmentGameplayAbility
+ * UMGEquipmentGameplayAbility
  *
  *	An ability granted by and associated with equipment instance
  */

@@ -7,12 +7,16 @@
 #include "MGGameMode.generated.h"
 
 /**
- * 
+ * AMGGameMode
+ *
+ *	The base game mode class used by this project
  */
 UCLASS()
 class AMGGameMode : public AGameMode
 {
 	GENERATED_BODY()
+
+public:
 
 	UFUNCTION(BlueprintCallable)
 	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset);

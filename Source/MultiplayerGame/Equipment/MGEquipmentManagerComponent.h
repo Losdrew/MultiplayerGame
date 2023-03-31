@@ -12,7 +12,11 @@ class UMGEquipmentManagerComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGEquippedChanged, UMGEquipmentManagerComponent*, EquipmentManagerComponent, UMGEquipmentInstance*, EquipmentInstance);
 
-/** A single piece of applied equipment */
+/**
+ * FMGAppliedEquipmentEntry
+ *
+ *	A single piece of applied equipment
+ */
 USTRUCT(BlueprintType)
 struct FMGAppliedEquipmentEntry : public FFastArraySerializerItem
 {
@@ -21,6 +25,7 @@ struct FMGAppliedEquipmentEntry : public FFastArraySerializerItem
 	FMGAppliedEquipmentEntry() {}
 
 private:
+
 	friend FMGEquipmentList;
 	friend UMGEquipmentManagerComponent;
 
@@ -36,7 +41,12 @@ private:
 	FMGAbilitySet_GrantedHandles GrantedHandles;
 };
 
-/** List of applied equipment */
+
+/**
+ * FMGEquipmentList
+ *
+ *	List of applied equipment
+ */
 USTRUCT(BlueprintType)
 struct FMGEquipmentList : public FFastArraySerializer
 {
@@ -62,9 +72,10 @@ public:
 	void RemoveEntry(UMGEquipmentInstance* Instance);
 
 private:
-	UMGAbilitySystemComponent* GetAbilitySystemComponent() const;
 
 	friend UMGEquipmentManagerComponent;
+
+	UMGAbilitySystemComponent* GetAbilitySystemComponent() const;
 
 private:
 	// Replicated list of equipment entries
@@ -83,7 +94,9 @@ struct TStructOpsTypeTraits<FMGEquipmentList> : public TStructOpsTypeTraitsBase2
 
 
 /**
- * Manages equipment applied to a pawn
+ * UMGEquipmentManagerComponent
+ *
+ *	Component that manages equipment applied to a pawn
  */
 UCLASS(BlueprintType, Const)
 class UMGEquipmentManagerComponent : public UActorComponent
@@ -91,7 +104,7 @@ class UMGEquipmentManagerComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
+
 	UMGEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
@@ -101,7 +114,7 @@ public:
 	void UnequipItem(UMGEquipmentInstance* ItemInstance);
 
 	//~UObject interface
-	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
+	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 	//~End of UObject interface
 
 	//~UActorComponent interface
@@ -143,6 +156,7 @@ public:
 	FMGEquippedChanged OnUnequipped;
 
 private:
+
 	UPROPERTY(Replicated)
 	FMGEquipmentList EquipmentList;
 

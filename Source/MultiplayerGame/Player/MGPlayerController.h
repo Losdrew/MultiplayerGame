@@ -9,7 +9,9 @@ class AMGPlayerState;
 class UMGAbilitySystemComponent;
 
 /**
- * 
+ * AMGPlayerController
+ *
+ *	The base player controller class used by this project
  */
 UCLASS()
 class AMGPlayerController : public APlayerController

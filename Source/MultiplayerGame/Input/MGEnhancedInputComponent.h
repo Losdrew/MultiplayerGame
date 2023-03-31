@@ -8,7 +8,9 @@
 #include "MGEnhancedInputComponent.generated.h"
 
 /**
- * 
+ * UMGEnhacedInputComponent
+ *
+ *	Component used to manage input mappings and bindings using an input config data asset
  */
 UCLASS()
 class UMGEnhancedInputComponent : public UEnhancedInputComponent
@@ -29,9 +31,9 @@ void UMGEnhancedInputComponent::BindNativeAction(const UMGInputConfig* InputConf
 {
 	check(InputConfig);
 
-	if (const UInputAction* IA = InputConfig->FindNativeInputActionForTag(InputTag))
+	if (const UInputAction* InputAction = InputConfig->FindNativeInputActionForTag(InputTag))
 	{
-		BindAction(IA, TriggerEvent, Object, Func);
+		BindAction(InputAction, TriggerEvent, Object, Func);
 	}
 }
 

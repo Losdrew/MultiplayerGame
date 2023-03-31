@@ -8,7 +8,9 @@
 #include "MGRespawnGameplayAbility.generated.h"
 
 /**
- * 
+ * UMGRespawnGameplayAbility
+ *
+ *	Gameplay ability used for handling respawn
  */
 UCLASS()
 class UMGRespawnGameplayAbility : public UMGGameplayAbility
@@ -33,6 +35,7 @@ protected:
 	void OnDeathStarted(AActor* DyingActor);
 
 protected:
+
 	UPROPERTY()
 	AActor* LastBoundAvatarActor;
 

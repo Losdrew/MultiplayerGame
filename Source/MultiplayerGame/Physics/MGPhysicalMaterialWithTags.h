@@ -8,7 +8,9 @@
 #include "MGPhysicalMaterialWithTags.generated.h"
 
 /**
- * 
+ * UMGPhysicalMaterialWithTags
+ *
+ *	Physical material class that uses gameplay tags
  */
 UCLASS()
 class UMGPhysicalMaterialWithTags : public UPhysicalMaterial

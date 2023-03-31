@@ -38,13 +38,13 @@ void UMGGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorIn
 {
 	const bool bIsPredicting = (Spec.ActivationInfo.ActivationMode == EGameplayAbilityActivationMode::Predicting);
 
-	// Try to activate if activation policy is on spawn.
+	// Try to activate if activation policy is on spawn
 	if (ActorInfo && !Spec.IsActive() && !bIsPredicting && ActivationPolicy == EMGAbilityActivationPolicy::OnSpawn)
 	{
 		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
 		const AActor* AvatarActor = ActorInfo->AvatarActor.Get();
 
-		// If avatar actor is torn off or about to die, don't try to activate until we get the new one.
+		// If avatar actor is torn off or about to die, don't try to activate until we get the new one
 		if (ASC && AvatarActor && !AvatarActor->GetTearOff() && AvatarActor->GetLifeSpan() <= 0.0f)
 		{
 			const bool bIsLocalExecution = (NetExecutionPolicy == EGameplayAbilityNetExecutionPolicy::LocalPredicted) || (NetExecutionPolicy == EGameplayAbilityNetExecutionPolicy::LocalOnly);

@@ -12,18 +12,23 @@
 #include "MGEquipmentDefinition.generated.h"
 
 
+/**
+ * FMGEquipmentActorToSpawn
+ *
+ *	Holds information about actor to spawn from equipment
+ */
 USTRUCT()
 struct FMGEquipmentActorToSpawn
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category=Equipment)
+	UPROPERTY(EditAnywhere, Category = "Equipment")
 	TSubclassOf<AActor> ActorToSpawn;
 
-	UPROPERTY(EditAnywhere, Category=Equipment)
+	UPROPERTY(EditAnywhere, Category = "Equipment")
 	FName AttachSocket;
 
-	UPROPERTY(EditAnywhere, Category=Equipment)
+	UPROPERTY(EditAnywhere, Category = "Equipment")
 	FTransform AttachTransform;
 };
 
@@ -31,7 +36,7 @@ struct FMGEquipmentActorToSpawn
 /**
  * UMGEquipmentDefinition
  *
- * Definition of a piece of equipment that can be applied to a pawn
+ *	Definition of a piece of equipment that can be applied to a pawn
  */
 UCLASS(Blueprintable, Const, Abstract, BlueprintType)
 class UMGEquipmentDefinition : public UObject
@@ -41,14 +46,14 @@ class UMGEquipmentDefinition : public UObject
 public:
 
 	// Class to spawn
-	UPROPERTY(EditDefaultsOnly, Category=Equipment)
+	UPROPERTY(EditDefaultsOnly, Category = "Equipment")
 	TSubclassOf<UMGEquipmentInstance> InstanceType;
 
 	// Gameplay ability sets to grant when this is equipped
-	UPROPERTY(EditDefaultsOnly, Category=Equipment)
+	UPROPERTY(EditDefaultsOnly, Category = "Equipment")
 	TArray<TObjectPtr<const UMGAbilitySet>> AbilitySetsToGrant;
 
 	// Actors to spawn on the pawn when this is equipped
-	UPROPERTY(EditDefaultsOnly, Category=Equipment)
+	UPROPERTY(EditDefaultsOnly, Category = "Equipment")
 	TArray<FMGEquipmentActorToSpawn> ActorsToSpawn;
 };

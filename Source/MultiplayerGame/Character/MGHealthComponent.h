@@ -15,9 +15,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGHealth_DeathEvent, AActor*, Ownin
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FMGHealth_AttributeChanged, UMGHealthComponent*, HealthComponent, float, OldValue, float, NewValue, AActor*, Instigator);
 
 /**
- *	EMGDeathState		
+ * EMGDeathState		
  *
- *	Defines current state of death.
+ *	Defines current state of death
  */
 UENUM(BlueprintType)
 enum class EMGDeathState : uint8
@@ -30,9 +30,9 @@ enum class EMGDeathState : uint8
 /**
  * UMGHealthComponent
  *
- *	An actor component used to handle anything related to health.
+ *	An actor component used to handle anything related to health
  */
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS()
 class UMGHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -41,23 +41,23 @@ public:
 	// Sets default values for this component's properties
 	UMGHealthComponent();
 
-	// Initialize the component using an ability system component.
+	// Initialize the component using an ability system component
 	UFUNCTION(BlueprintCallable)
 	void InitializeWithAbilitySystem(UMGAbilitySystemComponent* InASC);
 
-	// Uninitialize the component, clearing any references to the ability system.
+	// Uninitialize the component, clearing any references to the ability system
 	UFUNCTION(BlueprintCallable)
 	void UninitializeFromAbilitySystem();
 
-	// Returns the current health value.
+	// Returns the current health value
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() const;
 
-	// Returns the normalized current health value.
+	// Returns the normalized current health value
 	UFUNCTION(BlueprintCallable)
 	float GetHealthNormalized() const;
 
-	// Returns the current maximum health value.
+	// Returns the current maximum health value
 	UFUNCTION(BlueprintCallable)
 	float GetMaxHealth() const;
 
@@ -67,27 +67,26 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Meta = (ExpandBoolAsExecs = "ReturnValue"))
 	bool IsDeadOrDying() const { return DeathState > EMGDeathState::NotDead; }
 
-	// Begins the death sequence for the owner.
+	// Begins the death sequence for the owner
 	virtual void StartDeath();
 
-	// Ends the death sequence for the owner.
+	// Ends the death sequence for the owner
 	virtual void FinishDeath();
 
 public:
-
-	// Delegate fired when the health value has changed.
+	// Delegate fired when the health value has changed
 	UPROPERTY(BlueprintAssignable)
 	FMGHealth_AttributeChanged OnHealthChanged;
 
-	// Delegate fired when the max health value has changed.
+	// Delegate fired when the max health value has changed
 	UPROPERTY(BlueprintAssignable)
 	FMGHealth_AttributeChanged OnMaxHealthChanged;
 
-	// Delegate fired when the death sequence has started.
+	// Delegate fired when the death sequence has started
 	UPROPERTY(BlueprintAssignable)
 	FMGHealth_DeathEvent OnDeathStarted;
 
-	// Delegate fired when the death sequence has finished.
+	// Delegate fired when the death sequence has finished
 	UPROPERTY(BlueprintAssignable)
 	FMGHealth_DeathEvent OnDeathFinished;
 
@@ -117,5 +116,4 @@ protected:
 	// Replicated state used to handle dying.
 	UPROPERTY(ReplicatedUsing = OnRep_DeathState)
 	EMGDeathState DeathState;
-
 };

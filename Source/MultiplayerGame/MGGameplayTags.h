@@ -34,16 +34,16 @@ struct FMGGameplayTags
 	FGameplayTag InputTag_Look;
 	FGameplayTag InputTag_Jump;
 
-	/** Actor/component has initially spawned and can be extended */
+	// Actor/component has initially spawned and can be extended
 	FGameplayTag InitState_Spawned;
 
-	/** All required data has been loaded/replicated and is ready for initialization */
+	// All required data has been loaded/replicated and is ready for initialization
 	FGameplayTag InitState_DataAvailable;
 
-	/** The available data has been initialized for this actor/component, but it is not ready for full gameplay */
+	// The available data has been initialized for this actor/component, but it is not ready for full gameplay
 	FGameplayTag InitState_DataInitialized;
 
-	/** The actor/component is fully ready for active gameplay */
+	// The actor/component is fully ready for active gameplay
 	FGameplayTag InitState_GameplayReady;
 
 	FGameplayTag GameplayEvent_Death;

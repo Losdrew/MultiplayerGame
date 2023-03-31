@@ -13,8 +13,12 @@ AMGPlayerState* AMGPlayerController::GetMGPlayerState() const
 
 UMGAbilitySystemComponent* AMGPlayerController::GetMGAbilitySystemComponent() const
 {
-	const AMGPlayerState* MGPS = GetMGPlayerState();
-	return (MGPS ? MGPS->GetAbilitySystemComponent() : nullptr);
+	if (const AMGPlayerState* MGPlayerState = GetMGPlayerState())
+	{
+		return MGPlayerState->GetMGAbilitySystemComponent();
+	}
+
+	return nullptr;
 }
 
 void AMGPlayerController::PostProcessInput(const float DeltaTime, const bool bGamePaused)

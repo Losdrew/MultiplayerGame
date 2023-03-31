@@ -7,6 +7,11 @@
 #include "MGGameplayAbility.h"
 #include "MGAbilitySystemComponent.generated.h"
 
+/**
+ * UMGAbilitySystemComponent
+ *
+ *	The base ability system component class used by this project
+ */
 UCLASS()
 class UMGAbilitySystemComponent : public UAbilitySystemComponent
 {
@@ -30,13 +35,12 @@ protected:
 	void TryActivateAbilitiesOnSpawn();
 
 protected:
-
-	// Handles to abilities that had their input pressed this frame.
+	// Handles to abilities that had their input pressed this frame
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 
-	// Handles to abilities that had their input released this frame.
+	// Handles to abilities that had their input released this frame
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 
-	// Handles to abilities that have their input held.
+	// Handles to abilities that have their input held
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 };

@@ -9,9 +9,9 @@
 #include "MGAttributeSet.generated.h"
 
 /**
- * Defines a set of helper functions for accessing and initializing attributes.
+ *	Defines a set of helper functions for accessing and initializing attributes.
  *
- * Will create the following functions:
+ *	For example, they will create the following functions:
  *		static FGameplayAttribute GetHealthAttribute();
  *		float GetHealth() const;
  *		void SetHealth(float NewVal);
@@ -28,7 +28,9 @@
 DECLARE_MULTICAST_DELEGATE_FourParams(FMGAttributeEvent, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/, const FGameplayEffectSpec& /*EffectSpec*/, float /*EffectMagnitude*/);
 
 /**
- * 
+ * UMGAttributeSet
+ *
+ *	The base attribute set class used by this project
  */
 UCLASS()
 class UMGAttributeSet : public UAttributeSet

@@ -11,7 +11,9 @@
 #include "MGHealthBar.generated.h"
 
 /**
- * 
+ * UMGHealthBar
+ *
+ *	Widget that displays information about a pawn's health
  */
 UCLASS()
 class UMGHealthBar : public UUserWidget

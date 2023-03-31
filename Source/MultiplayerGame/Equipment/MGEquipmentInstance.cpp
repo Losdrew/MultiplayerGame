@@ -18,7 +18,7 @@ void UMGEquipmentInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 UWorld* UMGEquipmentInstance::GetWorld() const
 {
-	if (APawn* OwningPawn = GetPawn())
+	if (const APawn* OwningPawn = GetPawn())
 	{
 		return OwningPawn->GetWorld();
 	}
@@ -36,9 +36,9 @@ void UMGEquipmentInstance::SpawnEquipmentActors(const TArray<FMGEquipmentActorTo
 	if (APawn* OwningPawn = GetPawn())
 	{
 		USceneComponent* AttachTarget = OwningPawn->GetRootComponent();
-		if (ACharacter* Char = Cast<ACharacter>(OwningPawn))
+		if (const ACharacter* Character = Cast<ACharacter>(OwningPawn))
 		{
-			AttachTarget = Char->GetMesh();
+			AttachTarget = Character->GetMesh();
 		}
 
 		for (const FMGEquipmentActorToSpawn& SpawnInfo : ActorsToSpawn)

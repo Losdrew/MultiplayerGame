@@ -56,7 +56,7 @@ void UMGWeaponStatus::OnWeaponEquipped(UMGEquipmentManagerComponent* EquipmentMa
 			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 		}
 
-		WeaponImage->SetBrushFromTexture(CurrentWeaponInstance->Icon);
+		WeaponImage->SetBrushFromTexture(CurrentWeaponInstance->EquipmentIcon);
 		CurrentAmmoNumber->SetText(FText::AsNumber(CurrentWeaponInstance->GetCurrentAmmo()));
 		TotalAmmoNumber->SetText(FText::AsNumber(CurrentWeaponInstance->GetTotalAmmo()));
 

@@ -16,7 +16,9 @@ class UMGRangedWeaponInstance;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGRangedWeaponAttributeChanged, UMGRangedWeaponInstance*, WeaponInstance, int, NewValue);
 
 /**
- * 
+ * UMGRangedWeaponInstance
+ *
+ *	A piece of equipment representing a ranged weapon spawned and applied to a pawn
  */
 UCLASS()
 class UMGRangedWeaponInstance : public UMGEquipmentInstance, public IMGAbilitySourceInterface
@@ -32,7 +34,7 @@ public:
 		TotalAmmo = MaxAmmo;
 	};
 
-	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	//~UMGEquipmentInstance interface
 	virtual void OnEquipped();

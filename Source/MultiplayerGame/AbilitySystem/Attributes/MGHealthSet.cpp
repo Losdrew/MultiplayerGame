@@ -36,7 +36,7 @@ void UMGHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	float MinimumHealth = 0.0f;
+	const float MinimumHealth = 0.0f;
 
 	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
 	{
@@ -46,7 +46,7 @@ void UMGHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 	}
 	else if (Data.EvaluatedData.Attribute == GetHealingAttribute())
 	{
-		// Convert into +Health and then clamo
+		// Convert into +Health and then clamp
 		SetHealth(FMath::Clamp(GetHealth() + GetHealing(), MinimumHealth, GetMaxHealth()));
 		SetHealing(0.0f);
 	}
@@ -68,7 +68,7 @@ void UMGHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		}
 	}
 
-	// Check health again in case an event above changed it.
+	// Check health again in case an event above changed it
 	bOutOfHealth = GetHealth() <= 0.0f;
 }
 
@@ -92,7 +92,7 @@ void UMGHealthSet::PostAttributeChange(const FGameplayAttribute& Attribute, floa
 
 	if (Attribute == GetMaxHealthAttribute())
 	{
-		// Make sure current health is not greater than the new max health.
+		// Make sure current health is not greater than the new max health
 		if (GetHealth() > NewValue)
 		{
 			UMGAbilitySystemComponent* AbilitySystemComponent = GetMGAbilitySystemComponent();
@@ -112,12 +112,12 @@ void UMGHealthSet::ClampAttribute(const FGameplayAttribute& Attribute, float& Ne
 {
 	if (Attribute == GetHealthAttribute())
 	{
-		// Do not allow health to go negative or above max health.
+		// Do not allow health to go negative or above max health
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
 	}
 	else if (Attribute == GetMaxHealthAttribute())
 	{
-		// Do not allow max health to drop below 1.
+		// Do not allow max health to drop below 1
 		NewValue = FMath::Max(NewValue, 1.0f);
 	}
 }

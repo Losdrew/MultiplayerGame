@@ -25,3 +25,13 @@ void AMGPlayerState::PostInitializeComponents()
 
 	AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
 }
+
+UAbilitySystemComponent* AMGPlayerState::GetAbilitySystemComponent() const
+{
+	 return GetMGAbilitySystemComponent();
+}
+
+UMGAbilitySystemComponent* AMGPlayerState::GetMGAbilitySystemComponent() const
+{
+	 return AbilitySystemComponent;
+}

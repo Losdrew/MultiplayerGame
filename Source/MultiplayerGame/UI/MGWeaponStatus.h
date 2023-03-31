@@ -12,7 +12,9 @@
 
 
 /**
- * 
+ * UMGWeaponStatus
+ *
+ *	Widget that displays information about a weapon (for example: image, ammo, etc...)
  */
 UCLASS()
 class UMGWeaponStatus : public UUserWidget

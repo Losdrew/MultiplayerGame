@@ -13,7 +13,7 @@ void FMGGameplayTags::InitializeNativeTags()
 
 	GameplayTags.AddAllTags(Manager);
 
-	// Notify manager that we are done adding native tags.
+	// Notify manager that we are done adding native tags
 	Manager.DoneAddingNativeTags();
 }
 

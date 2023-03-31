@@ -8,7 +8,9 @@
 #include "MGAssetManager.generated.h"
 
 /**
- * 
+ * UMGAssetManager
+ *
+ *	The base asset manager class used by this project
  */
 UCLASS()
 class UMGAssetManager : public UAssetManager

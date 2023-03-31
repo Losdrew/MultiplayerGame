@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "MGAbilitySourceInterface.generated.h"
 
-// This class does not need to be modified.
+// This class does not need to be modified
 UINTERFACE(MinimalAPI)
 class UMGAbilitySourceInterface : public UInterface
 {
@@ -17,7 +16,7 @@ class UMGAbilitySourceInterface : public UInterface
 /**
  * IMGAbilitySourceInterface
  *
- * Base interface for anything acting as an ability calculation source
+ *	Base interface for anything acting as an ability calculation source
  */
 class IMGAbilitySourceInterface
 {

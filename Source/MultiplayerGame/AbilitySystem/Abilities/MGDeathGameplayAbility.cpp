@@ -16,7 +16,7 @@ void UMGDeathGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle H
 	FGameplayTagContainer AbilityTypesToIgnore;
 	AbilityTypesToIgnore.AddTag(FMGGameplayTags::Get().Ability_Behavior_SurvivesDeath);
 
-	// Cancel all abilities and block others from starting.
+	// Cancel all abilities and block others from starting
 	ASC->CancelAbilities(nullptr, &AbilityTypesToIgnore, this);
 
 	SetCanBeCanceled(false);
@@ -30,8 +30,8 @@ void UMGDeathGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle
 {
 	check(ActorInfo);
 
-	// Always try to finish the death when the ability ends in case the ability doesn't.
-	// This won't do anything if the death hasn't been started.
+	// Always try to finish the death when the ability ends in case the ability doesn't
+	// This won't do anything if the death hasn't been started
 	FinishDeath();
 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);

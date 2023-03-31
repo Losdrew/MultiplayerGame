@@ -10,7 +10,6 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values
 AMGCharacter::AMGCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -23,23 +22,11 @@ AMGCharacter::AMGCharacter()
 	HealthComponent->OnDeathFinished.AddDynamic(this, &ThisClass::OnDeathFinished);
 }
 
-// Called when the game starts or when spawned
-void AMGCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-// Called every frame
-void AMGCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 // Called to bind functionality to input
 void AMGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	 // Get the player controller
-    APlayerController* PC = Cast<APlayerController>(GetController());
+	 const APlayerController* PC = Cast<APlayerController>(GetController());
  
     // Get the local player subsystem
     UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
@@ -60,6 +47,16 @@ void AMGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	EnhancedInputComponent->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
 	EnhancedInputComponent->BindNativeAction(InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
     EnhancedInputComponent->BindNativeAction(InputConfig, GameplayTags.InputTag_Jump, ETriggerEvent::Triggered, this, &ThisClass::InputJump);
+}
+
+UAbilitySystemComponent* AMGCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+UAbilitySystemComponent* AMGCharacter::GetMGAbilitySystemComponent() const
+{
+	return Cast<UMGAbilitySystemComponent>(GetAbilitySystemComponent());
 }
 
 void AMGCharacter::InitPlayer()
@@ -84,11 +81,6 @@ void AMGCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 	InitPlayer();
-}
-
-UAbilitySystemComponent* AMGCharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
 }
 
 void AMGCharacter::InputAbilityInputTagPressed(FGameplayTag InputTag)
@@ -184,6 +176,9 @@ void AMGCharacter::DisableMovementAndCollision()
 void AMGCharacter::UninitializeAndDestroy()
 {
 	EquipmentManagerComponent->UninitializeComponent();
+
+	HealthComponent->OnDeathStarted.RemoveDynamic(this, &ThisClass::OnDeathStarted);
+	HealthComponent->OnDeathFinished.RemoveDynamic(this, &ThisClass::OnDeathFinished);
 
 	if (GetLocalRole() == ROLE_Authority)
 	{

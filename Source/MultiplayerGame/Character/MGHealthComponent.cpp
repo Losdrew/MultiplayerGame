@@ -7,7 +7,6 @@
 #include "Delegates/Delegate.h"
 #include "GameFramework/Actor.h"
 #include "GameplayEffect.h"
-#include "GameplayEffectExtension.h"
 
 #include "Net/UnrealNetwork.h"
 
@@ -45,12 +44,12 @@ void UMGHealthComponent::InitializeWithAbilitySystem(UMGAbilitySystemComponent* 
 		return;
 	}
 
-	// Register to listen for attribute changes.
+	// Register to listen for attribute changes
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HealthSet->GetHealthAttribute()).AddUObject(this, &ThisClass::HandleHealthChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HealthSet->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::HandleMaxHealthChanged);
 	HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 
-	// Reset attributes to default values.
+	// Reset attributes to default values
 	AbilitySystemComponent->SetNumericAttributeBase(UMGHealthSet::GetHealthAttribute(), HealthSet->GetMaxHealth());
 
 	ClearGameplayTags();
@@ -74,7 +73,12 @@ void UMGHealthComponent::UninitializeFromAbilitySystem()
 
 float UMGHealthComponent::GetHealth() const
 {
-	return (HealthSet ? HealthSet->GetHealth() : 0.0f);
+	if (HealthSet)
+	{
+		return HealthSet->GetHealth();
+	}
+
+	return 0.0f;
 }
 
 float UMGHealthComponent::GetHealthNormalized() const
@@ -95,7 +99,12 @@ float UMGHealthComponent::GetHealthNormalized() const
 
 float UMGHealthComponent::GetMaxHealth() const
 {
-	return (HealthSet ? HealthSet->GetMaxHealth() : 0.0f);
+	if (HealthSet)
+	{
+		return HealthSet->GetMaxHealth();
+	}
+
+	return 0.0f;
 }
 
 void UMGHealthComponent::StartDeath()
@@ -146,7 +155,7 @@ void UMGHealthComponent::OnRep_DeathState(EMGDeathState OldDeathState)
 {
 	const EMGDeathState NewDeathState = DeathState;
 
-	// Revert the death state for now since we rely on StartDeath and FinishDeath to change it.
+	// Revert the death state for now since we rely on StartDeath and FinishDeath to change it
 	DeathState = OldDeathState;
 
 	if (OldDeathState > NewDeathState)
@@ -208,7 +217,8 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 	#if WITH_SERVER_CODE
 	if (AbilitySystemComponent)
 	{
-		// Send the "GameplayEvent.Death" gameplay event through the owner's ability system. This can be used to trigger a death gameplay ability.
+		// Send the "GameplayEvent.Death" gameplay event through the owner's ability system
+		// This can be used to trigger a death gameplay ability
 		{
 			FGameplayEventData Payload;
 			Payload.EventTag = FMGGameplayTags::Get().GameplayEvent_Death;
@@ -224,7 +234,7 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 			AbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
 	}
-	#endif // #if WITH_SERVER_CODE
+	#endif
 }
 
 void UMGHealthComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

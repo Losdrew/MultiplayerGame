@@ -11,7 +11,9 @@
 class UMGAbilitySet;
 
 /**
- * 
+ * AMGPlayerState
+ *
+ *	The base player state class used by this project
  */
 UCLASS()
 class AMGPlayerState : public APlayerState, public IAbilitySystemInterface
@@ -19,22 +21,24 @@ class AMGPlayerState : public APlayerState, public IAbilitySystemInterface
 	GENERATED_BODY()
 
 public:
+
 	AMGPlayerState();
 
 	//~AActor interface
 	virtual void PostInitializeComponents() override;
 	//~End of AActor interface
 
-	UMGAbilitySystemComponent* GetAbilitySystemComponent() const override
-    {
-        return AbilitySystemComponent;
-    }
+	//~IAbilitySystemInterface interface
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	//~End of IAbilitySystemInterface interface
+
+	UMGAbilitySystemComponent* GetMGAbilitySystemComponent() const;
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = Abilities)
+	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
 	UMGAbilitySet* AbilitySet;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Abilities, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", Meta = (AllowPrivateAccess = "true"))
 	UMGAbilitySystemComponent* AbilitySystemComponent;
 };

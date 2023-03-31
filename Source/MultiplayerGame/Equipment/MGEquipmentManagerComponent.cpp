@@ -12,7 +12,7 @@
 
 void FMGEquipmentList::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)
 {
- 	for (int32 Index : RemovedIndices)
+ 	for (const int32 Index : RemovedIndices)
  	{
  		const FMGAppliedEquipmentEntry& Entry = Items[Index];
 		if (Entry.Instance != nullptr)
@@ -24,7 +24,7 @@ void FMGEquipmentList::PreReplicatedRemove(const TArrayView<int32> RemovedIndice
 
 void FMGEquipmentList::PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize)
 {
-	for (int32 Index : AddedIndices)
+	for (const int32 Index : AddedIndices)
 	{
 		const FMGAppliedEquipmentEntry& Entry = Items[Index];
 		if (Entry.Instance != nullptr)
@@ -41,7 +41,7 @@ void FMGEquipmentList::PostReplicatedChange(const TArrayView<int32> ChangedIndic
 UMGAbilitySystemComponent* FMGEquipmentList::GetAbilitySystemComponent() const
 {
 	check(OwnerComponent);
-	AActor* OwningActor = OwnerComponent->GetOwner();
+	const AActor* OwningActor = OwnerComponent->GetOwner();
 	return Cast<UMGAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwningActor));
 }
 
