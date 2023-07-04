@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
-#include "GameFramework/Character.h"
+#include "MGFirstPersonCharacter.h"
 #include "MGInputConfig.h"
 #include "MGAbilitySystemComponent.h"
 #include "MGEquipmentManagerComponent.h"
@@ -18,12 +18,12 @@
  *	The base character pawn class used by this project
  */
 UCLASS()
-class AMGCharacter : public ACharacter, public IAbilitySystemInterface
+class AMGCharacter : public AMGFirstPersonCharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
-
+	
 	AMGCharacter();
 
 	// Called to bind functionality to input
@@ -59,20 +59,20 @@ public:
 	// Called when the death sequence for the character has completed
 	UFUNCTION(BlueprintImplementableEvent, Meta = (DisplayName = "OnDeathFinished"))
 	void K2_OnDeathFinished();
-
+	
 	void DisableMovementAndCollision();
 	void UninitializeAndDestroy();
 	void UninitializeAbilitySystem();
 
 protected:
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMGAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMGEquipmentManagerComponent> EquipmentManagerComponent;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMGHealthComponent> HealthComponent;
 
 private:
