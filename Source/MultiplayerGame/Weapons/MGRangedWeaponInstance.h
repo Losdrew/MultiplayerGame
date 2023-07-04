@@ -13,7 +13,7 @@
 
 class UMGRangedWeaponInstance;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGRangedWeaponAttributeChanged, UMGRangedWeaponInstance*, WeaponInstance, int, NewValue);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGRangedWeapon_AttributeChanged, UMGRangedWeaponInstance*, WeaponInstance, int, NewValue);
 
 /**
  * UMGRangedWeaponInstance
@@ -103,11 +103,11 @@ protected:
 public:
 	// Delegate fired when current ammo is changed
 	UPROPERTY(BlueprintAssignable)
-	FMGRangedWeaponAttributeChanged OnCurrentAmmoChanged;
+	FMGRangedWeapon_AttributeChanged OnCurrentAmmoChanged;
 
 	// Delegate fired when total ammo is changed
 	UPROPERTY(BlueprintAssignable)
-	FMGRangedWeaponAttributeChanged OnTotalAmmoChanged;
+	FMGRangedWeapon_AttributeChanged OnTotalAmmoChanged;
 
 protected:
 	// List of tags with damage multipliers associated with them

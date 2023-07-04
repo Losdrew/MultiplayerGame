@@ -10,7 +10,7 @@
 struct FMGEquipmentList;
 class UMGEquipmentManagerComponent;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGEquippedChanged, UMGEquipmentManagerComponent*, EquipmentManagerComponent, UMGEquipmentInstance*, EquipmentInstance);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGEquipment_EquippedChanged, UMGEquipmentManagerComponent*, EquipmentManagerComponent, UMGEquipmentInstance*, EquipmentInstance);
 
 /**
  * FMGAppliedEquipmentEntry
@@ -98,7 +98,7 @@ struct TStructOpsTypeTraits<FMGEquipmentList> : public TStructOpsTypeTraitsBase2
  *
  *	Component that manages equipment applied to a pawn
  */
-UCLASS(BlueprintType, Const)
+UCLASS()
 class UMGEquipmentManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -149,11 +149,11 @@ private:
 public:
 	// Delegate fired when a new item is equipped
 	UPROPERTY(BlueprintAssignable)
-	FMGEquippedChanged OnEquipped;
+	FMGEquipment_EquippedChanged OnEquipped;
 
 	// Delegate fired when equipped item is unequipped
 	UPROPERTY(BlueprintAssignable)
-	FMGEquippedChanged OnUnequipped;
+	FMGEquipment_EquippedChanged OnUnequipped;
 
 private:
 
