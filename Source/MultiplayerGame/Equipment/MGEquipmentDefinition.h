@@ -30,6 +30,9 @@ struct FMGEquipmentActorToSpawn
 
 	UPROPERTY(EditAnywhere, Category = "Equipment")
 	FTransform AttachTransform;
+
+	UPROPERTY(EditAnywhere, Category = "Equipment")
+	bool bFirstPersonView;
 };
 
 

@@ -28,7 +28,10 @@ public:
 	APawn* GetPawn() const;
 
 	UFUNCTION(BlueprintPure, Category = "Equipment")
-	TArray<AActor*> GetSpawnedActors() const { return SpawnedActors; }
+	TArray<AActor*> GetSpawnedActorsThirdPerson() const { return SpawnedActorsThirdPerson; }
+
+	UFUNCTION(BlueprintPure, Category = "Equipment")
+	TArray<AActor*> GetSpawnedActorsFirstPerson() const { return SpawnedActorsFirstPerson; }
 
 	virtual void SpawnEquipmentActors(const TArray<FMGEquipmentActorToSpawn>& ActorsToSpawn);
 	virtual void DestroyEquipmentActors();
@@ -52,5 +55,8 @@ private:
 	TObjectPtr<UObject> Instigator;
 
 	UPROPERTY(Replicated)
-	TArray<TObjectPtr<AActor>> SpawnedActors;
+	TArray<TObjectPtr<AActor>> SpawnedActorsThirdPerson;
+
+	UPROPERTY(Replicated)
+	TArray<TObjectPtr<AActor>> SpawnedActorsFirstPerson;
 };

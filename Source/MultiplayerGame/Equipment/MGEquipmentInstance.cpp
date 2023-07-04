@@ -3,6 +3,7 @@
 
 #include "MGEquipmentInstance.h"
 
+#include "MGFirstPersonCharacter.h"
 #include "MGEquipmentDefinition.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
@@ -13,7 +14,8 @@ void UMGEquipmentInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, Instigator);
-	DOREPLIFETIME(ThisClass, SpawnedActors);
+	DOREPLIFETIME(ThisClass, SpawnedActorsThirdPerson);
+	DOREPLIFETIME(ThisClass, SpawnedActorsFirstPerson);
 }
 
 UWorld* UMGEquipmentInstance::GetWorld() const
@@ -35,27 +37,35 @@ void UMGEquipmentInstance::SpawnEquipmentActors(const TArray<FMGEquipmentActorTo
 {
 	if (APawn* OwningPawn = GetPawn())
 	{
-		USceneComponent* AttachTarget = OwningPawn->GetRootComponent();
-		if (const ACharacter* Character = Cast<ACharacter>(OwningPawn))
+		if (const AMGFirstPersonCharacter* Character = Cast<AMGFirstPersonCharacter>(OwningPawn))
 		{
-			AttachTarget = Character->GetMesh();
-		}
+			for (const FMGEquipmentActorToSpawn& SpawnInfo : ActorsToSpawn)
+			{
+				USceneComponent* AttachTarget = SpawnInfo.bFirstPersonView ? Character->GetFirstPersonArms() : Character->GetMesh();
+				
+				AActor* NewActor = GetWorld()->SpawnActorDeferred<AActor>(SpawnInfo.ActorToSpawn, FTransform::Identity, OwningPawn);
+				NewActor->FinishSpawning(FTransform::Identity, /*bIsDefaultTransform=*/ true);
+				NewActor->SetActorRelativeTransform(SpawnInfo.AttachTransform);
+				NewActor->AttachToComponent(AttachTarget, FAttachmentTransformRules::KeepRelativeTransform, SpawnInfo.AttachSocket);
 
-		for (const FMGEquipmentActorToSpawn& SpawnInfo : ActorsToSpawn)
-		{
-			AActor* NewActor = GetWorld()->SpawnActorDeferred<AActor>(SpawnInfo.ActorToSpawn, FTransform::Identity, OwningPawn);
-			NewActor->FinishSpawning(FTransform::Identity, /*bIsDefaultTransform=*/ true);
-			NewActor->SetActorRelativeTransform(SpawnInfo.AttachTransform);
-			NewActor->AttachToComponent(AttachTarget, FAttachmentTransformRules::KeepRelativeTransform, SpawnInfo.AttachSocket);
-
-			SpawnedActors.Add(NewActor);
+				TArray<TObjectPtr<AActor>>& SpawnedActors = SpawnInfo.bFirstPersonView ? SpawnedActorsFirstPerson : SpawnedActorsThirdPerson;
+				SpawnedActors.Add(NewActor);
+			}
 		}
 	}
 }
 
 void UMGEquipmentInstance::DestroyEquipmentActors()
 {
-	for (AActor* Actor : SpawnedActors)
+	for (AActor* Actor : SpawnedActorsThirdPerson)
+	{
+		if (Actor)
+		{
+			Actor->Destroy();
+		}
+	}
+
+	for (AActor* Actor : SpawnedActorsFirstPerson)
 	{
 		if (Actor)
 		{
@@ -66,6 +76,23 @@ void UMGEquipmentInstance::DestroyEquipmentActors()
 
 void UMGEquipmentInstance::OnEquipped()
 {
+	// First person arms are hidden before equipping an item, so we start showing them
+	if (const AMGFirstPersonCharacter* Character = Cast<AMGFirstPersonCharacter>(GetPawn()))
+	{
+		Character->GetFirstPersonArms()->SetHiddenInGame(false);
+	}
+
+	for (const AActor* Actor : SpawnedActorsFirstPerson)
+	{
+		USkeletalMeshComponent* ActorMesh = Cast<USkeletalMeshComponent>(Actor->GetRootComponent());
+		ActorMesh->SetOnlyOwnerSee(true);
+	}
+
+	for (const AActor* Actor : SpawnedActorsThirdPerson)
+	{
+		USkeletalMeshComponent* ActorMesh = Cast<USkeletalMeshComponent>(Actor->GetRootComponent());
+		ActorMesh->SetOwnerNoSee(true);
+	}
 }
 
 void UMGEquipmentInstance::OnUnequipped()
