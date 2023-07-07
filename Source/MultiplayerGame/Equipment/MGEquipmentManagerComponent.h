@@ -113,10 +113,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void UnequipItem(UMGEquipmentInstance* ItemInstance);
 
-	//~UObject interface
-	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
-	//~End of UObject interface
-
 	//~UActorComponent interface
 	virtual void InitializeComponent() override;
 	virtual void UninitializeComponent() override;

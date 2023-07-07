@@ -4,7 +4,6 @@
 #include "MGEquipmentManagerComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Net/UnrealNetwork.h"
-#include "Engine/ActorChannel.h"
 
 
 //////////////////////////////////////////////////////////////////////
@@ -110,6 +109,7 @@ UMGEquipmentManagerComponent::UMGEquipmentManagerComponent(const FObjectInitiali
 {
 	SetIsReplicatedByDefault(true);
 	bWantsInitializeComponent = true;
+	bReplicateUsingRegisteredSubObjectList = true;
 }
 
 void UMGEquipmentManagerComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -132,55 +132,37 @@ UMGEquipmentInstance* UMGEquipmentManagerComponent::EquipItem(TSubclassOf<UMGEqu
 	{
 		Result->OnEquipped();
 
-		if (IsUsingRegisteredSubObjectList() && IsReadyForReplication())
+		EquippedItem = Result;
+
+		if (IsReadyForReplication())
 		{
 			AddReplicatedSubObject(Result);
+			AddReplicatedSubObject(EquippedItem);
+			OnRep_EquippedItem();
 		}
 	}
-
-	EquippedItem = Result;
-
-	OnEquipped.Broadcast(this, Result);
 
 	return Result;
 }
 
 void UMGEquipmentManagerComponent::UnequipItem(UMGEquipmentInstance* ItemInstance)
 {
-	if (ItemInstance != nullptr)
+	if (ItemInstance)
 	{
-		if (IsUsingRegisteredSubObjectList())
-		{
-			RemoveReplicatedSubObject(ItemInstance);
-		}
-
+		RemoveReplicatedSubObject(ItemInstance);
 		ItemInstance->OnUnequipped();
 		EquipmentList.RemoveEntry(ItemInstance);
-		UnequipCurrentItem();
 	}
 }
 
 void UMGEquipmentManagerComponent::UnequipCurrentItem()
 {
-	EquippedItem = nullptr;
-	OnUnequipped.Broadcast(this, nullptr);
-}
-
-bool UMGEquipmentManagerComponent::ReplicateSubobjects(UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags)
-{
-	bool WroteSomething = Super::ReplicateSubobjects(Channel, Bunch, RepFlags);
-
-	for (FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
+	if (EquippedItem)
 	{
-		UMGEquipmentInstance* Instance = Entry.Instance;
-
-		if (IsValid(Instance))
-		{
-			WroteSomething |= Channel->ReplicateSubobject(Instance, *Bunch, *RepFlags);
-		}
+		RemoveReplicatedSubObject(EquippedItem);
+		EquippedItem = nullptr;
+		OnRep_EquippedItem();
 	}
-
-	return WroteSomething;
 }
 
 void UMGEquipmentManagerComponent::InitializeComponent()
@@ -201,8 +183,9 @@ void UMGEquipmentManagerComponent::UninitializeComponent()
 	for (UMGEquipmentInstance* EquipInstance : AllEquipmentInstances)
 	{
 		UnequipItem(EquipInstance);
-		UnequipCurrentItem();
 	}
+
+	UnequipCurrentItem();
 
 	Super::UninitializeComponent();
 }
@@ -212,16 +195,13 @@ void UMGEquipmentManagerComponent::ReadyForReplication()
 	Super::ReadyForReplication();
 
 	// Register existing UMGEquipmentInstances
-	if (IsUsingRegisteredSubObjectList())
+	for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
 	{
-		for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
-		{
-			UMGEquipmentInstance* Instance = Entry.Instance;
+		UMGEquipmentInstance* Instance = Entry.Instance;
 
-			if (IsValid(Instance))
-			{
-				AddReplicatedSubObject(Instance);
-			}
+		if (IsValid(Instance))
+		{
+			AddReplicatedSubObject(Instance);
 		}
 	}
 }
@@ -260,7 +240,7 @@ TArray<UMGEquipmentInstance*> UMGEquipmentManagerComponent::GetEquipmentInstance
 
 void UMGEquipmentManagerComponent::OnRep_EquippedItem()
 {
-	if (EquippedItem != nullptr)
+	if (EquippedItem)
 	{
 		OnEquipped.Broadcast(this, EquippedItem);
 	}
