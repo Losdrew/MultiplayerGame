@@ -18,6 +18,18 @@ class AMGGameMode : public AGameMode
 
 public:
 
+	virtual void BeginPlay() override;
+
+	virtual bool ReadyToStartMatch_Implementation() override;
+
 	UFUNCTION(BlueprintCallable)
 	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset);
+
+protected:
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
+    int MatchDuration;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
+    int MinPlayers;
 };

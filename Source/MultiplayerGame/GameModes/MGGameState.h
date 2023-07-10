@@ -16,4 +16,8 @@ class AMGGameState : public AGameState
 {
 	GENERATED_BODY()
 
+public:
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Gameplay")
+    int MatchDuration;
 };
