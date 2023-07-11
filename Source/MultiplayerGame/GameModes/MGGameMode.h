@@ -17,8 +17,8 @@ class AMGGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
-
-	virtual void BeginPlay() override;
+	
+	virtual void InitGameState() override;
 
 	virtual bool ReadyToStartMatch_Implementation() override;
 

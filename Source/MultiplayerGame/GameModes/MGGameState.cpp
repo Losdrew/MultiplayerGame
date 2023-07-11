@@ -8,6 +8,13 @@
 void AMGGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME_CONDITION(AMGGameState, MatchDuration, COND_InitialOnly);
+}
 
-	DOREPLIFETIME(AMGGameState, MatchDuration);
+void AMGGameState::OnRep_MatchState()
+{
+	Super::OnRep_MatchState();
+
+	OnMatchStateChanged.Broadcast(MatchState);
 }

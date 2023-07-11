@@ -6,6 +6,8 @@
 #include "GameFramework/GameState.h"
 #include "MGGameState.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameState_OnMatchStateChanged, FName, NewMatchState);
+
 /**
  * AMGGameState
  *
@@ -18,6 +20,13 @@ class AMGGameState : public AGameState
 
 public:
 
+	virtual void OnRep_MatchState() override;
+
+public:
+
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Gameplay")
     int MatchDuration;
+
+	UPROPERTY(BlueprintAssignable)
+    FGameState_OnMatchStateChanged OnMatchStateChanged;
 };

@@ -5,9 +5,9 @@
 
 #include "MGGameState.h"
 
-void AMGGameMode::BeginPlay()
+void AMGGameMode::InitGameState()
 {
-	Super::BeginPlay();
+	Super::InitGameState();
 
 	if (AMGGameState* FullGameState = GetGameState<AMGGameState>())
 	{
