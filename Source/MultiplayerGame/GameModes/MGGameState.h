@@ -6,7 +6,7 @@
 #include "GameFramework/GameState.h"
 #include "MGGameState.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FGameState_OnMatchStateChanged, FName, NewMatchState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_MatchStateChanged, FName, NewMatchState);
 
 /**
  * AMGGameState
@@ -28,5 +28,5 @@ public:
     int MatchDuration;
 
 	UPROPERTY(BlueprintAssignable)
-    FGameState_OnMatchStateChanged OnMatchStateChanged;
+    FMGGameState_MatchStateChanged OnMatchStateChanged;
 };

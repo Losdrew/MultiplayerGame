@@ -12,6 +12,8 @@
 #include "EnhancedInput/Public/InputMappingContext.h"
 #include "MGCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMGCharacter_PlayerStateReplicated);
+
 /**
  * AMGCharacter
  *
@@ -63,6 +65,11 @@ public:
 	void DisableMovementAndCollision();
 	void UninitializeAndDestroy();
 	void UninitializeAbilitySystem();
+
+public:
+
+	UPROPERTY(BlueprintAssignable)
+	FMGCharacter_PlayerStateReplicated OnPlayerStateReplicated;
 
 protected:
 

@@ -234,6 +234,9 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 			AbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
 	}
+
+	OnKilled.Broadcast(DamageInstigator);
+
 	#endif
 }
 
