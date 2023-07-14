@@ -118,7 +118,7 @@ void UMGHealthComponent::StartDeath()
 
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->SetLooseGameplayTagCount(FMGGameplayTags::Get().Status_Death_Dying, 1);
+		AbilitySystemComponent->SetLooseGameplayTagCount(MGGameplayTags::Status_Death_Dying, 1);
 	}
 
 	AActor* Owner = GetOwner();
@@ -140,7 +140,7 @@ void UMGHealthComponent::FinishDeath()
 
 	if (AbilitySystemComponent)
 	{
-		AbilitySystemComponent->SetLooseGameplayTagCount(FMGGameplayTags::Get().Status_Death_Dead, 1);
+		AbilitySystemComponent->SetLooseGameplayTagCount(MGGameplayTags::Status_Death_Dead, 1);
 	}
 
 	AActor* Owner = GetOwner();
@@ -195,10 +195,8 @@ void UMGHealthComponent::ClearGameplayTags()
 {
 	if (AbilitySystemComponent)
 	{
-		const FMGGameplayTags& GameplayTags = FMGGameplayTags::Get();
-
-		AbilitySystemComponent->SetLooseGameplayTagCount(GameplayTags.Status_Death_Dying, 0);
-		AbilitySystemComponent->SetLooseGameplayTagCount(GameplayTags.Status_Death_Dead, 0);
+		AbilitySystemComponent->SetLooseGameplayTagCount(MGGameplayTags::Status_Death_Dying, 0);
+		AbilitySystemComponent->SetLooseGameplayTagCount(MGGameplayTags::Status_Death_Dead, 0);
 	}
 }
 
@@ -221,7 +219,7 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 		// This can be used to trigger a death gameplay ability
 		{
 			FGameplayEventData Payload;
-			Payload.EventTag = FMGGameplayTags::Get().GameplayEvent_Death;
+			Payload.EventTag = MGGameplayTags::GameplayEvent_Death;
 			Payload.Instigator = DamageInstigator;
 			Payload.Target = AbilitySystemComponent->GetAvatarActor();
 			Payload.OptionalObject = DamageEffectSpec.Def;

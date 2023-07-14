@@ -2,83 +2,43 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
-#include "UObject/NoExportTypes.h"
+#include "NativeGameplayTags.h"
 
-class UGameplayTagsManager;
-
-/**
- * FMGGameplayTags
- *
- *	Singleton containing native gameplay tags.
- */
-struct FMGGameplayTags
+namespace MGGameplayTags
 {
-	static const FMGGameplayTags& Get() { return GameplayTags; }
+	MULTIPLAYERGAME_API	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
-	static void InitializeNativeTags();
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_IsDead);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_Cooldown);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_Cost);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_TagsBlocked);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_TagsMissing);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_Networking);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_ActivationGroup);
 
-	static FGameplayTag FindTagByString(FString TagString, bool bMatchPartialString = false);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_Behavior_SurvivesDeath);
 
-	FGameplayTag Ability_ActivateFail_IsDead;
-	FGameplayTag Ability_ActivateFail_Cooldown;
-	FGameplayTag Ability_ActivateFail_Cost;
-	FGameplayTag Ability_ActivateFail_TagsBlocked;
-	FGameplayTag Ability_ActivateFail_TagsMissing;
-	FGameplayTag Ability_ActivateFail_Networking;
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Move);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Look);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Jump);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(InputTag_Crouch);
 
-	FGameplayTag Ability_Behavior_SurvivesDeath;
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayEvent_Death);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayEvent_Reset);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(GameplayEvent_RequestReset);
 
-	FGameplayTag InputTag_Move;
-	FGameplayTag InputTag_Look;
-	FGameplayTag InputTag_Jump;
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Status_Crouching);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Status_Death);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Status_Death_Dying);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Status_Death_Dead);
 
-	// Actor/component has initially spawned and can be extended
-	FGameplayTag InitState_Spawned;
+	// These are mappings from MovementMode enums to GameplayTags associated with those enums (below)
+	MULTIPLAYERGAME_API	extern const TMap<uint8, FGameplayTag> MovementModeTagMap;
+	MULTIPLAYERGAME_API	extern const TMap<uint8, FGameplayTag> CustomMovementModeTagMap;
 
-	// All required data has been loaded/replicated and is ready for initialization
-	FGameplayTag InitState_DataAvailable;
-
-	// The available data has been initialized for this actor/component, but it is not ready for full gameplay
-	FGameplayTag InitState_DataInitialized;
-
-	// The actor/component is fully ready for active gameplay
-	FGameplayTag InitState_GameplayReady;
-
-	FGameplayTag GameplayEvent_Death;
-	FGameplayTag GameplayEvent_Reset;
-	FGameplayTag GameplayEvent_RequestReset;
-
-	FGameplayTag SetByCaller_Damage;
-	FGameplayTag SetByCaller_Heal;
-
-	FGameplayTag Cheat_GodMode;
-	FGameplayTag Cheat_UnlimitedHealth;
-
-	FGameplayTag Status_Crouching;
-	FGameplayTag Status_AutoRunning;
-	FGameplayTag Status_Death;
-	FGameplayTag Status_Death_Dying;
-	FGameplayTag Status_Death_Dead;
-
-	FGameplayTag Movement_Mode_Walking;
-	FGameplayTag Movement_Mode_NavWalking;
-	FGameplayTag Movement_Mode_Falling;
-	FGameplayTag Movement_Mode_Swimming;
-	FGameplayTag Movement_Mode_Flying;
-	FGameplayTag Movement_Mode_Custom;
-
-	TMap<uint8, FGameplayTag> MovementModeTagMap;
-	TMap<uint8, FGameplayTag> CustomMovementModeTagMap;
-
-protected:
-
-	void AddAllTags(UGameplayTagsManager& Manager);
-	void AddTag(FGameplayTag& OutTag, const ANSICHAR* TagName, const ANSICHAR* TagComment);
-	void AddMovementModeTag(FGameplayTag& OutTag, const ANSICHAR* TagName, uint8 MovementMode);
-
-private:
-
-	static FMGGameplayTags GameplayTags;
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Movement_Mode_Walking);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Movement_Mode_NavWalking);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Movement_Mode_Falling);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Movement_Mode_Swimming);
+	MULTIPLAYERGAME_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Movement_Mode_Flying);
 };

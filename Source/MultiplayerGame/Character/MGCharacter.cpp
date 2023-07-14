@@ -39,14 +39,13 @@ void AMGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	check(EnhancedInputComponent);
 
-	const FMGGameplayTags& GameplayTags = FMGGameplayTags::Get();
 	TArray<uint32> BindHandles;
 
 	EnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::InputAbilityInputTagPressed, &ThisClass::InputAbilityInputTagReleased, /*out*/ BindHandles);
 
-	EnhancedInputComponent->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
-	EnhancedInputComponent->BindNativeAction(InputConfig, GameplayTags.InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
-    EnhancedInputComponent->BindNativeAction(InputConfig, GameplayTags.InputTag_Jump, ETriggerEvent::Triggered, this, &ThisClass::InputJump);
+	EnhancedInputComponent->BindNativeAction(InputConfig, MGGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
+	EnhancedInputComponent->BindNativeAction(InputConfig, MGGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
+    EnhancedInputComponent->BindNativeAction(InputConfig, MGGameplayTags::InputTag_Jump, ETriggerEvent::Triggered, this, &ThisClass::InputJump);
 }
 
 UAbilitySystemComponent* AMGCharacter::GetAbilitySystemComponent() const
@@ -210,7 +209,7 @@ void AMGCharacter::UninitializeAbilitySystem()
 	if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
 	{
 		FGameplayTagContainer AbilityTypesToIgnore;
-		AbilityTypesToIgnore.AddTag(FMGGameplayTags::Get().Ability_Behavior_SurvivesDeath);
+		AbilityTypesToIgnore.AddTag(MGGameplayTags::Ability_Behavior_SurvivesDeath);
 
 		AbilitySystemComponent->CancelAbilities(nullptr, &AbilityTypesToIgnore);
 		AbilitySystemComponent->ClearAbilityInput();

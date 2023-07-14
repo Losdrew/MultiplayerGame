@@ -14,7 +14,7 @@ void UMGDeathGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle H
 	UMGAbilitySystemComponent* ASC = CastChecked<UMGAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
 
 	FGameplayTagContainer AbilityTypesToIgnore;
-	AbilityTypesToIgnore.AddTag(FMGGameplayTags::Get().Ability_Behavior_SurvivesDeath);
+	AbilityTypesToIgnore.AddTag(MGGameplayTags::Ability_Behavior_SurvivesDeath);
 
 	// Cancel all abilities and block others from starting
 	ASC->CancelAbilities(nullptr, &AbilityTypesToIgnore, this);

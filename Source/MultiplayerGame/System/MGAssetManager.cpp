@@ -3,8 +3,6 @@
 
 #include "MGAssetManager.h"
 
-#include "MGGameplayTags.h"
-
 void UMGAssetManager::StartInitialLoading()
 {
 	UAssetManager::StartInitialLoading();
@@ -16,7 +14,5 @@ void UMGAssetManager::StartInitialLoading()
 
 void UMGAssetManager::InitializeAbilitySystem()
 {
-	FMGGameplayTags::InitializeNativeTags();
-
 	UAbilitySystemGlobals::Get().InitGlobalData();
 }
