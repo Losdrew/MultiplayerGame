@@ -45,25 +45,25 @@ UMGAbilitySystemComponent* AMGPlayerState::GetMGAbilitySystemComponent() const
 	 return AbilitySystemComponent;
 }
 
-void AMGPlayerState::OnPlayerPawnKilled(AActor* KillerActor)
+void AMGPlayerState::AddPlayerKills()
 {
-	// Execute only on server
-	if (!HasAuthority())
-	{
-		return;
-	}
-
-	if (AMGPlayerState* KillerPlayerState = Cast<AMGPlayerState>(KillerActor))
-	{
-		KillerPlayerState->PlayerKills++;
-		KillerPlayerState->OnRep_KillDeathCount();
-	}
-
-	PlayerDeaths++;
-	OnRep_KillDeathCount();
+	PlayerKills++;
+	OnRep_PlayerKills();
 }
 
-void AMGPlayerState::OnRep_KillDeathCount()
+void AMGPlayerState::AddPlayerDeaths()
 {
-	OnKillDeathCountChanged.Broadcast(PlayerKills, PlayerDeaths);
+	PlayerDeaths++;
+	OnRep_PlayerDeaths();
+}
+
+
+void AMGPlayerState::OnRep_PlayerKills()
+{
+	OnPlayerKillsChanged.Broadcast(PlayerKills);
+}
+
+void AMGPlayerState::OnRep_PlayerDeaths()
+{
+	OnPlayerDeathsChanged.Broadcast(PlayerDeaths);
 }

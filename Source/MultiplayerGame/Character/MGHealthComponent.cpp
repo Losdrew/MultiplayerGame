@@ -235,7 +235,7 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 		}
 	}
 
-	OnKilled.Broadcast(DamageInstigator);
+	OnOwnerKilled.Broadcast(DamageInstigator, AbilitySystemComponent->GetOwnerActor());
 
 	#endif
 }

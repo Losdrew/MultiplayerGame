@@ -13,7 +13,7 @@ void UMGKillCounter::NativeOnInitialized()
     // Here PlayerState is valid only on the server
 	if (AMGPlayerState* PlayerState = Cast<AMGPlayerState>(GetOwningPlayerState()))
     {
-        PlayerState->OnKillDeathCountChanged.AddDynamic(this, &UMGKillCounter::UpdateKillCount);
+        PlayerState->OnPlayerKillsChanged.AddDynamic(this, &UMGKillCounter::UpdateKillCount);
         return;
     }
 
@@ -28,7 +28,7 @@ void UMGKillCounter::OnPlayerStateReplicated()
 {
     if (AMGPlayerState* PlayerState = Cast<AMGPlayerState>(GetOwningPlayerState()))
     {
-        PlayerState->OnKillDeathCountChanged.AddDynamic(this, &UMGKillCounter::UpdateKillCount);
+        PlayerState->OnPlayerKillsChanged.AddDynamic(this, &UMGKillCounter::UpdateKillCount);
     }
     
     // We don't need to react to OnPlayerStateReplicated anymore, so we unbind from it
@@ -38,7 +38,7 @@ void UMGKillCounter::OnPlayerStateReplicated()
     }
 }
 
-void UMGKillCounter::UpdateKillCount(int PlayerKills, int PlayerDeaths)
+void UMGKillCounter::UpdateKillCount(int PlayerKills)
 {
     KillCount->SetText(FText::AsNumber(PlayerKills));
 }

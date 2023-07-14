@@ -12,7 +12,7 @@
 class UMGHealthComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGHealth_DeathEvent, AActor*, OwningActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGHealth_Killed, AActor*, KillerActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGHealth_OwnerKilled, AActor*, KillerActor, AActor*, KilledActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FMGHealth_AttributeChanged, UMGHealthComponent*, HealthComponent, float, OldValue, float, NewValue, AActor*, Instigator);
 
 /**
@@ -85,7 +85,7 @@ public:
 
 	// Delegate fired when the owner is killed (needed for kill/death scoring)
 	UPROPERTY(BlueprintAssignable)
-	FMGHealth_Killed OnKilled;
+	FMGHealth_OwnerKilled OnOwnerKilled;
 
 	// Delegate fired when the death sequence has started
 	UPROPERTY(BlueprintAssignable)

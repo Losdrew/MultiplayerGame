@@ -23,7 +23,7 @@ protected:
     void OnPlayerStateReplicated();
 
 	UFUNCTION()
-    void UpdateKillCount(int PlayerKills, int PlayerDeaths);
+    void UpdateKillCount(int32 PlayerKills);
 
 public:
 

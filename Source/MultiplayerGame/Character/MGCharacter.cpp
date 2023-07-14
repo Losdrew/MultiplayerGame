@@ -66,8 +66,6 @@ void AMGCharacter::InitPlayer()
         AbilitySystemComponent = Cast<UMGAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
 		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
-
-		HealthComponent->OnKilled.AddDynamic(PS, &AMGPlayerState::OnPlayerPawnKilled);
 	}
 
     HealthComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
@@ -182,11 +180,6 @@ void AMGCharacter::UninitializeAndDestroy()
 
 	HealthComponent->OnDeathStarted.RemoveDynamic(this, &ThisClass::OnDeathStarted);
 	HealthComponent->OnDeathFinished.RemoveDynamic(this, &ThisClass::OnDeathFinished);
-
-	if (AMGPlayerState* PS = GetPlayerState<AMGPlayerState>())
-	{
-		HealthComponent->OnKilled.RemoveDynamic(PS, &AMGPlayerState::OnPlayerPawnKilled);
-	}
 
 	if (GetLocalRole() == ROLE_Authority)
 	{

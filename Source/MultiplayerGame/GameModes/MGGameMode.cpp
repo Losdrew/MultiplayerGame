@@ -4,6 +4,8 @@
 #include "MGGameMode.h"
 
 #include "MGGameState.h"
+#include "MGHealthComponent.h"
+#include "MGPlayerState.h"
 
 void AMGGameMode::InitGameState()
 {
@@ -12,6 +14,19 @@ void AMGGameMode::InitGameState()
 	if (AMGGameState* FullGameState = GetGameState<AMGGameState>())
 	{
 		FullGameState->MatchDuration = MatchDuration;
+	}
+}
+
+void AMGGameMode::RestartPlayer(AController* NewPlayer)
+{
+	Super::RestartPlayer(NewPlayer);
+
+	if (const APawn* Pawn = NewPlayer->GetPawn())
+	{
+		if (UMGHealthComponent* HealthComponent = Pawn->GetComponentByClass<UMGHealthComponent>())
+		{
+			HealthComponent->OnOwnerKilled.AddDynamic(this, &ThisClass::OnPlayerKilled);
+		}
 	}
 }
 
@@ -44,4 +59,19 @@ void AMGGameMode::RequestPlayerRestartNextFrame(AController* Controller, bool bF
 	{
 		GetWorldTimerManager().SetTimerForNextTick(PC, &APlayerController::ServerRestartPlayer_Implementation);
 	}
+}
+
+void AMGGameMode::OnPlayerKilled(AActor* KillerPlayer, AActor* KilledPlayer)
+{
+	if (AMGPlayerState* KillerPlayerState = Cast<AMGPlayerState>(KillerPlayer))
+	{
+		KillerPlayerState->AddPlayerKills();
+	}
+
+	if (AMGPlayerState* KilledPlayerState = Cast<AMGPlayerState>(KilledPlayer))
+	{
+		KilledPlayerState->AddPlayerDeaths();
+	}
+
+	K2_OnPlayerKilled(KillerPlayer, KilledPlayer);
 }

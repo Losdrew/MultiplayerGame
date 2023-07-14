@@ -17,19 +17,29 @@ class AMGGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
-	
+
 	virtual void InitGameState() override;
 
-	virtual bool ReadyToStartMatch_Implementation() override;
+	virtual void RestartPlayer(AController* NewPlayer) override;
 
 	UFUNCTION(BlueprintCallable)
 	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset);
 
+	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnPlayerKilled"))
+	void K2_OnPlayerKilled(AActor* KillerPlayer, AActor* KilledPlayer);
+
+protected:
+
+	virtual bool ReadyToStartMatch_Implementation() override;
+
+	UFUNCTION()
+	virtual void OnPlayerKilled(AActor* KillerPlayer, AActor* KilledPlayer);
+
 protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
-    int MatchDuration;
+    int32 MatchDuration;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
-    int MinPlayers;
+    int32 MinPlayers;
 };

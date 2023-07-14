@@ -8,7 +8,7 @@
 #include "MGAbilitySystemComponent.h"
 #include "MGPlayerState.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGPlayerState_KillDeathCountChanged, int, PlayerKills, int, PlayerDeaths);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGPlayerState_StatChanged, int, PlayerKills);
 
 class UMGAbilitySet;
 
@@ -36,25 +36,6 @@ public:
 
 	UMGAbilitySystemComponent* GetMGAbilitySystemComponent() const;
 
-	UFUNCTION()
-	virtual void OnPlayerPawnKilled(AActor* KillerActor);
-	
-    UFUNCTION(BlueprintCallable)
-    int32 GetPlayerKills() const { return PlayerKills; }
-
-    UFUNCTION(BlueprintCallable)
-    int32 GetPlayerDeaths() const { return PlayerDeaths; }
-
-public:
-
-    UPROPERTY(BlueprintAssignable)
-    FMGPlayerState_KillDeathCountChanged OnKillDeathCountChanged;
-
-protected:
-
-	UFUNCTION()
-    virtual void OnRep_KillDeathCount();
-
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
@@ -63,9 +44,41 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", Meta = (AllowPrivateAccess = "true"))
 	UMGAbilitySystemComponent* AbilitySystemComponent;
 
-	UPROPERTY(ReplicatedUsing=OnRep_KillDeathCount, BlueprintReadOnly)
-	int PlayerKills;
+public:
 
-	UPROPERTY(ReplicatedUsing=OnRep_KillDeathCount, BlueprintReadOnly)
-	int PlayerDeaths;
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	void AddPlayerKills(); 
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	void AddPlayerDeaths();
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetPlayerKills() { return PlayerKills; }
+
+	UFUNCTION(BlueprintCallable)
+	int32 GetPlayerDeaths() { return PlayerDeaths; }
+
+private:
+
+	UPROPERTY(ReplicatedUsing=OnRep_PlayerKills)
+	int32 PlayerKills;
+
+	UPROPERTY(ReplicatedUsing=OnRep_PlayerDeaths)
+	int32 PlayerDeaths;
+
+protected:
+
+	UFUNCTION()
+	void OnRep_PlayerKills();
+
+	UFUNCTION()
+	void OnRep_PlayerDeaths();
+
+public:
+
+	UPROPERTY()
+	FMGPlayerState_StatChanged OnPlayerKillsChanged;
+
+	UPROPERTY()
+	FMGPlayerState_StatChanged OnPlayerDeathsChanged;
 };
