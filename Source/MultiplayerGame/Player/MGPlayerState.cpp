@@ -10,7 +10,7 @@ AMGPlayerState::AMGPlayerState()
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UMGAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
 	AbilitySet = CreateDefaultSubobject<UMGAbilitySet>(TEXT("AbilitySet"));
 
