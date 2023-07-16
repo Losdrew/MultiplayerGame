@@ -45,6 +45,15 @@ UMGAbilitySystemComponent* AMGPlayerState::GetMGAbilitySystemComponent() const
 	 return AbilitySystemComponent;
 }
 
+void AMGPlayerState::ResetPlayerStats()
+{
+	PlayerKills = 0;
+	OnRep_PlayerKills();
+
+	PlayerDeaths = 0;
+	OnRep_PlayerDeaths();
+}
+
 void AMGPlayerState::AddPlayerKills()
 {
 	PlayerKills++;

@@ -47,16 +47,19 @@ protected:
 public:
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	virtual void ResetPlayerStats(); 
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void AddPlayerKills(); 
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void AddPlayerDeaths();
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetPlayerKills() { return PlayerKills; }
+	int32 GetPlayerKills() const { return PlayerKills; }
 
 	UFUNCTION(BlueprintCallable)
-	int32 GetPlayerDeaths() { return PlayerDeaths; }
+	int32 GetPlayerDeaths() const { return PlayerDeaths; }
 
 private:
 

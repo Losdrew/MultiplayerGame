@@ -20,12 +20,21 @@ class AMGGameState : public AGameState
 
 public:
 
+	//~AGameState interface
 	virtual void OnRep_MatchState() override;
+	virtual void DefaultTimer() override;
+	//~End of AGameMode interface
+
+	virtual void ResetElapsedTime();
 
 public:
-
+	// Match duration in the current match state
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Gameplay")
-    int MatchDuration;
+    int CurrentMatchDuration;
+
+	// Remaining time of the current match state
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Gameplay")
+    int CurrentRemainingTime;
 
 	UPROPERTY(BlueprintAssignable)
     FMGGameState_MatchStateChanged OnMatchStateChanged;

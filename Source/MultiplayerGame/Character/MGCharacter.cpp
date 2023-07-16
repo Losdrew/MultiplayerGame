@@ -58,6 +58,21 @@ UAbilitySystemComponent* AMGCharacter::GetMGAbilitySystemComponent() const
 	return Cast<UMGAbilitySystemComponent>(GetAbilitySystemComponent());
 }
 
+void AMGCharacter::Reset()
+{
+	DisableMovementAndCollision();
+
+	K2_OnReset();
+
+	UninitializeAndDestroy();
+}
+
+void AMGCharacter::PossessedBy(AController * NewController)
+{
+	Super::PossessedBy(NewController);
+	InitPlayer();
+}
+
 void AMGCharacter::InitPlayer()
 {
 	if (AMGPlayerState* PS = GetPlayerState<AMGPlayerState>())
@@ -68,12 +83,6 @@ void AMGCharacter::InitPlayer()
 	}
 
     HealthComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
-}
-
-void AMGCharacter::PossessedBy(AController * NewController)
-{
-	Super::PossessedBy(NewController);
-	InitPlayer();
 }
 
 void AMGCharacter::OnRep_PlayerState()

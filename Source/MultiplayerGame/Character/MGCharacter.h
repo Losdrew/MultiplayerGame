@@ -37,9 +37,15 @@ public:
 
 	UAbilitySystemComponent* GetMGAbilitySystemComponent() const;
 
-	void InitPlayer();
+	//~AActor interface
+	virtual void Reset() override;
+	//~End of AActor interface
 
+	//~APawn interface
 	virtual void PossessedBy(AController* NewController) override;
+	//~End of APawn interface
+
+	void InitPlayer();
 
 	virtual void OnRep_PlayerState() override;
 
@@ -61,7 +67,9 @@ public:
 	// Called when the death sequence for the character has completed
 	UFUNCTION(BlueprintImplementableEvent, Meta = (DisplayName = "OnDeathFinished"))
 	void K2_OnDeathFinished();
-	
+
+protected:
+
 	void DisableMovementAndCollision();
 	void UninitializeAndDestroy();
 	void UninitializeAbilitySystem();
