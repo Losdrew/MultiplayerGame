@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "MGHUDDataAsset.h"
 #include "MGGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_MatchStateChanged, FName, NewMatchState);
@@ -28,6 +29,11 @@ public:
 	virtual void ResetElapsedTime();
 
 public:
+
+	UPROPERTY(BlueprintAssignable)
+    FMGGameState_MatchStateChanged OnMatchStateChanged;
+
+public:
 	// Match duration in the current match state
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Gameplay")
     int CurrentMatchDuration;
@@ -36,6 +42,8 @@ public:
 	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Gameplay")
     int CurrentRemainingTime;
 
-	UPROPERTY(BlueprintAssignable)
-    FMGGameState_MatchStateChanged OnMatchStateChanged;
+	// Data asset containing widgets for this gamemode's HUD
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+    TObjectPtr<UMGHUDDataAsset> HUDDataAsset;
+
 };
