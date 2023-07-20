@@ -19,7 +19,7 @@ class UMGPhysicalMaterialWithTags : public UPhysicalMaterial
 
 public:
 	// Tag container that can be used to specify details about a physical material
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=PhysicalProperties)
 	FGameplayTagContainer Tags;
 
 };
