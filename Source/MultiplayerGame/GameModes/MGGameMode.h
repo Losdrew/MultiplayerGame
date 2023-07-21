@@ -8,7 +8,8 @@
 
 namespace MatchState
 {
-	MULTIPLAYERGAME_API extern const FName Warmup;	// Restricted gameplay (short time, no win condition etc.)
+	MULTIPLAYERGAME_API extern const FName Warmup;			// Restricted gameplay (short time, no win condition etc.)
+	MULTIPLAYERGAME_API extern const FName MatchStarting;	// Match is about to start
 }
 
 /**
@@ -54,12 +55,13 @@ public:
 	void K2_OnKillScored(AActor* ScoringPlayer);
 
 protected:
-
+	
 	//~AGameMode interface
 	virtual void HandleMatchHasStarted() override;
 	//~End of AGameModeBase interface
 
 	virtual void HandleWarmupStarted();
+	virtual void HandleMatchStarting();
 
 	UFUNCTION()
 	virtual void OnPlayerKilled(AActor* KillerPlayer, AActor* KilledPlayer);
@@ -71,6 +73,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
     int32 WarmupDuration;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
+    int32 MatchStartingDuration;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
     int32 MinPlayers;

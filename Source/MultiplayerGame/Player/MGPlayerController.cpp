@@ -23,9 +23,12 @@ UMGAbilitySystemComponent* AMGPlayerController::GetMGAbilitySystemComponent() co
 
 void AMGPlayerController::PostProcessInput(const float DeltaTime, const bool bGamePaused)
 {
-	if (UMGAbilitySystemComponent* MGASC = GetMGAbilitySystemComponent())
+	if (!IsLookInputIgnored())
 	{
-		MGASC->ProcessAbilityInput(DeltaTime, bGamePaused);
+		if (UMGAbilitySystemComponent* MGASC = GetMGAbilitySystemComponent())
+		{
+			MGASC->ProcessAbilityInput(DeltaTime, bGamePaused);
+		}
 	}
 
 	Super::PostProcessInput(DeltaTime, bGamePaused);

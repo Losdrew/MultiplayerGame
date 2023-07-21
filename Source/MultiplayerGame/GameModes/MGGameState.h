@@ -28,6 +28,8 @@ public:
 
 	virtual void ResetElapsedTime();
 
+	void SetMatchDuration(int32 NewDuration) { CurrentMatchDuration = NewDuration; }
+
 public:
 
 	UPROPERTY(BlueprintAssignable)

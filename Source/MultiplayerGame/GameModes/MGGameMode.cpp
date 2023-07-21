@@ -10,6 +10,7 @@
 namespace MatchState
 {
 	const FName Warmup = FName(TEXT("Warmup"));
+	const FName MatchStarting = FName(TEXT("MatchStarting"));
 }
 
 void AMGGameMode::RestartPlayer(AController* NewPlayer)
@@ -53,7 +54,7 @@ bool AMGGameMode::HasMatchStarted() const
 {
 	bool bHasMatchStarted = Super::HasMatchStarted();
 
-	if (GetMatchState() == MatchState::Warmup)
+	if (GetMatchState() == MatchState::Warmup || GetMatchState() == MatchState::MatchStarting)
 	{
 		bHasMatchStarted = false;
 	}
@@ -68,6 +69,10 @@ void AMGGameMode::OnMatchStateSet()
 	if (MatchState == MatchState::Warmup)
 	{
 		HandleWarmupStarted();
+	}
+	if (MatchState == MatchState::MatchStarting)
+	{
+		HandleMatchStarting();
 	}
 }
 
@@ -96,6 +101,10 @@ void AMGGameMode::SwitchToNextMatchState()
 	}
 	else if (MatchState == MatchState::Warmup)
 	{
+		SetMatchState(MatchState::MatchStarting);
+	}
+	else if (MatchState == MatchState::MatchStarting)
+	{
 		SetMatchState(MatchState::InProgress);
 	}
 	else if (MatchState == MatchState::InProgress)
@@ -121,7 +130,7 @@ void AMGGameMode::HandleMatchHasStarted()
 {
 	Super::HandleMatchHasStarted();
 
-	// Restart all players
+	// Restart all players and reset their stats
 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 	{
 		APlayerController* PlayerController = Iterator->Get();
@@ -140,22 +149,16 @@ void AMGGameMode::HandleMatchHasStarted()
 		RestartPlayer(PlayerController);
 	}
 
-	if (AMGGameState* FullGameState = GetGameState<AMGGameState>())
-	{
-		FullGameState->CurrentMatchDuration = MatchDuration;
-	}
+	GetGameState<AMGGameState>()->SetMatchDuration(MatchDuration);
 }
 
 void AMGGameMode::HandleWarmupStarted()
 {
-	if (AMGGameState* FullGameState = GetGameState<AMGGameState>())
-	{
-		FullGameState->CurrentMatchDuration = WarmupDuration;
-	}
-
+	// Restart all players
 	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
 	{
 		APlayerController* PlayerController = Iterator->Get();
+
 		if (PlayerController && (PlayerController->GetPawn() == nullptr) && PlayerCanRestart(PlayerController))
 		{
 			RestartPlayer(PlayerController);
@@ -167,6 +170,22 @@ void AMGGameMode::HandleWarmupStarted()
 
 	// First fire BeginPlay, if we haven't already in waiting to start match
 	GetWorldSettings()->NotifyBeginPlay();
+
+	GetGameState<AMGGameState>()->SetMatchDuration(WarmupDuration);
+}
+
+void AMGGameMode::HandleMatchStarting()
+{
+	// Disable input on all players
+	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	{
+		APlayerController* PlayerController = Iterator->Get();
+
+		PlayerController->ClientIgnoreLookInput(true);
+		PlayerController->ClientIgnoreMoveInput(true);
+	}
+
+	GetGameState<AMGGameState>()->SetMatchDuration(MatchStartingDuration);
 }
 
 void AMGGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)

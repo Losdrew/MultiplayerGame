@@ -3,7 +3,6 @@
 
 #include "GameModes/MGGameState.h"
 
-#include "GameFramework/GameMode.h"
 #include "Net/UnrealNetwork.h"
 #include "MGGameMode.h"
 
@@ -32,8 +31,8 @@ void AMGGameState::DefaultTimer()
 		}
 		ResetElapsedTime();
 	}
-
-	if (IsMatchInProgress() || MatchState == MatchState::Warmup)
+	
+	if (IsMatchInProgress() || MatchState == MatchState::MatchStarting || MatchState == MatchState::Warmup)
 	{
 		++ElapsedTime;
 		CurrentRemainingTime = CurrentMatchDuration - ElapsedTime;
