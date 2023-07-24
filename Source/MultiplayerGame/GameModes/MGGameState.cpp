@@ -50,3 +50,9 @@ void AMGGameState::ResetElapsedTime()
 	ElapsedTime = 0;
 	OnRep_ElapsedTime();
 }
+
+void AMGGameState::MulticastOnPlayerKilled_Implementation(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
+{
+	OnPlayerKilled.Broadcast(KillerActor, KilledActor, DamageContext);
+}
+

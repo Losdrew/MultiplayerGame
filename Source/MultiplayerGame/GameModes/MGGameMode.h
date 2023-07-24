@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "GameplayEffectTypes.h"
 #include "MGGameMode.generated.h"
 
 namespace MatchState
@@ -64,7 +65,7 @@ protected:
 	virtual void HandleMatchStarting();
 
 	UFUNCTION()
-	virtual void OnPlayerKilled(AActor* KillerPlayer, AActor* KilledPlayer);
+	virtual void OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
 
 protected:
 

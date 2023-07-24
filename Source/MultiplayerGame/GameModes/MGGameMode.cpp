@@ -221,17 +221,19 @@ bool AMGGameMode::IsWarmup() const
 	return false;
 }
 
-void AMGGameMode::OnPlayerKilled(AActor* KillerPlayer, AActor* KilledPlayer)
+void AMGGameMode::OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
 {
-	if (AMGPlayerState* KillerPlayerState = Cast<AMGPlayerState>(KillerPlayer))
+	if (AMGPlayerState* KillerPlayerState = Cast<AMGPlayerState>(KillerActor))
 	{
 		KillerPlayerState->AddPlayerKills();
 	}
 
-	if (AMGPlayerState* KilledPlayerState = Cast<AMGPlayerState>(KilledPlayer))
+	if (AMGPlayerState* KilledPlayerState = Cast<AMGPlayerState>(KilledActor))
 	{
 		KilledPlayerState->AddPlayerDeaths();
 	}
 
-	K2_OnKillScored(KillerPlayer);
+	GetGameState<AMGGameState>()->MulticastOnPlayerKilled(KillerActor, KilledActor, DamageContext);
+
+	K2_OnKillScored(KillerActor);
 }

@@ -12,7 +12,7 @@
 class UMGHealthComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGHealth_DeathEvent, AActor*, OwningActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGHealth_OwnerKilled, AActor*, KillerActor, AActor*, KilledActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMGHealth_OwnerKilled, AActor*, KillerActor, AActor*, KilledActor, const FGameplayEffectContextHandle&, DamageContext);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FMGHealth_AttributeChanged, UMGHealthComponent*, HealthComponent, float, OldValue, float, NewValue, AActor*, Instigator);
 
 /**

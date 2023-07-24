@@ -5,9 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "MGHUDDataAsset.h"
+#include "GameplayEffectTypes.h"
 #include "MGGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_MatchStateChanged, FName, NewMatchState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMGGameState_PlayerKilled, AActor*, KillerActor, AActor*, KilledActor, const FGameplayEffectContextHandle&, DamageContext);
 
 /**
  * AMGGameState
@@ -30,10 +32,16 @@ public:
 
 	void SetMatchDuration(int32 NewDuration) { CurrentMatchDuration = NewDuration; }
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastOnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
+
 public:
 
 	UPROPERTY(BlueprintAssignable)
     FMGGameState_MatchStateChanged OnMatchStateChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FMGGameState_PlayerKilled OnPlayerKilled;
 
 public:
 	// Match duration in the current match state

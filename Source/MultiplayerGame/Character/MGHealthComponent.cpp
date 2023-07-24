@@ -232,8 +232,12 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 			AbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
 		}
 	}
+	
+	AActor* KillerActor = DamageInstigator;
+	AActor* KilledActor = AbilitySystemComponent->GetOwnerActor();
+	const FGameplayEffectContextHandle& DamageContext = DamageEffectSpec.GetContext();
 
-	OnOwnerKilled.Broadcast(DamageInstigator, AbilitySystemComponent->GetOwnerActor());
+	OnOwnerKilled.Broadcast(KillerActor, KilledActor, DamageContext);
 
 	#endif
 }
