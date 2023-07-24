@@ -26,6 +26,7 @@ class AMGGameMode : public AGameMode
 public:
 
 	//~AGameModeBase interface
+	virtual void OnPostLogin(AController* NewPlayer) override;
 	virtual void RestartPlayer(AController* NewPlayer) override;
 	//~End of AGameModeBase interface
 

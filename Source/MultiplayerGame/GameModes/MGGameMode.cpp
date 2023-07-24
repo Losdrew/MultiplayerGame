@@ -13,6 +13,18 @@ namespace MatchState
 	const FName MatchStarting = FName(TEXT("MatchStarting"));
 }
 
+void AMGGameMode::OnPostLogin(AController* NewPlayer)
+{
+	Super::OnPostLogin(NewPlayer);
+
+	if (const APlayerController* PlayerController = Cast<APlayerController>(NewPlayer))
+	{
+		FString PlayerName = PlayerController->IsLocalController() ? TEXT("Server") : TEXT("Client");
+
+		PlayerController->PlayerState->SetPlayerName(PlayerName);
+	}
+}
+
 void AMGGameMode::RestartPlayer(AController* NewPlayer)
 {
 	Super::RestartPlayer(NewPlayer);
