@@ -109,6 +109,11 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FMGRangedWeapon_AttributeChanged OnTotalAmmoChanged;
 
+public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Appearance")
+	UTexture2D* KillFeedIcon;
+
 protected:
 	// List of tags with damage multipliers associated with them
 	// These tags are compared to the physical material of the thing that is hit
