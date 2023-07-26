@@ -27,10 +27,10 @@ protected:
 public:
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-	virtual void AddWidgetToSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag);
+	virtual UUserWidget* CreateWidgetInSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag);
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-	virtual void RemoveWidgetFromSlot(FGameplayTag SlotTag);
+	virtual void ClearSlot(FGameplayTag SlotTag);
 
 public:
 

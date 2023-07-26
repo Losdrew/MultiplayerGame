@@ -15,24 +15,27 @@ void AMGHUD::BeginPlay()
 
 		for (const FMGWidgetInSlot WidgetInSlot : GameState->HUDDataAsset->Widgets)
 		{
-			AddWidgetToSlot(WidgetInSlot.Widget, WidgetInSlot.SlotTag);
+			CreateWidgetInSlot(WidgetInSlot.Widget, WidgetInSlot.SlotTag);
 		}
 	}
 }
 
-void AMGHUD::AddWidgetToSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag)
+UUserWidget* AMGHUD::CreateWidgetInSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag)
 {
 	if (LayoutUI)
 	{
 		UUserWidget* Widget = CreateWidget(PlayerOwner, WidgetClass);
-		LayoutUI->AddWidgetToSlot(Widget, SlotTag);
+		LayoutUI->SetWidgetToSlot(Widget, SlotTag);
+		return Widget;
 	}
+
+	return nullptr;
 }
 
-void AMGHUD::RemoveWidgetFromSlot(FGameplayTag SlotTag)
+void AMGHUD::ClearSlot(FGameplayTag SlotTag)
 {
 	if (LayoutUI)
 	{
-		LayoutUI->RemoveWidgetFromSlot(SlotTag);
+		LayoutUI->SetWidgetToSlot(nullptr, SlotTag);
 	}
 }

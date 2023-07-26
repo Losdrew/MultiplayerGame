@@ -3,19 +3,11 @@
 #include "UI/MGLayoutUI.h"
 #include "UMG/Public/Blueprint/WidgetTree.h"
 
-void UMGLayoutUI::AddWidgetToSlot(UUserWidget* Widget, FGameplayTag SlotTag)
+void UMGLayoutUI::SetWidgetToSlot(UUserWidget* Widget, FGameplayTag SlotTag)
 {
 	if (const UNamedSlot* NamedSlot = Cast<UNamedSlot>(Slots.FindRef(SlotTag)))
 	{
 		SetContentForSlot(NamedSlot->GetFName(), Widget);
-	}
-}
-
-void UMGLayoutUI::RemoveWidgetFromSlot(FGameplayTag SlotTag)
-{
-	if (const UNamedSlot* NamedSlot = Cast<UNamedSlot>(Slots.FindRef(SlotTag)))
-	{
-		SetContentForSlot(NamedSlot->GetFName(), nullptr);
 	}
 }
 

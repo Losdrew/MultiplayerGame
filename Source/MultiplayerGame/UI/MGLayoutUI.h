@@ -20,8 +20,7 @@ class UMGLayoutUI : public UUserWidget
 
 public:
 
-	virtual void AddWidgetToSlot(UUserWidget* Widget, FGameplayTag SlotTag);
-	virtual void RemoveWidgetFromSlot(FGameplayTag SlotTag);
+	virtual void SetWidgetToSlot(UUserWidget* Widget, FGameplayTag SlotTag);
 
 protected:
 
