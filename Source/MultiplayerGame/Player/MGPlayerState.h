@@ -6,9 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"
 #include "MGAbilitySystemComponent.h"
+#include "MGStatsComponent.h"
 #include "MGPlayerState.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGPlayerState_StatChanged, int, PlayerKills);
 
 class UMGAbilitySet;
 
@@ -36,50 +35,13 @@ public:
 
 	UMGAbilitySystemComponent* GetMGAbilitySystemComponent() const;
 
+	UMGStatsComponent* GetStatsComponent() const;
 
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", Meta = (AllowPrivateAccess = "true"))
 	UMGAbilitySystemComponent* AbilitySystemComponent;
 
-public:
-
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	virtual void ResetPlayerStats(); 
-
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	void AddPlayerKills(); 
-
-	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	void AddPlayerDeaths();
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetPlayerKills() const { return PlayerKills; }
-
-	UFUNCTION(BlueprintCallable)
-	int32 GetPlayerDeaths() const { return PlayerDeaths; }
-
-private:
-
-	UPROPERTY(ReplicatedUsing=OnRep_PlayerKills)
-	int32 PlayerKills;
-
-	UPROPERTY(ReplicatedUsing=OnRep_PlayerDeaths)
-	int32 PlayerDeaths;
-
-protected:
-
-	UFUNCTION()
-	void OnRep_PlayerKills();
-
-	UFUNCTION()
-	void OnRep_PlayerDeaths();
-
-public:
-
-	UPROPERTY()
-	FMGPlayerState_StatChanged OnPlayerKillsChanged;
-
-	UPROPERTY()
-	FMGPlayerState_StatChanged OnPlayerDeathsChanged;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stats", Meta = (AllowPrivateAccess = "true"))
+	UMGStatsComponent* StatsComponent;
 };

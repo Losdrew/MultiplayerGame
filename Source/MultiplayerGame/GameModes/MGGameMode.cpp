@@ -147,9 +147,9 @@ void AMGGameMode::HandleMatchHasStarted()
 	{
 		APlayerController* PlayerController = Iterator->Get();
 
-		if (AMGPlayerState* PlayerState = Cast<AMGPlayerState>(PlayerController->PlayerState))
+		if (const AMGPlayerState* PlayerState = Cast<AMGPlayerState>(PlayerController->PlayerState))
 		{
-			PlayerState->ResetPlayerStats();	
+			PlayerState->GetStatsComponent()->ResetPlayerStats();	
 		}
 
 		// Destroys existing pawns so they can be respawned at player start locations
@@ -235,14 +235,14 @@ bool AMGGameMode::IsWarmup() const
 
 void AMGGameMode::OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
 {
-	if (AMGPlayerState* KillerPlayerState = Cast<AMGPlayerState>(KillerActor))
+	if (const AMGPlayerState* KillerPlayerState = Cast<AMGPlayerState>(KillerActor))
 	{
-		KillerPlayerState->AddPlayerKills();
+		KillerPlayerState->GetStatsComponent()->AddPlayerKills();
 	}
 
-	if (AMGPlayerState* KilledPlayerState = Cast<AMGPlayerState>(KilledActor))
+	if (const AMGPlayerState* KilledPlayerState = Cast<AMGPlayerState>(KilledActor))
 	{
-		KilledPlayerState->AddPlayerDeaths();
+		KilledPlayerState->GetStatsComponent()->AddPlayerDeaths();
 	}
 
 	GetGameState<AMGGameState>()->MulticastOnPlayerKilled(KillerActor, KilledActor, DamageContext);
