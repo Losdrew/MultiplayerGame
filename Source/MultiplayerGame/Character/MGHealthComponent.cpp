@@ -7,6 +7,7 @@
 #include "Delegates/Delegate.h"
 #include "GameFramework/Actor.h"
 #include "GameplayEffect.h"
+#include "MGAssistSubsystem.h"
 
 #include "Net/UnrealNetwork.h"
 
@@ -238,6 +239,10 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 	const FGameplayEffectContextHandle& DamageContext = DamageEffectSpec.GetContext();
 
 	OnOwnerKilled.Broadcast(KillerActor, KilledActor, DamageContext);
+
+	// Send death info to assist subsystem
+	UMGAssistSubsystem* AssistSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UMGAssistSubsystem>();
+	AssistSubsystem->GrantAssistsForPlayerKill(KillerActor, KilledActor);
 
 	#endif
 }
