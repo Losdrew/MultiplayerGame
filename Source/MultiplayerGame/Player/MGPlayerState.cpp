@@ -12,8 +12,6 @@ AMGPlayerState::AMGPlayerState()
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 
-	AbilitySet = CreateDefaultSubobject<UMGAbilitySet>(TEXT("AbilitySet"));
-
 	// AbilitySystemComponent needs to be updated at a high frequency
 	NetUpdateFrequency = 100.0f;
 }
@@ -32,7 +30,13 @@ void AMGPlayerState::PostInitializeComponents()
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, GetPawn());
 
-	AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
+	if (AMGGameState* GameState = Cast<AMGGameState>(GetWorld()->GetGameState()))
+	{
+		for (const UMGAbilitySet* AbilitySet : GameState->AbilitySets)
+		{
+			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
+		}
+	}
 }
 
 UAbilitySystemComponent* AMGPlayerState::GetAbilitySystemComponent() const

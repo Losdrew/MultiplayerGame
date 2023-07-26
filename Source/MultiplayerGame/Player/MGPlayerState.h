@@ -36,10 +36,8 @@ public:
 
 	UMGAbilitySystemComponent* GetMGAbilitySystemComponent() const;
 
-protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Abilities")
-	UMGAbilitySet* AbilitySet;
+protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", Meta = (AllowPrivateAccess = "true"))
 	UMGAbilitySystemComponent* AbilitySystemComponent;

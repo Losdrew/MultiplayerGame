@@ -6,6 +6,7 @@
 #include "GameFramework/GameState.h"
 #include "MGHUDDataAsset.h"
 #include "GameplayEffectTypes.h"
+#include "MGAbilitySet.h"
 #include "MGGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_MatchStateChanged, FName, NewMatchState);
@@ -56,4 +57,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
     TObjectPtr<UMGHUDDataAsset> HUDDataAsset;
 
+	// Data asset containing ability sets granted by this gamemode
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
+    TArray<TObjectPtr<UMGAbilitySet>> AbilitySets;
 };
