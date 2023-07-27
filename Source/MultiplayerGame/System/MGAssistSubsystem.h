@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "GameplayEffectTypes.h"
 #include "MGAssistSubsystem.generated.h"
 
 /**
@@ -32,12 +33,20 @@ class UMGAssistSubsystem : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
+	// Records the damage history on target
+	UFUNCTION()
+	void OnPlayerReceiveDamage(AActor* Instigator, AActor* Target, const FGameplayEffectSpec& EffectSpec, float Magnitude);
+
+	// Finds all players who dealt damage to the KilledActor but are not KillerActor
+	UFUNCTION()
+	TArray<APlayerState*> FindKillAssistPlayers(AActor* KillerActor, AActor* KilledActor);
+
+	// Finds the player who dealt the most assist damage to the KilledActor
+	UFUNCTION()
+	APlayerState* FindMaxDamageAssistPlayer(AActor* KillerActor, AActor* KilledActor);
 
 	UFUNCTION()
-	void RecordPlayerDamage(AActor* Instigator, AActor* Target, float Magnitude);
-
-	UFUNCTION()
-	void GrantAssistsForPlayerKill(AActor* KillerActor, AActor* KilledActor);
+	void ClearDamageHistoryForPlayer(AActor* Player);
 
 private:
 	// Map of player to damage dealt to them

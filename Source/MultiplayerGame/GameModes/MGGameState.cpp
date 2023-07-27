@@ -3,6 +3,7 @@
 
 #include "GameModes/MGGameState.h"
 
+#include "MGAssistSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "MGGameMode.h"
 
@@ -51,8 +52,8 @@ void AMGGameState::ResetElapsedTime()
 	OnRep_ElapsedTime();
 }
 
-void AMGGameState::MulticastOnPlayerKilled_Implementation(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
+void AMGGameState::MulticastOnPlayerKilled_Implementation(AActor* KillerActor, AActor* AssistActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
 {
-	OnPlayerKilled.Broadcast(KillerActor, KilledActor, DamageContext);
+	OnPlayerKilled.Broadcast(KillerActor, AssistActor, KilledActor, DamageContext);
 }
 

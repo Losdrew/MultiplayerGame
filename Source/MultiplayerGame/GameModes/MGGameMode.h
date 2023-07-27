@@ -68,6 +68,8 @@ protected:
 	UFUNCTION()
 	virtual void OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
 
+	int32 GetNextClientId();
+
 protected:
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
@@ -81,4 +83,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Gameplay")
     int32 MinPlayers;
+
+private:
+
+	int32 ClientId = 0;
 };

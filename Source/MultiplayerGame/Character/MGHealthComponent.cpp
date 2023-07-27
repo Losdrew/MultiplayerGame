@@ -50,6 +50,10 @@ void UMGHealthComponent::InitializeWithAbilitySystem(UMGAbilitySystemComponent* 
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(HealthSet->GetMaxHealthAttribute()).AddUObject(this, &ThisClass::HandleMaxHealthChanged);
 	HealthSet->OnOutOfHealth.AddUObject(this, &ThisClass::HandleOutOfHealth);
 
+	// Register assist subsystem
+	UMGAssistSubsystem* AssistSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UMGAssistSubsystem>();
+	HealthSet->OnReceiveDamage.AddUObject(AssistSubsystem, &UMGAssistSubsystem::OnPlayerReceiveDamage);
+
 	// Reset attributes to default values
 	AbilitySystemComponent->SetNumericAttributeBase(UMGHealthSet::GetHealthAttribute(), HealthSet->GetMaxHealth());
 
@@ -239,11 +243,6 @@ void UMGHealthComponent::HandleOutOfHealth(AActor* DamageInstigator, AActor* Dam
 	const FGameplayEffectContextHandle& DamageContext = DamageEffectSpec.GetContext();
 
 	OnOwnerKilled.Broadcast(KillerActor, KilledActor, DamageContext);
-
-	// Send death info to assist subsystem
-	UMGAssistSubsystem* AssistSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UMGAssistSubsystem>();
-	AssistSubsystem->GrantAssistsForPlayerKill(KillerActor, KilledActor);
-
 	#endif
 }
 

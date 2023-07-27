@@ -7,7 +7,6 @@
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"
-#include "MGAssistSubsystem.h"
 
 UMGHealthSet::UMGHealthSet()
 {
@@ -45,15 +44,12 @@ void UMGHealthSet::PostGameplayEffectExecute(const FGameplayEffectModCallbackDat
 		SetHealth(FMath::Clamp(GetHealth() - GetDamage(), MinimumHealth, GetMaxHealth()));
 		SetDamage(0.0f);
 
-		// Send damage info to assist subsystem
 		if (Data.EvaluatedData.Magnitude > 0.0f)
 		{
-			UMGAssistSubsystem* AssistSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UMGAssistSubsystem>();
-
 			AActor* Instigator = Data.EffectSpec.GetEffectContext().GetOriginalInstigator();
 			AActor* Target = GetOwningActor();
 
-			AssistSubsystem->RecordPlayerDamage(Instigator, Target, Data.EvaluatedData.Magnitude);
+			OnReceiveDamage.Broadcast(Instigator, Target, Data.EffectSpec, Data.EvaluatedData.Magnitude);
 		}
 	}
 	else if (Data.EvaluatedData.Attribute == GetHealingAttribute())

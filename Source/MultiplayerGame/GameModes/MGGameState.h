@@ -10,7 +10,7 @@
 #include "MGGameState.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_MatchStateChanged, FName, NewMatchState);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FMGGameState_PlayerKilled, AActor*, KillerActor, AActor*, KilledActor, const FGameplayEffectContextHandle&, DamageContext);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FMGGameState_PlayerKilled, AActor*, KillerActor, AActor*, AssistActor, AActor*, KilledActor, const FGameplayEffectContextHandle&, DamageContext);
 
 /**
  * AMGGameState
@@ -34,7 +34,7 @@ public:
 	void SetMatchDuration(int32 NewDuration) { CurrentMatchDuration = NewDuration; }
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastOnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
+	void MulticastOnPlayerKilled(AActor* KillerActor, AActor* AssistActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
 
 public:
 

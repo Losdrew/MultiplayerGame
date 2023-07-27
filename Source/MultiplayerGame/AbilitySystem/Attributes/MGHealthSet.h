@@ -27,6 +27,9 @@ public:
 	ATTRIBUTE_ACCESSORS(UMGHealthSet, Damage);
 
 	// Delegate to broadcast when the health attribute reaches zero
+	mutable FMGAttributeEvent OnReceiveDamage;
+
+	// Delegate to broadcast when the health attribute reaches zero
 	mutable FMGAttributeEvent OnOutOfHealth;
 
 	UFUNCTION()

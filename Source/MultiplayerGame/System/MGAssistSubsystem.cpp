@@ -6,7 +6,7 @@
 #include "MGPlayerState.h"
 #include "GameFramework/PlayerState.h"
 
-void UMGAssistSubsystem::RecordPlayerDamage(AActor* Instigator, AActor* Target, float Magnitude)
+void UMGAssistSubsystem::OnPlayerReceiveDamage(AActor* Instigator, AActor* Target, const FGameplayEffectSpec& EffectSpec, float Magnitude)
 {
 	if (Instigator != Target)
 	{
@@ -22,26 +22,54 @@ void UMGAssistSubsystem::RecordPlayerDamage(AActor* Instigator, AActor* Target, 
 	}
 }
 
-void UMGAssistSubsystem::GrantAssistsForPlayerKill(AActor* KillerActor, AActor* KilledActor)
+TArray<APlayerState*> UMGAssistSubsystem::FindKillAssistPlayers(AActor* KillerActor, AActor* KilledActor)
 {
-	if (APlayerState* KilledPlayerState = Cast<APlayerState>(KilledActor))
-	{
-		// Grant an assist to each player who damaged the target but wasn't the killer
-		if (FMGPlayerDamageDealt* DamageOnTarget = DamageHistory.Find(KilledPlayerState))
-		{
-			for (const auto& PlayerDamageToKilled : DamageOnTarget->AccumulatedDamageByPlayer)
-			{
-				if (const AMGPlayerState* AssistPlayerState = Cast<AMGPlayerState>(PlayerDamageToKilled.Key))
-				{
-					if (AssistPlayerState != KillerActor)
-					{
-						AssistPlayerState->GetStatsComponent()->AddPlayerAssists();
-					}
-				}
-			}
+    TArray<TObjectPtr<APlayerState>> AssistPlayerStates;
 
-			// Clear the damage log for the killed player
-			DamageHistory.Remove(KilledPlayerState);
-		}
+    if (APlayerState* KilledPlayerState = Cast<APlayerState>(KilledActor))
+    {
+        if (const FMGPlayerDamageDealt* DamageOnTarget = DamageHistory.Find(KilledPlayerState))
+        {
+            DamageOnTarget->AccumulatedDamageByPlayer.GenerateKeyArray(AssistPlayerStates);
+
+            AssistPlayerStates.FilterByPredicate([KillerActor](const APlayerState* AssistPlayerState)
+            {
+                return AssistPlayerState != KillerActor;
+            });
+        }
+    }
+
+    return AssistPlayerStates;
+}
+
+APlayerState* UMGAssistSubsystem::FindMaxDamageAssistPlayer(AActor* KillerActor, AActor* KilledActor)
+{
+    if (APlayerState* KilledPlayerState = Cast<APlayerState>(KilledActor))
+    {
+        if (FMGPlayerDamageDealt* DamageOnTarget = DamageHistory.Find(KilledPlayerState))
+        {
+            APlayerState* AssistPlayerState = nullptr;
+            float MaxDamage = -1.0f;
+
+            for (const auto& PlayerDamage : DamageOnTarget->AccumulatedDamageByPlayer)
+            {
+                if (PlayerDamage.Value > MaxDamage && PlayerDamage.Key != KillerActor)
+                {
+                    MaxDamage = PlayerDamage.Value;
+                    AssistPlayerState = Cast<APlayerState>(PlayerDamage.Key);
+                }
+            }
+
+            return AssistPlayerState;
+        }
+    }
+    return nullptr;
+}
+
+void UMGAssistSubsystem::ClearDamageHistoryForPlayer(AActor* Player)
+{
+	if (APlayerState* PlayerState = Cast<APlayerState>(Player))
+	{
+		DamageHistory.Remove(PlayerState);
 	}
 }
