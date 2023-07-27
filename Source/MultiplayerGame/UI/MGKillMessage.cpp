@@ -3,7 +3,6 @@
 
 #include "UI/MGKillMessage.h"
 
-#include "MGGameState.h"
 #include "MGPhysicalMaterialWithTags.h"
 #include "MGRangedWeaponInstance.h"
 #include "NativeGameplayTags.h"
@@ -13,11 +12,21 @@
 UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Gameplay_Weakspot, "Gameplay.WeakSpot");
 
 
-void UMGKillMessage::OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
+void UMGKillMessage::OnPlayerKilled(AActor* KillerActor, AActor* AssistActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
 {
 	if (const APlayerState* KillerPlayerState = Cast<APlayerState>(KillerActor))
 	{
 		KillerName->SetText(FText::FromString(KillerPlayerState->GetPlayerName()));
+	}
+
+	if (const APlayerState* AssistPlayerState = Cast<APlayerState>(AssistActor))
+	{
+		AssistName->SetText(FText::FromString(AssistPlayerState->GetPlayerName()));
+	}
+	else
+	{
+		AssistName->SetVisibility(ESlateVisibility::Collapsed);
+		KillerAssistSeparator->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
 	if (const APlayerState* KilledPlayerState = Cast<APlayerState>(KilledActor))
@@ -49,6 +58,5 @@ void UMGKillMessage::OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, co
 		}
 	}
 
-	ReceiveOnPlayerKilled(KillerActor, KilledActor, DamageContext);
+	ReceiveOnPlayerKilled(KillerActor, AssistActor, KilledActor);
 }
-

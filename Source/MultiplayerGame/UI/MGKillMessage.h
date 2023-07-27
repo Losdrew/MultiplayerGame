@@ -23,16 +23,22 @@ class UMGKillMessage : public UUserWidget
 public:
 	// Updates the widget properties with the info about the kill
 	UFUNCTION(BlueprintCallable)
-	void OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
+	void OnPlayerKilled(AActor* KillerActor, AActor* AssistActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
 
 	// Event for cosmetic actions related to the kill
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCosmetic)
-	void ReceiveOnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
+	void ReceiveOnPlayerKilled(AActor* KillerActor, AActor* AssistActor, AActor* KilledActor);
 
 public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* KillerName;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* KillerAssistSeparator;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* AssistName;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* KilledName;
