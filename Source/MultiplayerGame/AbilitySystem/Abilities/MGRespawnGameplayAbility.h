@@ -37,8 +37,8 @@ protected:
 protected:
 
 	UPROPERTY()
-	AActor* LastBoundAvatarActor;
+	TObjectPtr<AActor> LastBoundAvatarActor;
 
 	UPROPERTY()
-	UMGHealthComponent* LastBoundHealthComponent;
+	TObjectPtr<UMGHealthComponent> LastBoundHealthComponent;
 };

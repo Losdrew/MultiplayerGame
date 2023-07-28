@@ -47,7 +47,7 @@ private:
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Appearance")
-	UTexture2D* EquipmentIcon;
+	TObjectPtr<UTexture2D> EquipmentIcon;
 
 private:
 

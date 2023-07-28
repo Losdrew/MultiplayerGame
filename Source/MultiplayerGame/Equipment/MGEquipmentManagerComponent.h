@@ -157,5 +157,5 @@ private:
 	FMGEquipmentList EquipmentList;
 
 	UPROPERTY(ReplicatedUsing=OnRep_EquippedItem)
-	UMGEquipmentInstance* EquippedItem;
+	TObjectPtr<UMGEquipmentInstance> EquippedItem;
 };

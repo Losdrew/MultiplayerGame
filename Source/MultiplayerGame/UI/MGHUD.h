@@ -35,5 +35,5 @@ public:
 public:
 
 	UPROPERTY(BlueprintReadOnly)
-	UMGLayoutUI* LayoutUI;
+	TObjectPtr<UMGLayoutUI> LayoutUI;
 };

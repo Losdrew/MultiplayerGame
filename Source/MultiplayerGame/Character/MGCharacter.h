@@ -93,8 +93,8 @@ protected:
 private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	UMGInputConfig* InputConfig;
+	TObjectPtr<UMGInputConfig> InputConfig;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-    UInputMappingContext* InputMapping;
+    TObjectPtr<UInputMappingContext> InputMapping;
 };

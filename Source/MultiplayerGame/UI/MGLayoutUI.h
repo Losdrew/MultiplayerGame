@@ -29,5 +29,5 @@ protected:
 private:
 
 	UPROPERTY()
-	TMap<FGameplayTag, UMGNamedSlotWithTag*> Slots;
+	TMap<FGameplayTag, TObjectPtr<UMGNamedSlotWithTag>> Slots;
 };

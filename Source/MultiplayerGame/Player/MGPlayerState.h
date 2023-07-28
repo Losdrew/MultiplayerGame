@@ -40,8 +40,8 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Abilities", Meta = (AllowPrivateAccess = "true"))
-	UMGAbilitySystemComponent* AbilitySystemComponent;
+	TObjectPtr<UMGAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stats", Meta = (AllowPrivateAccess = "true"))
-	UMGStatsComponent* StatsComponent;
+	TObjectPtr<UMGStatsComponent> StatsComponent;
 };

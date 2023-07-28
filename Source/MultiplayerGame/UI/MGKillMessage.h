@@ -32,28 +32,28 @@ public:
 public:
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* KillerName;
+	TObjectPtr<UTextBlock> KillerName;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* KillerAssistSeparator;
+	TObjectPtr<UTextBlock> KillerAssistSeparator;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AssistName;
+	TObjectPtr<UTextBlock> AssistName;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* KilledName;
+	TObjectPtr<UTextBlock> KilledName;
 
 	UPROPERTY(meta = (BindWidget))
-	UImage* WeaponImage;
+	TObjectPtr<UImage> WeaponImage;
 
 	UPROPERTY(meta = (BindWidget))
-	UImage* KillTypeImage;
+	TObjectPtr<UImage> KillTypeImage;
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Icons")
-	UTexture2D* KillIcon;
+	TObjectPtr<UTexture2D> KillIcon;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Icons")
-	UTexture2D* WeakSpotKillIcon;
+	TObjectPtr<UTexture2D> WeakSpotKillIcon;
 };

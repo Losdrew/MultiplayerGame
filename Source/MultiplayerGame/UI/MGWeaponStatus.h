@@ -28,6 +28,8 @@ public:
 
 protected:
 
+	virtual void NativeConstruct() override;
+
 	UFUNCTION(BlueprintCallable)
 	virtual void OnWeaponEquipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* NewEquipmentInstance);
 
@@ -40,21 +42,19 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	virtual void OnTotalAmmoChanged(UMGRangedWeaponInstance* WeaponInstance, int NewValue);
 
-	virtual void NativeConstruct() override;
-
 public:
 
 	UPROPERTY(meta = (BindWidget))
-	UImage* WeaponImage;
+	TObjectPtr<UImage> WeaponImage;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* CurrentAmmoNumber;
+	TObjectPtr<UTextBlock> CurrentAmmoNumber;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* TotalAmmoNumber;
+	TObjectPtr<UTextBlock> TotalAmmoNumber;
 
 private:
 
 	UPROPERTY()
-	UMGRangedWeaponInstance* CurrentWeaponInstance;
+	TObjectPtr<UMGRangedWeaponInstance> CurrentWeaponInstance;
 };

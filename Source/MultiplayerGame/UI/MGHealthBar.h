@@ -41,16 +41,16 @@ protected:
 public:
 
 	UPROPERTY(meta = (BindWidget))
-	USizeBox* SizeBox;
+	TObjectPtr<USizeBox> SizeBox;
 
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* HealthBar;
+	TObjectPtr<UProgressBar> HealthBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* HealthNumber;
+	TObjectPtr<UTextBlock> HealthNumber;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* MaxHealthNumber;
+	TObjectPtr<UTextBlock> MaxHealthNumber;
 
 protected:
 

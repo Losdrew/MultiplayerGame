@@ -28,5 +28,5 @@ protected:
 public:
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* KillCount;
+	TObjectPtr<UTextBlock> KillCount;
 };
