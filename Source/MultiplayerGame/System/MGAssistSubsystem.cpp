@@ -32,7 +32,7 @@ TArray<APlayerState*> UMGAssistSubsystem::FindKillAssistPlayers(AActor* KillerAc
         {
             DamageOnTarget->AccumulatedDamageByPlayer.GenerateKeyArray(AssistPlayerStates);
 
-            AssistPlayerStates.FilterByPredicate([KillerActor](const APlayerState* AssistPlayerState)
+            AssistPlayerStates = AssistPlayerStates.FilterByPredicate([KillerActor](APlayerState* AssistPlayerState)
             {
                 return AssistPlayerState != KillerActor;
             });

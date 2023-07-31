@@ -38,14 +38,14 @@ public:
 	void OnPlayerReceiveDamage(AActor* Instigator, AActor* Target, const FGameplayEffectSpec& EffectSpec, float Magnitude);
 
 	// Finds all players who dealt damage to the KilledActor but are not KillerActor
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	TArray<APlayerState*> FindKillAssistPlayers(AActor* KillerActor, AActor* KilledActor);
 
 	// Finds the player who dealt the most assist damage to the KilledActor
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	APlayerState* FindMaxDamageAssistPlayer(AActor* KillerActor, AActor* KilledActor);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void ClearDamageHistoryForPlayer(AActor* Player);
 
 private:
