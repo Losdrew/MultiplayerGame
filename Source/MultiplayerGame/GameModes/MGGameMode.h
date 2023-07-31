@@ -27,6 +27,7 @@ public:
 
 	//~AGameModeBase interface
 	virtual void OnPostLogin(AController* NewPlayer) override;
+	virtual void Logout(AController* Exiting) override;
 	virtual void RestartPlayer(AController* NewPlayer) override;
 	//~End of AGameModeBase interface
 

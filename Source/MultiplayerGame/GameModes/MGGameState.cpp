@@ -52,8 +52,17 @@ void AMGGameState::ResetElapsedTime()
 	OnRep_ElapsedTime();
 }
 
+void AMGGameState::HandlePostLogin(AController* Controller)
+{
+	OnPostLogin.Broadcast(Controller);
+}
+
+void AMGGameState::HandleLogout(AController* Controller)
+{
+	OnLogout.Broadcast(Controller);
+}
+
 void AMGGameState::MulticastOnPlayerKilled_Implementation(AActor* KillerActor, AActor* AssistActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
 {
 	OnPlayerKilled.Broadcast(KillerActor, AssistActor, KilledActor, DamageContext);
 }
-

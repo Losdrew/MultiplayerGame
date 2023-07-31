@@ -34,6 +34,15 @@ void AMGGameMode::OnPostLogin(AController* NewPlayer)
 
 		PlayerController->PlayerState->SetPlayerName(PlayerName);
 	}
+
+	GetGameState<AMGGameState>()->HandlePostLogin(NewPlayer);
+}
+
+void AMGGameMode::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+
+	GetGameState<AMGGameState>()->HandleLogout(Exiting);
 }
 
 void AMGGameMode::RestartPlayer(AController* NewPlayer)

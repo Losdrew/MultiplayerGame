@@ -9,6 +9,7 @@
 #include "MGAbilitySet.h"
 #include "MGGameState.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_PlayerConnection, AController*, Controller);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_MatchStateChanged, FName, NewMatchState);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FMGGameState_PlayerKilled, AActor*, KillerActor, AActor*, AssistActor, AActor*, KilledActor, const FGameplayEffectContextHandle&, DamageContext);
 
@@ -33,10 +34,19 @@ public:
 
 	void SetMatchDuration(int32 NewDuration) { CurrentMatchDuration = NewDuration; }
 
-	UFUNCTION(NetMulticast, Reliable)
+	void HandlePostLogin(AController* Controller);
+	void HandleLogout(AController* Controller);
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
 	void MulticastOnPlayerKilled(AActor* KillerActor, AActor* AssistActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
 
 public:
+
+	UPROPERTY(BlueprintAssignable)
+	FMGGameState_PlayerConnection OnPostLogin;
+
+	UPROPERTY(BlueprintAssignable)
+	FMGGameState_PlayerConnection OnLogout;
 
 	UPROPERTY(BlueprintAssignable)
     FMGGameState_MatchStateChanged OnMatchStateChanged;
