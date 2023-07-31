@@ -5,7 +5,7 @@
 
 #include "MGAbilitySet.h"
 #include "MGGameState.h"
-#include "MGStatsComponent.h"
+#include "Net/UnrealNetwork.h"
 
 AMGPlayerState::AMGPlayerState()
 {
@@ -16,8 +16,14 @@ AMGPlayerState::AMGPlayerState()
 	// AbilitySystemComponent needs to be updated at a high frequency
 	NetUpdateFrequency = 100.0f;
 
-	StatsComponent = CreateDefaultSubobject<UMGStatsComponent>(TEXT("StatsComponent"));
-	StatsComponent->SetIsReplicated(true);
+	StatTags.OnGameplayTagStackChanged.AddDynamic(this, &ThisClass::OnTagStackChanged);
+}
+
+void AMGPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMGPlayerState, StatTags);
 }
 
 void AMGPlayerState::PostInitializeComponents()
@@ -45,7 +51,32 @@ UMGAbilitySystemComponent* AMGPlayerState::GetMGAbilitySystemComponent() const
 	 return AbilitySystemComponent;
 }
 
-UMGStatsComponent* AMGPlayerState::GetStatsComponent() const
+void AMGPlayerState::OnTagStackChanged(FGameplayTag Tag, int32 StackCount)
 {
-	return StatsComponent;
+	OnStatTagChanged.Broadcast(Tag, StackCount);
+}
+
+void AMGPlayerState::AddStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.AddStack(Tag, StackCount);
+}
+
+void AMGPlayerState::RemoveStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.RemoveStack(Tag, StackCount);
+}
+
+int32 AMGPlayerState::GetStatTagStackCount(FGameplayTag Tag) const
+{
+	return StatTags.GetStackCount(Tag);
+}
+
+bool AMGPlayerState::HasStatTag(FGameplayTag Tag) const
+{
+	return StatTags.ContainsTag(Tag);
+}
+
+void AMGPlayerState::ResetAllStats()
+{
+	StatTags.RemoveAllStacks();
 }
