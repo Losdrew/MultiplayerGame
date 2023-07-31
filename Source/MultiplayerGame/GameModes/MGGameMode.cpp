@@ -158,9 +158,9 @@ void AMGGameMode::HandleMatchHasStarted()
 	{
 		APlayerController* PlayerController = Iterator->Get();
 
-		if (const AMGPlayerState* PlayerState = Cast<AMGPlayerState>(PlayerController->PlayerState))
+		if (AMGPlayerState* PlayerState = Cast<AMGPlayerState>(PlayerController->PlayerState))
 		{
-			PlayerState->GetStatsComponent()->ResetPlayerStats();	
+			PlayerState->ResetAllStats();
 		}
 
 		// Destroys existing pawns so they can be respawned at player start locations
@@ -246,38 +246,7 @@ bool AMGGameMode::IsWarmup() const
 
 void AMGGameMode::OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext)
 {
-	// Grant a kill to the killer player
-	if (const AMGPlayerState* KillerPlayerState = Cast<AMGPlayerState>(KillerActor))
-	{
-		KillerPlayerState->GetStatsComponent()->AddPlayerKills();
-	}
-
-	UMGAssistSubsystem* AssistSubsystem = GetGameInstance()->GetSubsystem<UMGAssistSubsystem>();
-
-	// Grant an assist to each player who assisted in kill
-	for (const APlayerState* AssistPlayer : AssistSubsystem->FindKillAssistPlayers(KillerActor, KilledActor))
-	{
-		if (const AMGPlayerState* AssistPlayerState = Cast<AMGPlayerState>(AssistPlayer))
-		{
-			AssistPlayerState->GetStatsComponent()->AddPlayerAssists();
-		}
-	}
-
-	// Grant a death to the killed player
-	if (const AMGPlayerState* KilledPlayerState = Cast<AMGPlayerState>(KilledActor))
-	{
-		KilledPlayerState->GetStatsComponent()->AddPlayerDeaths();
-	}
-
-	// Other players should know about the player who assisted the most
-	AActor* AssistActor = AssistSubsystem->FindMaxDamageAssistPlayer(KillerActor, KilledActor);
-
-	GetGameState<AMGGameState>()->MulticastOnPlayerKilled(KillerActor, AssistActor, KilledActor, DamageContext);
-
-	// Damage history must not persist through player deaths
-	AssistSubsystem->ClearDamageHistoryForPlayer(KilledActor);
-
-	K2_OnKillScored(KillerActor);
+	K2_OnPlayerKilled(KillerActor, KilledActor, DamageContext);
 }
 
 int32 AMGGameMode::GetNextClientId()

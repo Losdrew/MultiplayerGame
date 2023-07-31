@@ -53,8 +53,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RequestPlayerRestartNextFrame(AController* Controller, bool bForceReset);
 
-	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnKillScored"))
-	void K2_OnKillScored(AActor* ScoringPlayer);
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnPlayerKilled"))
+	void K2_OnPlayerKilled(AActor* KillerActor, AActor* KilledActor, const FGameplayEffectContextHandle& DamageContext);
 
 protected:
 	
