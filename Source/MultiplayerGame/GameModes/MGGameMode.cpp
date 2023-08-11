@@ -4,6 +4,7 @@
 #include "MGGameMode.h"
 
 #include "MGAssistSubsystem.h"
+#include "MGCharacter.h"
 #include "MGGameState.h"
 #include "MGHealthComponent.h"
 #include "MGPlayerState.h"
@@ -215,6 +216,12 @@ void AMGGameMode::HandleMatchStarting()
 
 		PlayerController->ClientIgnoreLookInput(true);
 		PlayerController->ClientIgnoreMoveInput(true);
+
+		if (AMGCharacter* Character = Cast<AMGCharacter>(PlayerController->GetPawn()))
+		{
+			Character->GetAbilitySystemComponent()->CancelAllAbilities();
+			Character->GetMovementComponent()->StopMovementImmediately();
+		}
 	}
 
 	GetGameState<AMGGameState>()->SetMatchDuration(MatchStartingDuration);
