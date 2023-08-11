@@ -17,9 +17,14 @@ class AMGFirstPersonCharacter : public ACharacter
 
 public:
 
-	AMGFirstPersonCharacter();
+	AMGFirstPersonCharacter(const FObjectInitializer& ObjectInitializer);
 
 	USkeletalMeshComponent* GetFirstPersonArms() const { return FirstPersonArms; }
+
+	virtual void RecalculateBaseEyeHeight() override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetLowerBodyVisibility(bool bVisible);
 
 protected:
 
@@ -28,4 +33,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<USkeletalMeshComponent> FirstPersonArms;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<USkeletalMeshComponent> FirstPersonBodyMesh;
 };
