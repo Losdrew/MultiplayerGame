@@ -10,6 +10,7 @@
 #include "MGEquipmentManagerComponent.h"
 #include "MGHealthComponent.h"
 #include "EnhancedInput/Public/InputMappingContext.h"
+#include "MGCharacterMovementComponent.h"
 #include "MGCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMGCharacter_PlayerStateReplicated);
@@ -25,8 +26,8 @@ class AMGCharacter : public AMGFirstPersonCharacter, public IAbilitySystemInterf
 	GENERATED_BODY()
 
 public:
-	
-	AMGCharacter();
+
+	AMGCharacter(const FObjectInitializer& ObjectInitializer);
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
@@ -36,6 +37,9 @@ public:
 	//~End of IAbilitySystemInterface interface
 
 	UAbilitySystemComponent* GetMGAbilitySystemComponent() const;
+
+	UFUNCTION(BlueprintCallable)
+	virtual UMGCharacterMovementComponent* GetMGMovementComponent() const;
 
 	//~AActor interface
 	virtual void Reset() override;
@@ -67,16 +71,31 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Meta = (DisplayName = "OnDeathFinished"))
 	void K2_OnDeathFinished();
 
+	virtual void Jump() override;
+
+	// Calls Crouch() internally
+	UFUNCTION(BlueprintCallable)
+	virtual void Slide();
+
+	// Calls UnCrouch() internally
+	UFUNCTION(BlueprintCallable)
+	virtual void UnSlide();
+
 protected:
 
 	void DisableMovementAndCollision();
 	void UninitializeAndDestroy();
 	void UninitializeAbilitySystem();
 
-public:
+	virtual bool CanJumpInternal_Implementation() const override;
 
-	UPROPERTY(BlueprintAssignable)
-	FMGCharacter_PlayerStateReplicated OnPlayerStateReplicated;
+	UFUNCTION()
+	void OnRep_bSliding();
+
+public:
+	// Set by character movement to specify that this Character is currently sliding
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_bSliding, Category=Character)
+	uint32 bSliding : 1;
 
 protected:
 

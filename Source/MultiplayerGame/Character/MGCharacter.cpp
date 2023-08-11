@@ -9,11 +9,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "MGPlayerController.h"
 
-AMGCharacter::AMGCharacter()
+AMGCharacter::AMGCharacter(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UMGCharacterMovementComponent>(CharacterMovementComponentName))
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
     EquipmentManagerComponent = CreateDefaultSubobject<UMGEquipmentManagerComponent>(TEXT("EquipmentManagerComponent"));
@@ -21,6 +23,13 @@ AMGCharacter::AMGCharacter()
     HealthComponent = CreateDefaultSubobject<UMGHealthComponent>(TEXT("HealthComponent"));
 	HealthComponent->OnDeathStarted.AddDynamic(this, &ThisClass::OnDeathStarted);
 	HealthComponent->OnDeathFinished.AddDynamic(this, &ThisClass::OnDeathFinished);
+}
+
+void AMGCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(AMGCharacter, bSliding, COND_SimulatedOnly);
 }
 
 // Called to bind functionality to input
@@ -58,6 +67,11 @@ UAbilitySystemComponent* AMGCharacter::GetMGAbilitySystemComponent() const
 	return Cast<UMGAbilitySystemComponent>(GetAbilitySystemComponent());
 }
 
+UMGCharacterMovementComponent* AMGCharacter::GetMGMovementComponent() const
+{
+	return Cast<UMGCharacterMovementComponent>(GetCharacterMovement());
+}
+
 void AMGCharacter::Reset()
 {
 	DisableMovementAndCollision();
@@ -89,7 +103,6 @@ void AMGCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 	InitPlayer();
-	OnPlayerStateReplicated.Broadcast();
 }
 
 void AMGCharacter::InputAbilityInputTagPressed(FGameplayTag InputTag)
@@ -155,6 +168,22 @@ void AMGCharacter::OnDeathStarted(AActor*)
 void AMGCharacter::OnDeathFinished(AActor*)
 {
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::UninitializeAndDestroy);
+}
+
+void AMGCharacter::Jump()
+{
+	UnSlide();
+	Super::Jump();
+}
+
+void AMGCharacter::Slide()
+{
+	Crouch();
+}
+
+void AMGCharacter::UnSlide()
+{
+	UnCrouch();
 }
 
 void AMGCharacter::DisableMovementAndCollision()
@@ -231,4 +260,27 @@ void AMGCharacter::UninitializeAbilitySystem()
 	}
 
 	AbilitySystemComponent = nullptr;
+}
+
+bool AMGCharacter::CanJumpInternal_Implementation() const
+{
+	return JumpIsAllowedInternal();
+}
+
+void AMGCharacter::OnRep_bSliding()
+{
+	if (UCharacterMovementComponent* MovementComponent = GetCharacterMovement())
+	{
+		if (bSliding)
+		{
+			MovementComponent->bWantsToCrouch = true;
+			MovementComponent->Crouch(true);
+		}
+		else
+		{
+			MovementComponent->bWantsToCrouch = false;
+			MovementComponent->UnCrouch(true);
+		}
+		MovementComponent->bNetworkUpdateReceived = true;
+	}
 }
