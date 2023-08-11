@@ -54,7 +54,6 @@ public:
 
 	void InputMove(const FInputActionValue& Value);
 	void InputLook(const FInputActionValue& Value);
-	void InputJump(const FInputActionValue& Value);
 
 	// Begins the death sequence for the character (disables collision, disables movement, etc...)
 	UFUNCTION()

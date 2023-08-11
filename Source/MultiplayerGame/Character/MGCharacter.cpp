@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MGPlayerController.h"
 
 AMGCharacter::AMGCharacter()
 {
@@ -45,7 +46,6 @@ void AMGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	EnhancedInputComponent->BindNativeAction(InputConfig, MGGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::InputMove);
 	EnhancedInputComponent->BindNativeAction(InputConfig, MGGameplayTags::InputTag_Look, ETriggerEvent::Triggered, this, &ThisClass::InputLook);
-    EnhancedInputComponent->BindNativeAction(InputConfig, MGGameplayTags::InputTag_Jump, ETriggerEvent::Triggered, this, &ThisClass::InputJump);
 }
 
 UAbilitySystemComponent* AMGCharacter::GetAbilitySystemComponent() const
@@ -144,14 +144,6 @@ void AMGCharacter::InputLook(const FInputActionValue& Value)
         {
             AddControllerPitchInput(LookValue.Y);
         }
-    }
-}
-
-void AMGCharacter::InputJump(const FInputActionValue& Value)
-{
-    if (Controller != nullptr)
-    {
-        Jump();
     }
 }
 

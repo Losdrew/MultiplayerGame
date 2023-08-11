@@ -4,6 +4,8 @@
 #include "MGGameplayAbility.h"
 
 #include "AbilitySystemComponent.h"
+#include "MGPlayerController.h"
+#include "MGCharacter.h"
 
 APlayerController* UMGGameplayAbility::GetPlayerControllerFromActorInfo() const
 {
@@ -20,6 +22,16 @@ AMGPlayerController* UMGGameplayAbility::GetMGPlayerControllerFromActorInfo() co
 	if (CurrentActorInfo)
 	{
 		return Cast<AMGPlayerController>(CurrentActorInfo->PlayerController.Get());
+	}
+
+	return nullptr;
+}
+
+AMGCharacter* UMGGameplayAbility::GetMGCharacterFromActorInfo() const
+{
+	if (CurrentActorInfo)
+	{
+		return Cast<AMGCharacter>(CurrentActorInfo->AvatarActor.Get());
 	}
 
 	return nullptr;

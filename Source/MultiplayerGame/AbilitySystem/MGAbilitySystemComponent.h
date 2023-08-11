@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "MGGameplayAbility.h"
 #include "MGAbilitySystemComponent.generated.h"
 
 /**

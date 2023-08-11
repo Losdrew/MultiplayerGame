@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MGPlayerController.h"
 #include "Abilities/GameplayAbility.h"
 #include "MGGameplayAbility.generated.h"
+
+class AMGCharacter;
+class AMGPlayerController;
 
 /**
  * EMGAbilityActivationPolicy
@@ -44,6 +46,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AMGPlayerController* GetMGPlayerControllerFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable)
+	AMGCharacter* GetMGCharacterFromActorInfo() const;
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 
