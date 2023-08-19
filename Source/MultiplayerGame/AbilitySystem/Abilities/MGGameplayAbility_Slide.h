@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/MGGameplayAbility.h"
-#include "MGSlideGameplayAbility.generated.h"
+#include "MGGameplayAbility_Slide.generated.h"
 
 /**
- * UMGSlideGameplayAbility
+ * UMGGameplayAbility_Slide
  *
  *	Gameplay ability used for character sliding
  */
 UCLASS()
-class UMGSlideGameplayAbility : public UMGGameplayAbility
+class UMGGameplayAbility_Slide : public UMGGameplayAbility
 {
 	GENERATED_BODY()
 

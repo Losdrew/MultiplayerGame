@@ -1,13 +1,13 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "MGDeathGameplayAbility.h"
+#include "MGGameplayAbility_Death.h"
 
 #include "MGAbilitySystemComponent.h"
 #include "MGGameplayTags.h"
 #include "MGHealthComponent.h"
 
-void UMGDeathGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void UMGGameplayAbility_Death::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	check(ActorInfo);
 
@@ -26,7 +26,7 @@ void UMGDeathGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle H
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UMGDeathGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+void UMGGameplayAbility_Death::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	check(ActorInfo);
 
@@ -37,7 +37,7 @@ void UMGDeathGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UMGDeathGameplayAbility::StartDeath()
+void UMGGameplayAbility_Death::StartDeath()
 {
 	if (UMGHealthComponent* HealthComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UMGHealthComponent>())
 	{
@@ -48,7 +48,7 @@ void UMGDeathGameplayAbility::StartDeath()
 	}
 }
 
-void UMGDeathGameplayAbility::FinishDeath()
+void UMGGameplayAbility_Death::FinishDeath()
 {
 	if (UMGHealthComponent* HealthComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UMGHealthComponent>())
 	{

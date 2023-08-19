@@ -1,11 +1,11 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "MGRangedWeaponGameplayAbility.h"
+#include "MGGameplayAbility_RangedWeapon.h"
 
 #include "MGRangedWeaponInstance.h"
 
-UMGRangedWeaponInstance* UMGRangedWeaponGameplayAbility::GetWeaponInstance() const
+UMGRangedWeaponInstance* UMGGameplayAbility_RangedWeapon::GetWeaponInstance() const
 {
 	return Cast<UMGRangedWeaponInstance>(GetAssociatedEquipment());
 }

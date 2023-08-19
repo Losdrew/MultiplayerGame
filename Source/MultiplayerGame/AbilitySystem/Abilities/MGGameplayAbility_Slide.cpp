@@ -1,12 +1,12 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "AbilitySystem/Abilities/MGSlideGameplayAbility.h"
+#include "AbilitySystem/Abilities/MGGameplayAbility_Slide.h"
 
 #include "MGCharacter.h"
 #include "MGCharacterMovementComponent.h"
 
-void UMGSlideGameplayAbility::StartSliding_Implementation()
+void UMGGameplayAbility_Slide::StartSliding_Implementation()
 {
 	if (AMGCharacter* Character = GetMGCharacterFromActorInfo())
 	{
@@ -26,7 +26,7 @@ void UMGSlideGameplayAbility::StartSliding_Implementation()
 	}
 }
 
-void UMGSlideGameplayAbility::Slide_Implementation()
+void UMGGameplayAbility_Slide::Slide_Implementation()
 {
 	// Keep moving the player in the direction they were facing when they started sliding
 	if (AMGCharacter* Character = GetMGCharacterFromActorInfo())
@@ -40,7 +40,7 @@ void UMGSlideGameplayAbility::Slide_Implementation()
 	}
 }
 
-bool UMGSlideGameplayAbility::ShouldStopSliding_Implementation()
+bool UMGGameplayAbility_Slide::ShouldStopSliding_Implementation()
 {
 	if (const UMGCharacterMovementComponent* CharacterMovement = GetMGCharacterFromActorInfo()->GetMGMovementComponent())
 	{
@@ -54,7 +54,7 @@ bool UMGSlideGameplayAbility::ShouldStopSliding_Implementation()
 	return false;
 }
 
-void UMGSlideGameplayAbility::StopSliding_Implementation()
+void UMGGameplayAbility_Slide::StopSliding_Implementation()
 {
 	if (AMGCharacter* Character = GetMGCharacterFromActorInfo())
 	{

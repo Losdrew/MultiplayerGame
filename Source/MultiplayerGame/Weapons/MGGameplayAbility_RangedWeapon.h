@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "MGRangedWeaponInstance.h"
-#include "MGEquipmentGameplayAbility.h"
-#include "MGRangedWeaponGameplayAbility.generated.h"
+#include "MGGameplayAbility_Equipment.h"
+#include "MGGameplayAbility_RangedWeapon.generated.h"
 
 /**
- * UMGEquipmentGameplayAbility
+ * UMGGameplayAbility_Equipment
  *
  *	An ability granted by and associated with ranged weapon instance
  */
 UCLASS()
-class UMGRangedWeaponGameplayAbility : public UMGEquipmentGameplayAbility
+class UMGGameplayAbility_RangedWeapon : public UMGGameplayAbility_Equipment
 {
 	GENERATED_BODY()
 

@@ -1,9 +1,9 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "MGRespawnGameplayAbility.h"
+#include "MGGameplayAbility_Respawn.h"
 
-bool UMGRespawnGameplayAbility::IsAvatarDeadOrDying() const
+bool UMGGameplayAbility_Respawn::IsAvatarDeadOrDying() const
 {
 	bool IsDeadOrDying = false;
 
@@ -18,7 +18,7 @@ bool UMGRespawnGameplayAbility::IsAvatarDeadOrDying() const
 	return IsDeadOrDying;
 }
 
-void UMGRespawnGameplayAbility::BindDeathListener()
+void UMGGameplayAbility_Respawn::BindDeathListener()
 {
 	ClearDeathListener();
 
@@ -37,7 +37,7 @@ void UMGRespawnGameplayAbility::BindDeathListener()
 	}
 }
 
-void UMGRespawnGameplayAbility::ClearDeathListener()
+void UMGGameplayAbility_Respawn::ClearDeathListener()
 {
 	if (LastBoundAvatarActor)
 	{

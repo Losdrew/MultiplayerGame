@@ -1,9 +1,9 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "MGEquipmentGameplayAbility.h"
+#include "MGGameplayAbility_Equipment.h"
 
-UMGEquipmentInstance* UMGEquipmentGameplayAbility::GetAssociatedEquipment() const
+UMGEquipmentInstance* UMGGameplayAbility_Equipment::GetAssociatedEquipment() const
 {
 	if (const FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec())
 	{

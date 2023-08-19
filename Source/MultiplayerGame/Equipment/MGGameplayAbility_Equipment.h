@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 #include "MGEquipmentInstance.h"
 #include "MGGameplayAbility.h"
-#include "MGEquipmentGameplayAbility.generated.h"
+#include "MGGameplayAbility_Equipment.generated.h"
 
 /**
- * UMGEquipmentGameplayAbility
+ * UMGGameplayAbility_Equipment
  *
  *	An ability granted by and associated with equipment instance
  */
 UCLASS()
-class UMGEquipmentGameplayAbility : public UMGGameplayAbility
+class UMGGameplayAbility_Equipment : public UMGGameplayAbility
 {
 	GENERATED_BODY()
 

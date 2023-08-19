@@ -5,15 +5,15 @@
 #include "CoreMinimal.h"
 #include "MGGameplayAbility.h"
 #include "MGHealthComponent.h"
-#include "MGRespawnGameplayAbility.generated.h"
+#include "MGGameplayAbility_Respawn.generated.h"
 
 /**
- * UMGRespawnGameplayAbility
+ * UMGGameplayAbility_Respawn
  *
  *	Gameplay ability used for handling respawn
  */
 UCLASS()
-class UMGRespawnGameplayAbility : public UMGGameplayAbility
+class UMGGameplayAbility_Respawn : public UMGGameplayAbility
 {
 	GENERATED_BODY()
 

@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "MGGameplayAbility.h"
-#include "MGDeathGameplayAbility.generated.h"
+#include "MGGameplayAbility_Death.generated.h"
 
 /**
- * UMGDeathGameplayAbility
+ * UMGGameplayAbility_Death
  *
  *	Gameplay ability used for handling death
  */
 UCLASS(Abstract)
-class UMGDeathGameplayAbility : public UMGGameplayAbility
+class UMGGameplayAbility_Death : public UMGGameplayAbility
 {
 	GENERATED_BODY()
 

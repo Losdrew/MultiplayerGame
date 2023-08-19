@@ -2,16 +2,16 @@
 
 #pragma once
 
-#include "MGRangedWeaponGameplayAbility.h"
-#include "MGWeaponFireGameplayAbility.generated.h"
+#include "MGGameplayAbility_RangedWeapon.h"
+#include "MGGameplayAbility_WeaponFire.generated.h"
 
 /**
- * UMGWeaponFireGameplayAbility
+ * UMGGameplayAbility_WeaponFire
  *
  *	An ability for firing a ranged weapon
  */
 UCLASS()
-class UMGWeaponFireGameplayAbility : public UMGRangedWeaponGameplayAbility
+class UMGGameplayAbility_WeaponFire : public UMGGameplayAbility_RangedWeapon
 {
 	GENERATED_BODY()
 
