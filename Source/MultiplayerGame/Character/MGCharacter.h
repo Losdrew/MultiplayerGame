@@ -81,6 +81,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void UnSlide();
 
+	UFUNCTION(BlueprintCallable)
+	virtual void SetFreeLook(bool NewValue);
+
 protected:
 
 	void DisableMovementAndCollision();
@@ -96,6 +99,12 @@ public:
 	// Set by character movement to specify that this Character is currently sliding
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_bSliding, Category=Character)
 	uint32 bSliding : 1;
+
+	// Determines if the Character is in free look mode (movement is independent of camera orientation)
+	// If set to true - Character moves at FreeLookMovementDirection (from UMGCharacterMovementComponent)
+	// If set to false - Character moves at Controller rotation
+	UPROPERTY(BlueprintReadOnly, Category=Character)
+	bool bFreeLooking;
 
 protected:
 

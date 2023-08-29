@@ -10,7 +10,6 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
-#include "MGPlayerController.h"
 
 AMGCharacter::AMGCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UMGCharacterMovementComponent>(CharacterMovementComponentName))
@@ -120,8 +119,17 @@ void AMGCharacter::InputMove(const FInputActionValue& Value)
     if (Controller != nullptr)
     {
         const FVector2D MoveValue = Value.Get<FVector2D>();
-        const FRotator MovementRotation(0, Controller->GetControlRotation().Yaw, 0);
- 
+        FRotator MovementRotation;
+
+		if (bFreeLooking)
+		{
+			MovementRotation = FRotator(0, GetMGMovementComponent()->FreeLookMovementDirection.Yaw, 0);
+		}
+		else
+		{
+			MovementRotation = FRotator(0, Controller->GetControlRotation().Yaw, 0);
+		}
+
         // Forward/Backward direction
         if (MoveValue.Y != 0.f)
         {
@@ -184,6 +192,11 @@ void AMGCharacter::Slide()
 void AMGCharacter::UnSlide()
 {
 	UnCrouch();
+}
+
+void AMGCharacter::SetFreeLook(bool NewValue)
+{
+	bFreeLooking = NewValue;
 }
 
 void AMGCharacter::DisableMovementAndCollision()
