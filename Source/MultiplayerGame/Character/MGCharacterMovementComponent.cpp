@@ -190,13 +190,9 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 
 		RestorePreAdditiveRootMotionVelocity();
 
-		const FVector OldVelocity = Velocity;
-
 		if (!HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity())
 		{
-			Velocity.Z = 0.f;
 			CalcVelocity(deltaTime, WallrunningFriction, false, GetMaxBrakingDeceleration());
-			Velocity.Z = OldVelocity.Z;
 		}
 
 		Velocity = Velocity.ProjectOnToNormal(FreeLookMovementDirection.Vector());
