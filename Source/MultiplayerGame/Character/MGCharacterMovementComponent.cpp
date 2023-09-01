@@ -287,20 +287,23 @@ void FSavedMove_MGCharacter::Clear()
 
 void FSavedMove_MGCharacter::CombineWith(const FSavedMove_Character* OldMove, ACharacter* InCharacter, APlayerController* PC, const FVector& OldStartLocation)
 {
-	FSavedMove_Character::CombineWith(OldMove, InCharacter, PC, OldStartLocation);
-
 	if (UMGCharacterMovementComponent* CharMov = Cast<UMGCharacterMovementComponent>(InCharacter->GetCharacterMovement()))
     {
         CharMov->CurrentWall = ((FSavedMove_MGCharacter*)&OldMove)->StartWall;
     }
+
+	FSavedMove_Character::CombineWith(OldMove, InCharacter, PC, OldStartLocation);
 }
 
 bool FSavedMove_MGCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* Character, float MaxDelta) const
 {
-	if (SavedFreeLookMovementDirection != ((FSavedMove_MGCharacter*)&NewMove)->SavedFreeLookMovementDirection)
-    {
-        return false;
-    }
+	if (const AMGCharacter* MGCharacter = Cast<AMGCharacter>(Character))
+	{
+		if (MGCharacter->bFreeLooking && SavedFreeLookMovementDirection != ((FSavedMove_MGCharacter*)&NewMove)->SavedFreeLookMovementDirection)
+	    {
+			return false;
+	    }
+	}
 
     return Super::CanCombineWith(NewMove, Character, MaxDelta);
 }
