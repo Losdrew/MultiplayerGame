@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystem/Abilities/MGGameplayAbility.h"
+#include "AbilitySystem/AbilityTasks/MGAbilityTask_OnTick.h"
 #include "MGGameplayAbility_Slide.generated.h"
 
 /**
@@ -21,8 +22,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void StartSliding();
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void Slide();
+	UFUNCTION()
+	void Slide(float DeltaTime);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	bool ShouldStopSliding();
@@ -33,11 +34,14 @@ public:
 protected:
 
 	UPROPERTY(BlueprintReadOnly, Transient)
-	FVector VelocityForwardVector;
+	FVector SlideDirection;
 
 	UPROPERTY(BlueprintReadOnly, Transient)
 	float PreviousGroundFriction;
 
 	UPROPERTY(BlueprintReadOnly, Transient)
 	bool bReachedSlideSpeed;
+
+	UPROPERTY(BlueprintReadOnly, Transient)
+	UMGAbilityTask_OnTick* TickAbilityTask;
 };

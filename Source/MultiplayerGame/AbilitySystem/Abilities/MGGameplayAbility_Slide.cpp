@@ -13,7 +13,7 @@ void UMGGameplayAbility_Slide::StartSliding_Implementation()
 		Character->Slide();
 
 		// Save the direction of player's velocity when they started sliding
-		VelocityForwardVector = Character->GetVelocity().GetSafeNormal();
+		SlideDirection = Character->GetVelocity().GetSafeNormal();
 
 		if (UMGCharacterMovementComponent* CharacterMovement = Character->GetMGMovementComponent())
 		{
@@ -23,15 +23,20 @@ void UMGGameplayAbility_Slide::StartSliding_Implementation()
 			// Replace current value with sliding friction
 			CharacterMovement->GroundFriction = CharacterMovement->SlidingFriction;
 		}
+
+		// Abilities don't have Tick event, so we use an ability task to move player each tick
+		TickAbilityTask = UMGAbilityTask_OnTick::Tick(this);
+		TickAbilityTask->OnTick.AddDynamic(this, &ThisClass::Slide);
+		TickAbilityTask->ReadyForActivation();
 	}
 }
 
-void UMGGameplayAbility_Slide::Slide_Implementation()
+void UMGGameplayAbility_Slide::Slide(float DeltaTime)
 {
 	// Keep moving the player in the direction they were facing when they started sliding
 	if (AMGCharacter* Character = GetMGCharacterFromActorInfo())
 	{
-		Character->AddMovementInput(VelocityForwardVector);
+		Character->AddMovementInput(SlideDirection);
 	}
 
 	if (ShouldStopSliding())
@@ -66,5 +71,7 @@ void UMGGameplayAbility_Slide::StopSliding_Implementation()
 		{
 			CharacterMovement->GroundFriction = PreviousGroundFriction;
 		}
+
+		TickAbilityTask->EndTask();
 	}
 }
