@@ -64,6 +64,10 @@ protected:
 	virtual void StartWallrunning(const FHitResult& Hit);
 	virtual void StopWallrunning();
 
+	// Automatic movement when starting to wallrun
+	virtual void StartAutoWallrun();
+	virtual void StopAutoWallrun();
+
 public:
 	// The maximum ground speed when sliding
 	UPROPERTY(Category="Character Movement: Sliding", EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0", ForceUnits="cm/s"))
@@ -117,6 +121,15 @@ public:
 	// The direction of character movement when free looking
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Transient)
 	FRotator FreeLookMovementDirection;
+
+	// The duration of automatic movement (doesn't require holding a key) when starting to wallrun
+	UPROPERTY(Category="Character Movement: Wallrunning", EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
+	float AutoWallrunDuration;
+
+protected:
+
+	FTimerHandle AutoWallrunTimerHandle;
+	bool bAutoWallrunActive;
 };
 
 

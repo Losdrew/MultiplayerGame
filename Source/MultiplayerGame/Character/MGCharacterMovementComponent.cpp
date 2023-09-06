@@ -143,6 +143,10 @@ void UMGCharacterMovementComponent::StartWallrunning(const FHitResult& Hit)
 
 	GetMGCharacterOwner()->SetFreeLook(true);
 
+	// The character should wallrun automatically for a brief moment so that
+	// they wouldn't be able to stick to a wall and not move on it at all
+	StartAutoWallrun();
+
 	SetMovementMode(MOVE_Custom, MOVE_Wallrunning);
 }
 
@@ -150,7 +154,20 @@ void UMGCharacterMovementComponent::StopWallrunning()
 {
 	GetMGCharacterOwner()->SetFreeLook(false);
 
+	StopAutoWallrun();
+
 	SetMovementMode(MOVE_Falling);
+}
+
+void UMGCharacterMovementComponent::StartAutoWallrun()
+{
+	GetWorld()->GetTimerManager().SetTimer(AutoWallrunTimerHandle, this, &UMGCharacterMovementComponent::StopAutoWallrun, AutoWallrunDuration, false);
+	bAutoWallrunActive = true;
+}
+
+void UMGCharacterMovementComponent::StopAutoWallrun()
+{
+	bAutoWallrunActive = false;
 }
 
 bool UMGCharacterMovementComponent::IsWallrunning() const
@@ -184,6 +201,12 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 
 	while ((remainingTime >= MIN_TICK_TIME) && (Iterations < MaxSimulationIterations))
 	{
+		// Move player automatically while autowallrun is active
+		if (bAutoWallrunActive)
+		{
+			AddInputVector(FreeLookMovementDirection.Vector(), false);
+		}
+
 		Iterations++;
 		float timeTick = GetSimulationTimeStep(remainingTime, Iterations);
 		remainingTime -= timeTick;
@@ -211,10 +234,14 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 
 		SafeMoveUpdatedComponent(Adjusted, UpdatedComponent->GetComponentQuat(), true, Hit);
 
-		if (FMath::IsNearlyZero(Acceleration.SizeSquared()))
+		// Don't check acceleration when autowallrun is active
+		if (!bAutoWallrunActive)
 		{
-			StopWallrunning();
-			return;
+			if (FMath::IsNearlyZero(Acceleration.SizeSquared()))
+			{
+				StopWallrunning();
+				return;
+			}
 		}
 
 		float subTimeTickRemaining = timeTick * (1.f - Hit.Time);
