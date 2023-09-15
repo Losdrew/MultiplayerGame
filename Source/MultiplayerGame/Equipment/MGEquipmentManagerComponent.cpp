@@ -2,6 +2,7 @@
 
 
 #include "MGEquipmentManagerComponent.h"
+#include "MGAbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Net/UnrealNetwork.h"
 

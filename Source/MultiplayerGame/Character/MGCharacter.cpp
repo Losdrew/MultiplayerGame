@@ -9,6 +9,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MGAbilitySystemComponent.h"
 #include "Net/UnrealNetwork.h"
 
 AMGCharacter::AMGCharacter(const FObjectInitializer& ObjectInitializer)

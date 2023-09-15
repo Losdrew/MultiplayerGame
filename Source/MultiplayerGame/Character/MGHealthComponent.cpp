@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "GameplayEffect.h"
 #include "MGAssistSubsystem.h"
+#include "Engine/GameInstance.h"
 
 #include "Net/UnrealNetwork.h"
 
