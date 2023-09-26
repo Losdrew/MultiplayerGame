@@ -104,7 +104,11 @@ public:
 	// If set to true - Character moves at FreeLookMovementDirection (from UMGCharacterMovementComponent)
 	// If set to false - Character moves at Controller rotation
 	UPROPERTY(BlueprintReadOnly, Category=Character)
-	bool bFreeLooking;
+	uint32 bFreeLooking : 1;
+
+	// The direction of character movement when free looking
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Replicated, Category=Character)
+	FRotator FreeLookMovementDirection;
 
 protected:
 

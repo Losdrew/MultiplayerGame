@@ -30,6 +30,7 @@ void AMGCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(AMGCharacter, bSliding, COND_SimulatedOnly);
+	DOREPLIFETIME_CONDITION(AMGCharacter, FreeLookMovementDirection, COND_SimulatedOnly);
 }
 
 // Called to bind functionality to input
@@ -124,7 +125,7 @@ void AMGCharacter::InputMove(const FInputActionValue& Value)
 
 		if (bFreeLooking)
 		{
-			MovementRotation = FRotator(0, GetMGMovementComponent()->FreeLookMovementDirection.Yaw, 0);
+			MovementRotation = FRotator(0, FreeLookMovementDirection.Yaw, 0);
 		}
 		else
 		{

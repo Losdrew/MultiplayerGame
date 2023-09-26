@@ -51,22 +51,29 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsWallrunning() const;
 
+	virtual void StartWallrunning(const FHitResult& Hit);
+
+	virtual void StopWallrunning();
+
 protected:
 
 	//~UMGCharacterMovementComponent interface
 	virtual void HandleImpact(const FHitResult& Hit, float TimeSlice, const FVector& MoveDelta) override;
+	virtual void ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations) override;
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
 	virtual void PhysCustom(float deltaTime, int32 Iterations) override;
+	virtual void SimulateMovement(float DeltaTime) override;
 	//~End of UMGCharacterMovementComponent interface
 
 	virtual void PhysWallrunning(float deltaTime, int32 Iterations);
 
-	virtual void StartWallrunning(const FHitResult& Hit);
-	virtual void StopWallrunning();
-
 	// Automatic movement when starting to wallrun
 	virtual void StartAutoWallrun();
 	virtual void StopAutoWallrun();
+
+	virtual void FindWall(const FVector& CapsuleLocation, FHitResult& OutWallHit) const;
+
+	virtual void UpdateWallrunRotation(float deltaTime, int32 Iterations);
 
 public:
 	// The maximum ground speed when sliding
@@ -118,18 +125,18 @@ public:
 	UPROPERTY(Category="Character Movement: Wallrunning", VisibleInstanceOnly, BlueprintReadOnly, Transient)
 	FHitResult CurrentWall;
 
-	// The direction of character movement when free looking
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Transient)
-	FRotator FreeLookMovementDirection;
-
 	// The duration of automatic movement (doesn't require holding a key) when starting to wallrun
 	UPROPERTY(Category="Character Movement: Wallrunning", EditAnywhere, BlueprintReadWrite, meta=(ClampMin="0", UIMin="0"))
 	float AutoWallrunDuration;
 
+	// Flag that tells if the player stopped wallrunning recently
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Transient)
+	uint32 bWasWallrunning : 1;
+
 protected:
 
 	FTimerHandle AutoWallrunTimerHandle;
-	bool bAutoWallrunActive;
+	uint32 bAutoWallrunActive : 1;
 };
 
 
@@ -147,18 +154,9 @@ public:
 	// Information at the start of the move
 	FHitResult StartWall;
 
-	// Information after the move has been performed
-	FRotator SavedFreeLookMovementDirection;
-
     virtual void Clear() override;
 
 	virtual void CombineWith(const FSavedMove_Character* OldMove, ACharacter* InCharacter, APlayerController* PC, const FVector& OldStartLocation) override;
-
-    virtual bool CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* Character, float MaxDelta) const override;
-
-    virtual void SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, FNetworkPredictionData_Client_Character& ClientData) override;
-
-    virtual void PrepMoveFor(ACharacter* Character) override;
 
 	virtual void SetInitialPosition(ACharacter* Character) override;
 };

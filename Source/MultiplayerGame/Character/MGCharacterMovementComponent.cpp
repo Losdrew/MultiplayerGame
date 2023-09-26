@@ -4,6 +4,7 @@
 #include "Character/MGCharacterMovementComponent.h"
 
 #include "MGCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 //////////////////////////////////////////////////////////////////////
 // UMGCharacterMovementComponent
@@ -86,7 +87,7 @@ bool UMGCharacterMovementComponent::DoJump(bool bReplayingMoves)
 
 			if (IsWallrunning())
 			{
-				FVector JumpDirection = CurrentWall.Normal;
+				FVector JumpDirection = CurrentWall.ImpactNormal;
 				const FVector ControlRotationVector = CharacterOwner->GetController()->GetControlRotation().Vector();
 
 			    if (FVector::DotProduct(CurrentWall.ImpactNormal, ControlRotationVector) > 0)
@@ -94,10 +95,13 @@ bool UMGCharacterMovementComponent::DoJump(bool bReplayingMoves)
 			        JumpDirection = ControlRotationVector;
 			    }
 
-				Velocity = (Velocity.GetSafeNormal() + JumpDirection) * WallrunJumpVelocity;
+ 				Velocity = (Velocity.GetSafeNormal() + JumpDirection) * WallrunJumpVelocity;
 			}
 
 			SetMovementMode(MOVE_Falling);
+
+			bWasWallrunning = false;
+			
 			return true;
 		}
 	}
@@ -124,22 +128,71 @@ void UMGCharacterMovementComponent::HandleImpact(const FHitResult& Hit, float Ti
 
 	if (IsFalling())
 	{
-		const float DotProduct = FVector::DotProduct(Hit.ImpactNormal, CharacterOwner->GetActorForwardVector());
+		const ECollisionChannel CollisionChannel = Hit.GetComponent()->GetCollisionObjectType();
 
-		if (DotProduct > -WallrunThreshold && DotProduct < WallrunThreshold)
+		if (CollisionChannel != ECC_WorldStatic)
 		{
-			StartWallrunning(Hit);
+			return;
 		}
+
+		FHitResult WallHit(1.0f);
+
+		FindWall(UpdatedComponent->GetComponentLocation(), WallHit);
+
+		if (WallHit.bBlockingHit)
+        {
+			const float DotProduct = FVector::DotProduct(WallHit.Normal, CharacterOwner->GetActorForwardVector());
+
+			if (DotProduct > -WallrunThreshold && DotProduct < WallrunThreshold)
+			{
+				StartWallrunning(WallHit);
+				return;
+			}
+        }
+	}
+
+	if (IsWallrunning())
+	{
+		const float CapsuleRadius = CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleRadius();
+
+		if (!IsWithinEdgeTolerance(UpdatedComponent->GetComponentLocation(), Hit.ImpactPoint, CapsuleRadius))
+		{
+			if (Hit.bBlockingHit)
+			{
+				StopWallrunning();
+			}
+		}
+	}
+}
+
+void UMGCharacterMovementComponent::ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations)
+{
+	Super::ProcessLanded(Hit, remainingTime, Iterations);
+
+	bWasWallrunning = false;
+}
+
+void UMGCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
+
+	if (PreviousCustomMode == MOVE_Wallrunning)
+	{
+		StopWallrunning();
 	}
 }
 
 void UMGCharacterMovementComponent::StartWallrunning(const FHitResult& Hit)
 {
+	if (bWasWallrunning)
+	{
+		return;
+	}
+
 	CurrentWall = Hit;
 
-	FVector WallDirection = FVector::CrossProduct(CurrentWall.ImpactNormal, FVector::UpVector).GetSafeNormal();
-
-	FreeLookMovementDirection = CharacterOwner->GetActorForwardVector().ProjectOnToNormal(WallDirection).Rotation();
+	FVector WallDirection = FVector::CrossProduct(CurrentWall.Normal, FVector::UpVector).GetSafeNormal();
+	GetMGCharacterOwner()->FreeLookMovementDirection = CharacterOwner->GetActorForwardVector().ProjectOnTo(WallDirection).Rotation();
 
 	GetMGCharacterOwner()->SetFreeLook(true);
 
@@ -153,10 +206,9 @@ void UMGCharacterMovementComponent::StartWallrunning(const FHitResult& Hit)
 void UMGCharacterMovementComponent::StopWallrunning()
 {
 	GetMGCharacterOwner()->SetFreeLook(false);
-
 	StopAutoWallrun();
-
 	SetMovementMode(MOVE_Falling);
+	bWasWallrunning = true;
 }
 
 void UMGCharacterMovementComponent::StartAutoWallrun()
@@ -170,19 +222,58 @@ void UMGCharacterMovementComponent::StopAutoWallrun()
 	bAutoWallrunActive = false;
 }
 
+void UMGCharacterMovementComponent::FindWall(const FVector& CapsuleLocation, FHitResult& OutWallHit) const
+{
+	// No collision, no wall...
+	if (!HasValidData() || !UpdatedComponent->IsQueryCollisionEnabled())
+	{
+		OutWallHit = FHitResult();
+		return;
+	}
+
+	check(CharacterOwner->GetCapsuleComponent());
+
+	FVector LeftVector = FVector::CrossProduct(GetMGCharacterOwner()->FreeLookMovementDirection.Vector(), FVector::DownVector);
+
+	const FVector WallCheckStart = CapsuleLocation;
+	FVector WallCheckEnd = WallCheckStart + (LeftVector * 100.f);
+
+	GetWorld()->LineTraceSingleByChannel(OutWallHit, WallCheckStart, WallCheckEnd, ECC_Visibility);
+
+	if (!OutWallHit.bBlockingHit)
+	{
+		WallCheckEnd = WallCheckStart + (-LeftVector * 100.f);
+		GetWorld()->LineTraceSingleByChannel(OutWallHit, WallCheckStart, WallCheckEnd, ECC_Visibility);
+	}
+
+	if (!OutWallHit.bBlockingHit)
+	{
+		WallCheckEnd = WallCheckStart + (Velocity.GetSafeNormal()  * 100.f);
+		GetWorld()->LineTraceSingleByChannel(OutWallHit, WallCheckStart, WallCheckEnd, ECC_Visibility);
+	}
+}
+
+void UMGCharacterMovementComponent::UpdateWallrunRotation(float deltaTime, int32 Iterations)
+{
+	const FRotator CurrentRotation = UpdatedComponent->GetComponentRotation();
+
+    FRotator WallRotation = CurrentWall.Normal.Rotation();
+
+	// Align character's rotation with wall rotation
+	const FRotator NewRotation = FMath::RInterpTo(CurrentRotation, WallRotation, deltaTime, 1.f);
+
+    UpdatedComponent->SetRelativeRotation(NewRotation);
+
+	// Move the character slightly away from the wall (so they don't get stuck) based on the capsule's radius
+	const FVector Offset = CurrentWall.Normal * CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	const FVector NewLocation = CurrentWall.Location + FVector(Offset.X, Offset.Y, 0);
+	
+    UpdatedComponent->SetWorldLocation(NewLocation);
+}
+
 bool UMGCharacterMovementComponent::IsWallrunning() const
 {
 	return (CustomMovementMode == MOVE_Wallrunning) && UpdatedComponent;
-}
-
-void UMGCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode)
-{
-	Super::OnMovementModeChanged(PreviousMovementMode, PreviousCustomMode);
-
-	if (PreviousCustomMode == MOVE_Wallrunning)
-	{
-		StopWallrunning();
-	}
 }
 
 void UMGCharacterMovementComponent::PhysCustom(float deltaTime, int32 Iterations)
@@ -195,30 +286,42 @@ void UMGCharacterMovementComponent::PhysCustom(float deltaTime, int32 Iterations
 	}
 }
 
+void UMGCharacterMovementComponent::SimulateMovement(float DeltaSeconds)
+{
+	if (CustomMovementMode == MOVE_Wallrunning)
+	{
+		FindWall(UpdatedComponent->GetComponentLocation(), CurrentWall);
+	}
+
+	Super::SimulateMovement(DeltaSeconds);
+}
+
 void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Iterations)
 {
 	float remainingTime = deltaTime;
 
 	while ((remainingTime >= MIN_TICK_TIME) && (Iterations < MaxSimulationIterations))
 	{
-		// Move player automatically while autowallrun is active
-		if (bAutoWallrunActive)
-		{
-			AddInputVector(FreeLookMovementDirection.Vector(), false);
-		}
-
 		Iterations++;
 		float timeTick = GetSimulationTimeStep(remainingTime, Iterations);
 		remainingTime -= timeTick;
 
 		RestorePreAdditiveRootMotionVelocity();
 
+		FVector FreeLookMovementDirection = GetMGCharacterOwner()->FreeLookMovementDirection.Vector();
+
+		// Move player automatically while autowallrun is active
+		if (bAutoWallrunActive)
+		{
+			AddInputVector(FreeLookMovementDirection, false);
+		}
+
 		if (!HasAnimRootMotion() && !CurrentRootMotion.HasOverrideVelocity())
 		{
 			CalcVelocity(deltaTime, WallrunningFriction, false, GetMaxBrakingDeceleration());
 		}
 
-		Velocity = Velocity.ProjectOnToNormal(FreeLookMovementDirection.Vector());
+		Velocity = Velocity.ProjectOnToNormal(FreeLookMovementDirection);
 
 		// Compute current gravity
 		const FVector Gravity(0.f, 0.f, GetGravityZ());
@@ -234,10 +337,13 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 
 		SafeMoveUpdatedComponent(Adjusted, UpdatedComponent->GetComponentQuat(), true, Hit);
 
+		HandleImpact(Hit, deltaTime, Adjusted);
+		SlideAlongSurface(Adjusted, deltaTime, Hit.Normal, Hit, false);
+
 		// Don't check acceleration when autowallrun is active
 		if (!bAutoWallrunActive)
 		{
-			if (FMath::IsNearlyZero(Acceleration.SizeSquared()))
+			if (Acceleration.IsZero())
 			{
 				StopWallrunning();
 				return;
@@ -245,17 +351,6 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 		}
 
 		float subTimeTickRemaining = timeTick * (1.f - Hit.Time);
-
-		if (Hit.bBlockingHit)
-		{
-			if (IsValidLandingSpot(UpdatedComponent->GetComponentLocation(), Hit))
-			{
-				remainingTime += subTimeTickRemaining;
-				ProcessLanded(Hit, remainingTime, Iterations);
-			}
-			StopWallrunning();
-			return;
-		}
 
 		Adjusted = Velocity * timeTick;
 
@@ -267,12 +362,22 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 			FindFloor(PawnLocation, FloorResult, false);
 			if (FloorResult.IsWalkableFloor() && IsValidLandingSpot(PawnLocation, FloorResult.HitResult))
 			{
+				StopWallrunning();
 				remainingTime += subTimeTickRemaining;
 				ProcessLanded(FloorResult.HitResult, remainingTime, Iterations);
-				StopWallrunning();
 				return;
 			}
 		}
+
+		FindWall(UpdatedComponent->GetComponentLocation(), CurrentWall);
+
+		if (!CurrentWall.bBlockingHit)
+        {
+			StopWallrunning();
+			return;
+        }
+
+		UpdateWallrunRotation(deltaTime, Iterations);
 	}
 }
 
@@ -309,7 +414,6 @@ void FSavedMove_MGCharacter::Clear()
     Super::Clear();
 
 	StartWall = FHitResult();
-	SavedFreeLookMovementDirection = FRotator();
 }
 
 void FSavedMove_MGCharacter::CombineWith(const FSavedMove_Character* OldMove, ACharacter* InCharacter, APlayerController* PC, const FVector& OldStartLocation)
@@ -322,51 +426,18 @@ void FSavedMove_MGCharacter::CombineWith(const FSavedMove_Character* OldMove, AC
 	FSavedMove_Character::CombineWith(OldMove, InCharacter, PC, OldStartLocation);
 }
 
-bool FSavedMove_MGCharacter::CanCombineWith(const FSavedMovePtr& NewMove, ACharacter* Character, float MaxDelta) const
-{
-	if (const AMGCharacter* MGCharacter = Cast<AMGCharacter>(Character))
-	{
-		if (MGCharacter->bFreeLooking && SavedFreeLookMovementDirection != ((FSavedMove_MGCharacter*)&NewMove)->SavedFreeLookMovementDirection)
-	    {
-			return false;
-	    }
-	}
-
-    return Super::CanCombineWith(NewMove, Character, MaxDelta);
-}
-
-void FSavedMove_MGCharacter::SetMoveFor(ACharacter* Character, float InDeltaTime, FVector const& NewAccel, class FNetworkPredictionData_Client_Character& ClientData)
-{
-    Super::SetMoveFor(Character, InDeltaTime, NewAccel, ClientData);
-
-    if (UMGCharacterMovementComponent* CharMov = Cast<UMGCharacterMovementComponent>(Character->GetCharacterMovement()))
-    {
-		SavedFreeLookMovementDirection = CharMov->FreeLookMovementDirection;
-    }
-}
-
-void FSavedMove_MGCharacter::PrepMoveFor(ACharacter* Character)
-{
-    Super::PrepMoveFor(Character);
-
-    if (UMGCharacterMovementComponent* CharMov = Cast<UMGCharacterMovementComponent>(Character->GetCharacterMovement()))
-    {
-        CharMov->FreeLookMovementDirection = SavedFreeLookMovementDirection;
-    }
-}
-
 void FSavedMove_MGCharacter::SetInitialPosition(ACharacter* Character)
 {
 	Super::SetInitialPosition(Character);
 
-	if (UMGCharacterMovementComponent* CharMov = Cast<UMGCharacterMovementComponent>(Character->GetCharacterMovement()))
+	if (UMGCharacterMovementComponent* CharMov = Cast<UMGCharacterMovementComponent>(Character->GetMovementComponent()))
     {
         StartWall = CharMov->CurrentWall;
     }
 }
 
 //////////////////////////////////////////////////////////////////////
-// FSavedMove_MGCharacter
+// FNetworkPredictionData_Client_MGCharacter
 
 FNetworkPredictionData_Client_MGCharacter::FNetworkPredictionData_Client_MGCharacter(const UCharacterMovementComponent& ClientMovement)
 : Super(ClientMovement)
