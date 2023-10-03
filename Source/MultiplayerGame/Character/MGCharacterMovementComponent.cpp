@@ -4,6 +4,7 @@
 #include "Character/MGCharacterMovementComponent.h"
 
 #include "MGCharacter.h"
+#include "MGGameplayTags.h"
 #include "Components/CapsuleComponent.h"
 
 //////////////////////////////////////////////////////////////////////
@@ -99,13 +100,10 @@ bool UMGCharacterMovementComponent::DoJump(bool bReplayingMoves)
 			}
 
 			SetMovementMode(MOVE_Falling);
-
 			bWasWallrunning = false;
-			
 			return true;
 		}
 	}
-
 	return false;
 }
 
@@ -115,7 +113,6 @@ void UMGCharacterMovementComponent::HandleWalkingOffLedge(const FVector& Previou
 	if (IsSliding())
 	{
 		const FVector ImpulseDirection = Velocity.GetSafeNormal() * LedgeSlideImpulse;
-
 		AddImpulse(ImpulseDirection);
 	}
 
@@ -128,24 +125,18 @@ void UMGCharacterMovementComponent::HandleImpact(const FHitResult& Hit, float Ti
 
 	if (IsFalling())
 	{
-		const ECollisionChannel CollisionChannel = Hit.GetComponent()->GetCollisionObjectType();
-
-		if (CollisionChannel != ECC_WorldStatic)
-		{
-			return;
-		}
-
+		// Need to confirm if we hit a valid wall to wallrun on
 		FHitResult WallHit(1.0f);
-
 		FindWall(UpdatedComponent->GetComponentLocation(), WallHit);
 
 		if (WallHit.bBlockingHit)
         {
-			const float DotProduct = FVector::DotProduct(WallHit.Normal, CharacterOwner->GetActorForwardVector());
+			const float DotProduct = FVector::DotProduct(WallHit.ImpactNormal, CharacterOwner->GetActorForwardVector());
 
 			if (DotProduct > -WallrunThreshold && DotProduct < WallrunThreshold)
 			{
-				StartWallrunning(WallHit);
+				CurrentWall = Hit;
+				StartWallrunning();
 				return;
 			}
         }
@@ -168,7 +159,6 @@ void UMGCharacterMovementComponent::HandleImpact(const FHitResult& Hit, float Ti
 void UMGCharacterMovementComponent::ProcessLanded(const FHitResult& Hit, float remainingTime, int32 Iterations)
 {
 	Super::ProcessLanded(Hit, remainingTime, Iterations);
-
 	bWasWallrunning = false;
 }
 
@@ -182,16 +172,52 @@ void UMGCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previous
 	}
 }
 
-void UMGCharacterMovementComponent::StartWallrunning(const FHitResult& Hit)
+void UMGCharacterMovementComponent::StartWallrunning()
 {
 	if (bWasWallrunning)
 	{
 		return;
 	}
 
-	CurrentWall = Hit;
+	if (const AMGCharacter* Character = GetMGCharacterOwner())
+	{
+		if (UAbilitySystemComponent* AbilitySystemComponent = Character->GetAbilitySystemComponent())
+		{
+			FGameplayEventData Payload;
+			Payload.EventTag = MGGameplayTags::GameplayEvent_StartWallrun;
 
-	FVector WallDirection = FVector::CrossProduct(CurrentWall.Normal, FVector::UpVector).GetSafeNormal();
+			FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
+			AbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
+		}
+	}
+
+	// Check if the Wallrun gameplay ability has activated wallrunning
+	if (bShouldWallrun)
+	{
+		StartWallrunning_Internal();
+	}
+}
+
+void UMGCharacterMovementComponent::StopWallrunning()
+{
+	if (const AMGCharacter* Character = GetMGCharacterOwner())
+	{
+		if (UAbilitySystemComponent* AbilitySystemComponent = Character->GetAbilitySystemComponent())
+		{
+			FGameplayEventData Payload;
+			Payload.EventTag = MGGameplayTags::GameplayEvent_StopWallrun;
+
+			FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
+			AbilitySystemComponent->HandleGameplayEvent(Payload.EventTag, &Payload);
+		}
+	}
+
+	StopWallrunning_Internal();
+}
+
+void UMGCharacterMovementComponent::StartWallrunning_Internal()
+{
+	const FVector WallDirection = FVector::CrossProduct(CurrentWall.ImpactNormal, FVector::UpVector).GetSafeNormal();
 	GetMGCharacterOwner()->FreeLookMovementDirection = CharacterOwner->GetActorForwardVector().ProjectOnTo(WallDirection).Rotation();
 
 	GetMGCharacterOwner()->SetFreeLook(true);
@@ -203,7 +229,7 @@ void UMGCharacterMovementComponent::StartWallrunning(const FHitResult& Hit)
 	SetMovementMode(MOVE_Custom, MOVE_Wallrunning);
 }
 
-void UMGCharacterMovementComponent::StopWallrunning()
+void UMGCharacterMovementComponent::StopWallrunning_Internal()
 {
 	GetMGCharacterOwner()->SetFreeLook(false);
 	StopAutoWallrun();
@@ -233,31 +259,31 @@ void UMGCharacterMovementComponent::FindWall(const FVector& CapsuleLocation, FHi
 
 	check(CharacterOwner->GetCapsuleComponent());
 
-	FVector LeftVector = FVector::CrossProduct(GetMGCharacterOwner()->FreeLookMovementDirection.Vector(), FVector::DownVector);
+	const FVector LeftVector = FVector::CrossProduct(GetMGCharacterOwner()->FreeLookMovementDirection.Vector(), FVector::DownVector);
 
 	const FVector WallCheckStart = CapsuleLocation;
 	FVector WallCheckEnd = WallCheckStart + (LeftVector * 100.f);
+	const FCollisionObjectQueryParams ObjectQueryParams = ECC_WorldStatic;
 
-	GetWorld()->LineTraceSingleByChannel(OutWallHit, WallCheckStart, WallCheckEnd, ECC_Visibility);
+	GetWorld()->LineTraceSingleByObjectType(OutWallHit, WallCheckStart, WallCheckEnd, ObjectQueryParams);
 
 	if (!OutWallHit.bBlockingHit)
 	{
 		WallCheckEnd = WallCheckStart + (-LeftVector * 100.f);
-		GetWorld()->LineTraceSingleByChannel(OutWallHit, WallCheckStart, WallCheckEnd, ECC_Visibility);
+		GetWorld()->LineTraceSingleByObjectType(OutWallHit, WallCheckStart, WallCheckEnd, ObjectQueryParams);
 	}
 
 	if (!OutWallHit.bBlockingHit)
 	{
 		WallCheckEnd = WallCheckStart + (Velocity.GetSafeNormal()  * 100.f);
-		GetWorld()->LineTraceSingleByChannel(OutWallHit, WallCheckStart, WallCheckEnd, ECC_Visibility);
+		GetWorld()->LineTraceSingleByObjectType(OutWallHit, WallCheckStart, WallCheckEnd, ObjectQueryParams);
 	}
 }
 
 void UMGCharacterMovementComponent::UpdateWallrunRotation(float deltaTime, int32 Iterations)
 {
 	const FRotator CurrentRotation = UpdatedComponent->GetComponentRotation();
-
-    FRotator WallRotation = CurrentWall.Normal.Rotation();
+	const FRotator WallRotation = CurrentWall.ImpactNormal.Rotation();
 
 	// Align character's rotation with wall rotation
 	const FRotator NewRotation = FMath::RInterpTo(CurrentRotation, WallRotation, deltaTime, 1.f);
@@ -265,7 +291,7 @@ void UMGCharacterMovementComponent::UpdateWallrunRotation(float deltaTime, int32
     UpdatedComponent->SetRelativeRotation(NewRotation);
 
 	// Move the character slightly away from the wall (so they don't get stuck) based on the capsule's radius
-	const FVector Offset = CurrentWall.Normal * CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	const FVector Offset = CurrentWall.ImpactNormal * CharacterOwner->GetCapsuleComponent()->GetScaledCapsuleRadius();
 	const FVector NewLocation = CurrentWall.Location + FVector(Offset.X, Offset.Y, 0);
 	
     UpdatedComponent->SetWorldLocation(NewLocation);
@@ -338,7 +364,17 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 		SafeMoveUpdatedComponent(Adjusted, UpdatedComponent->GetComponentQuat(), true, Hit);
 
 		HandleImpact(Hit, deltaTime, Adjusted);
-		SlideAlongSurface(Adjusted, deltaTime, Hit.Normal, Hit, false);
+
+		if (IsValidLandingSpot(UpdatedComponent->GetComponentLocation(), Hit))
+		{
+			StopWallrunning();
+			float subTimeTickRemaining = timeTick * (1.f - Hit.Time);
+			remainingTime += subTimeTickRemaining;
+			ProcessLanded(Hit, remainingTime, Iterations);
+			return;
+		}
+
+		SlideAlongSurface(Adjusted, (1.f - Hit.Time), Hit.Normal, Hit, false);
 
 		// Don't check acceleration when autowallrun is active
 		if (!bAutoWallrunActive)
@@ -346,25 +382,6 @@ void UMGCharacterMovementComponent::PhysWallrunning(float deltaTime, int32 Itera
 			if (Acceleration.IsZero())
 			{
 				StopWallrunning();
-				return;
-			}
-		}
-
-		float subTimeTickRemaining = timeTick * (1.f - Hit.Time);
-
-		Adjusted = Velocity * timeTick;
-
-		// See if we can convert a normally invalid landing spot (based on the hit result) to a usable one.
-		if (!Hit.bStartPenetrating && ShouldCheckForValidLandingSpot(timeTick, Adjusted, Hit))
-		{
-			const FVector PawnLocation = UpdatedComponent->GetComponentLocation();
-			FFindFloorResult FloorResult;
-			FindFloor(PawnLocation, FloorResult, false);
-			if (FloorResult.IsWalkableFloor() && IsValidLandingSpot(PawnLocation, FloorResult.HitResult))
-			{
-				StopWallrunning();
-				remainingTime += subTimeTickRemaining;
-				ProcessLanded(FloorResult.HitResult, remainingTime, Iterations);
 				return;
 			}
 		}

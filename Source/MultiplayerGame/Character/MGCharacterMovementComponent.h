@@ -51,8 +51,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsWallrunning() const;
 
-	virtual void StartWallrunning(const FHitResult& Hit);
-
+	virtual void StartWallrunning();
 	virtual void StopWallrunning();
 
 protected:
@@ -66,6 +65,9 @@ protected:
 	//~End of UMGCharacterMovementComponent interface
 
 	virtual void PhysWallrunning(float deltaTime, int32 Iterations);
+
+	virtual void StartWallrunning_Internal();
+	virtual void StopWallrunning_Internal();
 
 	// Automatic movement when starting to wallrun
 	virtual void StartAutoWallrun();
@@ -132,6 +134,11 @@ public:
 	// Flag that tells if the player stopped wallrunning recently
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Transient)
 	uint32 bWasWallrunning : 1;
+
+	// Flag that tells if the player should start wallrunning
+	// Set by Wallrun gameplay ability
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Transient)
+	uint32 bShouldWallrun : 1;
 
 protected:
 

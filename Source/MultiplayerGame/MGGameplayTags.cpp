@@ -5,6 +5,7 @@
 
 #include "Engine/EngineTypes.h"
 #include "GameplayTagsManager.h"
+#include "MGCharacterMovementComponent.h"
 
 namespace MGGameplayTags
 {
@@ -31,6 +32,8 @@ namespace MGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_Death, "GameplayEvent.Death", "Event that fires on death. This event only fires on the server.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_Reset, "GameplayEvent.Reset", "Event that fires once a player reset is executed.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_RequestReset, "GameplayEvent.RequestReset", "Event to request a player's pawn to be instantly replaced with a new one at a valid spawn location.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_StartWallrun, "GameplayEvent.StartWallrun", "Event that fires when starting to wallrun. This event only fires on the server.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_StopWallrun, "GameplayEvent.StopWallrun", "Event that fires when starting to wallrun. This event only fires on the server.");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Status_Crouching, "Status.Crouching", "Target is crouching.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Status_Death, "Status.Death", "Target has the death status.");
@@ -47,6 +50,8 @@ namespace MGGameplayTags
 	// When extending Lyra, you can create your own movement modes but you need to update GetCustomMovementModeTagMap()
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_Custom, "Movement.Mode.Custom", "This is invalid and should be replaced with custom tags.  See LyraGameplayTags::CustomMovementModeTagMap.");
 
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Movement_Mode_Wallrunning, "Movement.Mode.Wallrunning", "Wallrun movement tag.");
+
 	// Unreal Movement Modes
 	const TMap<uint8, FGameplayTag> MovementModeTagMap =
 	{
@@ -62,6 +67,7 @@ namespace MGGameplayTags
 	const TMap<uint8, FGameplayTag> CustomMovementModeTagMap =
 	{
 		// Fill these in with your custom modes
+		{ MOVE_Wallrunning, Movement_Mode_Wallrunning }
 	};
 
 	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString)
