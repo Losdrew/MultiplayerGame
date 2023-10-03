@@ -5,6 +5,7 @@
 
 #include "MGPhysicalMaterialWithTags.h"
 #include "Net/UnrealNetwork.h"
+#include "GameplayTagContainer.h"
 
 void UMGRangedWeaponInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {

@@ -4,7 +4,7 @@
 #include "MGAbilitySet.h"
 
 #include "MGAbilitySystemComponent.h"
-
+#include "MGGameplayAbility.h"
 
 void FMGAbilitySet_GrantedHandles::AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle)
 {

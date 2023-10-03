@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-
 #include "MGEquipmentInstance.generated.h"
 
 struct FMGEquipmentActorToSpawn;

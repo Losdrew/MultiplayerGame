@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "MGLayoutUI.h"
-#include "MGHUDDataAsset.h"
+
 #include "MGHUD.generated.h"
+
+class UMGLayoutUI;
+struct FGameplayTag;
 
 /**
  * AMGHUD

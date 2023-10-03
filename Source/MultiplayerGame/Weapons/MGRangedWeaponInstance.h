@@ -2,11 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
-#include "MGAbilitySourceInterface.h"
 #include "MGEquipmentInstance.h"
-#include "Curves/CurveFloat.h"
+#include "MGAbilitySourceInterface.h"
+#include "GameplayTagContainer.h"
 
 #include "MGRangedWeaponInstance.generated.h"
 

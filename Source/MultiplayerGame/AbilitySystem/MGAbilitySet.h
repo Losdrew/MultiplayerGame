@@ -2,11 +2,16 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
-#include "MGGameplayAbility.h"
 #include "Engine/DataAsset.h"
+#include "GameplayTagContainer.h"
+#include "GameplayEffect.h"
+
 #include "MGAbilitySet.generated.h"
+
+class UAttributeSet;
+class UGameplayEffect;
+class UMGGameplayAbility;
+class UMGAbilitySystemComponent;
 
 /**
  * FMGAbilitySet_GameplayAbility

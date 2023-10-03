@@ -1,9 +1,10 @@
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include <Camera/CameraComponent.h>
+
 #include "MGFirstPersonCharacter.generated.h"
+
+class UCameraComponent;
 
 /**
  * AMGFirstPersonCharacter

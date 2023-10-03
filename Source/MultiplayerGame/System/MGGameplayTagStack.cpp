@@ -3,6 +3,8 @@
 
 #include "System/MGGameplayTagStack.h"
 
+#include "GameplayTags.h"
+
 void FMGGameplayTagStackContainer::AddStack(FGameplayTag Tag, int32 StackCount)
 {
 	if (!Tag.IsValid())

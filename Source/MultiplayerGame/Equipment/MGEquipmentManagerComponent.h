@@ -2,13 +2,16 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "MGEquipmentDefinition.h"
+#include "Net/Serialization/FastArraySerializer.h"
+#include "MGAbilitySet.h"
 
 #include "MGEquipmentManagerComponent.generated.h"
 
-struct FMGEquipmentList;
+class UMGEquipmentInstance;
+class UMGEquipmentDefinition;
+class UMGAbilitySystemComponent;
 class UMGEquipmentManagerComponent;
+struct FMGEquipmentList;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGEquipment_EquippedChanged, UMGEquipmentManagerComponent*, EquipmentManagerComponent, UMGEquipmentInstance*, EquipmentInstance);
 

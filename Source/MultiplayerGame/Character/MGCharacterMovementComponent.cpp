@@ -3,7 +3,9 @@
 
 #include "Character/MGCharacterMovementComponent.h"
 
+#include "AbilitySystemComponent.h"
 #include "MGCharacter.h"
+#include "MGGameplayAbility_Death.h"
 #include "MGGameplayTags.h"
 #include "Components/CapsuleComponent.h"
 

@@ -1,9 +1,11 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "UI/MGWeaponStatus.h"
+#include "MGWeaponStatus.h"
 
 #include "MGCharacter.h"
+#include "Components/Image.h"
+#include "Components/TextBlock.h"
 #include "MGEquipmentManagerComponent.h"
 #include "MGRangedWeaponInstance.h"
 

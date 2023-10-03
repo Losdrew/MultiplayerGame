@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "EnhancedInputComponent.h"
 #include "MGInputConfig.h"
+
 #include "MGEnhancedInputComponent.generated.h"
 
 /**

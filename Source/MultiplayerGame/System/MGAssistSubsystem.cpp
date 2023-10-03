@@ -3,7 +3,6 @@
 
 #include "System/MGAssistSubsystem.h"
 
-#include "MGPlayerState.h"
 #include "GameFramework/PlayerState.h"
 
 void UMGAssistSubsystem::OnPlayerReceiveDamage(AActor* Instigator, AActor* Target, const FGameplayEffectSpec& EffectSpec, float Magnitude)

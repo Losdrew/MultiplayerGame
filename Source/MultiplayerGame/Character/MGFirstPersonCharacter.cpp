@@ -1,4 +1,9 @@
+// Copyright Artem Volovyi. All Rights Reserved.
+
+
 #include "MGFirstPersonCharacter.h"
+
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 AMGFirstPersonCharacter::AMGFirstPersonCharacter(const FObjectInitializer& ObjectInitializer)

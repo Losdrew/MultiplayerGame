@@ -2,16 +2,19 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "MGFirstPersonCharacter.h"
-#include "MGInputConfig.h"
-#include "MGAbilitySystemComponent.h"
-#include "MGEquipmentManagerComponent.h"
-#include "MGHealthComponent.h"
-#include "InputMappingContext.h"
-#include "MGCharacterMovementComponent.h"
+
 #include "MGCharacter.generated.h"
+
+class UMGInputConfig;
+class UMGHealthComponent;
+class UInputMappingContext;
+class UMGAbilitySystemComponent;
+class UMGEquipmentManagerComponent;
+class UMGCharacterMovementComponent;
+struct FGameplayTag;
+struct FInputActionValue;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMGCharacter_PlayerStateReplicated);
 

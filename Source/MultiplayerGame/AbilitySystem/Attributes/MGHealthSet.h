@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AttributeSet.h"
 #include "MGAttributeSet.h"
+#include "AbilitySystemComponent.h"
+
 #include "MGHealthSet.generated.h"
 
 /**

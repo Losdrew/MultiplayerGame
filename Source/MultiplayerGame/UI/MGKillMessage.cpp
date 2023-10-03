@@ -1,13 +1,15 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "UI/MGKillMessage.h"
+#include "MGKillMessage.h"
 
 #include "MGPhysicalMaterialWithTags.h"
 #include "MGRangedWeaponInstance.h"
 #include "NativeGameplayTags.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "GameFramework/PlayerState.h"
+#include "GameplayEffectTypes.h"
 
 UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Gameplay_Weakspot, "Gameplay.WeakSpot");
 

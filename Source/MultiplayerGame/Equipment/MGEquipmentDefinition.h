@@ -2,15 +2,10 @@
 
 #pragma once
 
-#include "MGAbilitySet.h"
-#include "MGEquipmentInstance.h"
-#include "Containers/Array.h"
-#include "Templates/SubclassOf.h"
-#include "UObject/Object.h"
-#include "UObject/ObjectPtr.h"
-
 #include "MGEquipmentDefinition.generated.h"
 
+class UMGAbilitySet;
+class UMGEquipmentInstance;
 
 /**
  * FMGEquipmentActorToSpawn

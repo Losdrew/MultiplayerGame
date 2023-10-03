@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "MGGameplayAbility.h"
+
 #include "MGGameplayAbility_Death.generated.h"
 
 /**

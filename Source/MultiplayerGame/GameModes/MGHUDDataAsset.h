@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "GameplayTags.h"
-#include "MGLayoutUI.h"
+#include "GameplayTagContainer.h"
+
 #include "MGHUDDataAsset.generated.h"
+
+class UMGLayoutUI;
 
 /**
  * FMGWidgetInSlot

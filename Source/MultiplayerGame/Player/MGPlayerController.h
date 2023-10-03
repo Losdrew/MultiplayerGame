@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "MGPlayerController.generated.h"
 
 class AMGPlayerState;

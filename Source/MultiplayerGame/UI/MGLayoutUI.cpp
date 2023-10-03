@@ -1,7 +1,10 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
-#include "UI/MGLayoutUI.h"
+#include "MGLayoutUI.h"
+
 #include "Blueprint/WidgetTree.h"
+#include "GameplayTags.h"
+#include "MGNamedSlotWithTag.h"
 
 void UMGLayoutUI::SetWidgetToSlot(UUserWidget* Widget, FGameplayTag SlotTag)
 {

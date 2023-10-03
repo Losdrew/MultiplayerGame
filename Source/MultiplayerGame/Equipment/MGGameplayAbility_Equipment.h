@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "MGEquipmentInstance.h"
 #include "MGGameplayAbility.h"
+
 #include "MGGameplayAbility_Equipment.generated.h"
+
+class UMGEquipmentInstance;
 
 /**
  * UMGGameplayAbility_Equipment

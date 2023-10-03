@@ -2,12 +2,13 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayEffectTypes.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/Image.h"
-#include "Components/TextBlock.h"
+
 #include "MGKillMessage.generated.h"
+
+class UImage;
+class UTextBlock;
+struct FGameplayEffectContextHandle;
 
 /**
  * UMGKillMessage

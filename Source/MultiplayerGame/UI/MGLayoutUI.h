@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "GameplayTags.h"
-#include "MGNamedSlotWithTag.h"
+#include "GameplayTagContainer.h"
+
 #include "MGLayoutUI.generated.h"
+
+class UMGNamedSlotWithTag;
 
 /**
  * UMGLayoutUI

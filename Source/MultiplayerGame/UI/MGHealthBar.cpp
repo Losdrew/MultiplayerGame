@@ -3,6 +3,12 @@
 
 #include "MGHealthBar.h"
 
+#include "Components/SizeBox.h"
+#include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
+#include "MGCharacter.h"
+#include "MGHealthComponent.h"
+
 void UMGHealthBar::NativeConstruct()
 {
 	Super::NativeConstruct();

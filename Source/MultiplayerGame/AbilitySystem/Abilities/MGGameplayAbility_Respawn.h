@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "MGGameplayAbility.h"
-#include "MGHealthComponent.h"
+
 #include "MGGameplayAbility_Respawn.generated.h"
+
+class UMGHealthComponent;
 
 /**
  * UMGGameplayAbility_Respawn

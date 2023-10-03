@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystem/Abilities/MGGameplayAbility.h"
-#include "AbilitySystem/AbilityTasks/MGAbilityTask_OnTick.h"
+#include "MGGameplayAbility.h"
+
 #include "MGGameplayAbility_Slide.generated.h"
+
+class UMGAbilityTask_OnTick;
 
 /**
  * UMGGameplayAbility_Slide

@@ -2,14 +2,15 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "MGEquipmentManagerComponent.h"
-#include "MGRangedWeaponInstance.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/Image.h"
-#include "Components/TextBlock.h"
+
 #include "MGWeaponStatus.generated.h"
 
+class UImage;
+class UTextBlock;
+class UMGEquipmentInstance;
+class UMGRangedWeaponInstance;
+class UMGEquipmentManagerComponent;
 
 /**
  * UMGWeaponStatus

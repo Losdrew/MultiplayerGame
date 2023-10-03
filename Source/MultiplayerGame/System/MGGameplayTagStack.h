@@ -2,15 +2,15 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Net/Serialization/FastArraySerializer.h"
-#include "GameplayTags.h"
+#include "GameplayTagContainer.h"
+
 #include "MGGameplayTagStack.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGGameplayTagStackContainer_TagStackChanged, FGameplayTag, Tag, int32, StackCount);
-
-struct FMGGameplayTagStackContainer;
 struct FNetDeltaSerializeInfo;
+struct FMGGameplayTagStackContainer;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGGameplayTagStackContainer_TagStackChanged, FGameplayTag, Tag, int32, StackCount);
 
 /**
  * FMGGameplayTagStack

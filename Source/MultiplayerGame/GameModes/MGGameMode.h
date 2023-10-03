@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "GameplayEffectTypes.h"
+
 #include "MGGameMode.generated.h"
+
+struct FGameplayEffectContextHandle;
 
 namespace MatchState
 {

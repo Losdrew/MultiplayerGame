@@ -1,7 +1,7 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "AbilitySystem/AbilityTasks/MGAbilityTask_OnTick.h"
+#include "MGAbilityTask_OnTick.h"
 
 UMGAbilityTask_OnTick::UMGAbilityTask_OnTick(const FObjectInitializer& ObjectInitializer)
 {

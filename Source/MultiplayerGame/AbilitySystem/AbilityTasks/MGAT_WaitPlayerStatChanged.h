@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Abilities/Async/AbilityAsync.h"
-#include "MGPlayerState.h"
+
 #include "MGAT_WaitPlayerStatChanged.generated.h"
+
+class AMGPlayerState;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGWaitPlayerStatChangedDelegate, int32, Count);
 

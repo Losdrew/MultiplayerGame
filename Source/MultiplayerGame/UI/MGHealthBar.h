@@ -2,13 +2,14 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/SizeBox.h"
-#include "Components/ProgressBar.h"
-#include "Components/TextBlock.h"
-#include "MGCharacter.h"
+
 #include "MGHealthBar.generated.h"
+
+class USizeBox;
+class UTextBlock;
+class UProgressBar;
+class UMGHealthComponent;
 
 /**
  * UMGHealthBar

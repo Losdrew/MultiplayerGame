@@ -6,6 +6,8 @@
 #include "MGAbilitySet.h"
 #include "MGGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "MGAbilitySystemComponent.h"
+#include "MGGameplayTagStack.h"
 
 AMGPlayerState::AMGPlayerState()
 {

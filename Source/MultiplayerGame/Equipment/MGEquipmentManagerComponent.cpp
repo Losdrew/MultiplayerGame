@@ -2,10 +2,13 @@
 
 
 #include "MGEquipmentManagerComponent.h"
+
 #include "MGAbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "MGAbilitySet.h"
 #include "Net/UnrealNetwork.h"
-
+#include "MGEquipmentInstance.h"
+#include "MGEquipmentDefinition.h"
 
 //////////////////////////////////////////////////////////////////////
 // FMGEquipmentList

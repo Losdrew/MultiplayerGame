@@ -3,11 +3,11 @@
 
 #include "MGGameMode.h"
 
-#include "MGAssistSubsystem.h"
 #include "MGCharacter.h"
 #include "MGGameState.h"
 #include "MGHealthComponent.h"
 #include "MGPlayerState.h"
+#include "MGCharacterMovementComponent.h"
 
 namespace MatchState
 {

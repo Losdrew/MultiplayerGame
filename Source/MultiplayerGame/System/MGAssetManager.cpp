@@ -3,6 +3,8 @@
 
 #include "MGAssetManager.h"
 
+#include "AbilitySystemGlobals.h"
+
 void UMGAssetManager::StartInitialLoading()
 {
 	UAssetManager::StartInitialLoading();

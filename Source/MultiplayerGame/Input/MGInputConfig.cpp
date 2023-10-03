@@ -3,6 +3,8 @@
 
 #include "MGInputConfig.h"
 
+#include "MGGameplayTags.h"
+
 const UInputAction* UMGInputConfig::FindNativeInputActionForTag(const FGameplayTag& InputTag) const
 {
 	for (const FMGInputAction& Action : NativeInputActions)

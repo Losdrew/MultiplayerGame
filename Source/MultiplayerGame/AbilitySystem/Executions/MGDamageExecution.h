@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameplayEffectExecutionCalculation.h"
+
 #include "MGDamageExecution.generated.h"
 
 /**

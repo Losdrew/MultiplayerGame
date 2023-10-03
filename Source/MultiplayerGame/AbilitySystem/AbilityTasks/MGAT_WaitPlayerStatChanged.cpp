@@ -1,7 +1,9 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "AbilitySystem/AbilityTasks/MGAT_WaitPlayerStatChanged.h"
+#include "MGAT_WaitPlayerStatChanged.h"
+
+#include "MGPlayerState.h"
 
 UMGAT_WaitPlayerStatChanged* UMGAT_WaitPlayerStatChanged::WaitPlayerStatChanged(APlayerState* PlayerState, FGameplayTag StatTag, bool bOnlyTriggerOnce, bool bOnlyMatchExact)
 {

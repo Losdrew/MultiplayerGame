@@ -7,6 +7,7 @@ public class MultiplayerGame : ModuleRules
 	public MultiplayerGame(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+        IWYUSupport = IWYUSupport.Full;
 
         PrivateIncludePaths.AddRange(new string[]
         {

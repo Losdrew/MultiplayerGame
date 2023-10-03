@@ -2,13 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "MGAbilitySystemComponent.h"
-#include "MGHealthSet.h"
-#include "Components/ActorComponent.h"
 
 #include "MGHealthComponent.generated.h"
 
+class UMGHealthSet;
 class UMGHealthComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGHealth_DeathEvent, AActor*, OwningActor);

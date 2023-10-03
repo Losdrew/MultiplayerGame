@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "MGRangedWeaponInstance.h"
 #include "MGGameplayAbility_Equipment.h"
+
 #include "MGGameplayAbility_RangedWeapon.generated.h"
+
+class UMGRangedWeaponInstance;
 
 /**
  * UMGGameplayAbility_Equipment

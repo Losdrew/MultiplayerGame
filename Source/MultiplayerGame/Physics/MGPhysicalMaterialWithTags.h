@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayTagContainer.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
+#include "GameplayTagContainer.h"
+
 #include "MGPhysicalMaterialWithTags.generated.h"
 
 /**

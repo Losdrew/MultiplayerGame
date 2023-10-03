@@ -1,7 +1,9 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "UI/MGNamedSlotWithTag.h"
+#include "MGNamedSlotWithTag.h"
+
+#include "GameplayTagContainer.h"
 
 TSharedRef<SWidget> UMGNamedSlotWithTag::RebuildWidget()
 {

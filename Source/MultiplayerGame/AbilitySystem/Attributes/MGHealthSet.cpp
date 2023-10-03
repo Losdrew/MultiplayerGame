@@ -7,6 +7,7 @@
 #include "GameplayEffectExtension.h"
 #include "GameplayEffectTypes.h"
 #include "AbilitySystemComponent.h"
+#include "MGAbilitySystemComponent.h"
 
 UMGHealthSet::UMGHealthSet()
 {

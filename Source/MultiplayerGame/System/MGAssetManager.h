@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Engine/AssetManager.h"
-#include "AbilitySystemGlobals.h"
+
 #include "MGAssetManager.generated.h"
 
 /**

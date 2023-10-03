@@ -3,8 +3,6 @@
 
 #include "MGGameplayTags.h"
 
-#include "Engine/EngineTypes.h"
-#include "GameplayTagsManager.h"
 #include "MGCharacterMovementComponent.h"
 
 namespace MGGameplayTags

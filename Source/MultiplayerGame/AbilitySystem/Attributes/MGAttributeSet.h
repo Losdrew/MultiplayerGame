@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "AttributeSet.h"
-#include "GameplayEffect.h"
-#include "MGAbilitySystemComponent.h"
+
 #include "MGAttributeSet.generated.h"
+
+class UMGAbilitySystemComponent;
+struct FGameplayEffectSpec;
 
 /**
  *	Defines a set of helper functions for accessing and initializing attributes.

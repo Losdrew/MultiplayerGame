@@ -2,12 +2,13 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
-#include "MGHUDDataAsset.h"
-#include "GameplayEffectTypes.h"
-#include "MGAbilitySet.h"
+
 #include "MGGameState.generated.h"
+
+class UMGAbilitySet;
+class UMGHUDDataAsset;
+struct FGameplayEffectContextHandle;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_PlayerConnection, AController*, Controller);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGGameState_MatchStateChanged, FName, NewMatchState);

@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameplayTags.h"
 #include "Components/NamedSlot.h"
+#include "GameplayTagContainer.h"
+
 #include "MGNamedSlotWithTag.generated.h"
 
 /**

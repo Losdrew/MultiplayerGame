@@ -1,10 +1,11 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "AbilitySystem/Abilities/MGGameplayAbility_Slide.h"
+#include "MGGameplayAbility_Slide.h"
 
 #include "MGCharacter.h"
 #include "MGCharacterMovementComponent.h"
+#include "AbilitySystem/AbilityTasks/MGAbilityTask_OnTick.h"
 
 void UMGGameplayAbility_Slide::StartSliding_Implementation()
 {

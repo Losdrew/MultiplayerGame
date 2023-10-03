@@ -1,8 +1,12 @@
 // Copyright Artem Volovyi. All Rights Reserved.
 
 
-#include "UI/MGHUD.h"
+#include "MGHUD.h"
+
 #include "MGGameState.h"
+#include "MGHUDDataAsset.h"
+#include "MGLayoutUI.h"
+#include "GameplayTagContainer.h"
 
 void AMGHUD::BeginPlay()
 {

@@ -3,7 +3,6 @@
 
 #include "GameModes/MGGameState.h"
 
-#include "MGAssistSubsystem.h"
 #include "Net/UnrealNetwork.h"
 #include "MGGameMode.h"
 

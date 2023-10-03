@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
+
 #include "MGGameplayAbility.generated.h"
 
 class AMGCharacter;

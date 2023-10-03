@@ -2,16 +2,16 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "AbilitySystemInterface.h"
-#include "MGAbilitySystemComponent.h"
 #include "MGGameplayTagStack.h"
+
 #include "MGPlayerState.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(FMGPlayerState_StatTagChanged, FGameplayTag, int32);
-
 class UMGAbilitySet;
+class UMGAbilitySystemComponent;
+
+DECLARE_MULTICAST_DELEGATE_TwoParams(FMGPlayerState_StatTagChanged, FGameplayTag, int32);
 
 /**
  * AMGPlayerState

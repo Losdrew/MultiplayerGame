@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "GameplayEffectTypes.h"
+
 #include "MGAssistSubsystem.generated.h"
+
+struct FGameplayEffectSpec;
 
 /**
  * FMGPlayerDamageDealt

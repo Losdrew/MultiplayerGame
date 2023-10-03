@@ -3,6 +3,7 @@
 #pragma once
 
 #include "MGGameplayAbility_RangedWeapon.h"
+
 #include "MGGameplayAbility_WeaponFire.generated.h"
 
 /**

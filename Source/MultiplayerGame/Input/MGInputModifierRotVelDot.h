@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "InputModifiers.h"
+
 #include "MGInputModifierRotVelDot.generated.h"
 
 /** ControlRotationVelocityDotProduct

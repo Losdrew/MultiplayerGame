@@ -3,6 +3,8 @@
 
 #include "MGGameplayAbility_Equipment.h"
 
+#include "MGEquipmentInstance.h"
+
 UMGEquipmentInstance* UMGGameplayAbility_Equipment::GetAssociatedEquipment() const
 {
 	if (const FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec())

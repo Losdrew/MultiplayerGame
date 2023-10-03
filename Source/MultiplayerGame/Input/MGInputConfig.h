@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "AbilitySystemComponent.h"
 #include "Engine/DataAsset.h"
-#include "Containers/Array.h"
-#include "EnhancedInputComponent.h"
+#include "GameplayTagContainer.h"
+
 #include "MGInputConfig.generated.h"
+
+class UInputAction;
 
 /**
  * FMGInputAction

@@ -3,6 +3,8 @@
 
 #include "MGGameplayAbility_Respawn.h"
 
+#include "MGHealthComponent.h"
+
 bool UMGGameplayAbility_Respawn::IsAvatarDeadOrDying() const
 {
 	bool IsDeadOrDying = false;

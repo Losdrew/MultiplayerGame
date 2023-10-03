@@ -5,8 +5,6 @@
 
 #include "MGFirstPersonCharacter.h"
 #include "MGEquipmentDefinition.h"
-#include "GameFramework/Actor.h"
-#include "GameFramework/Character.h"
 #include "Net/UnrealNetwork.h"
 
 void UMGEquipmentInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

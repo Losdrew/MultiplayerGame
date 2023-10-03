@@ -4,12 +4,8 @@
 #include "MGHealthComponent.h"
 
 #include "MGGameplayTags.h"
-#include "Delegates/Delegate.h"
-#include "GameFramework/Actor.h"
-#include "GameplayEffect.h"
 #include "MGAssistSubsystem.h"
-#include "Engine/GameInstance.h"
-
+#include "MGHealthSet.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
