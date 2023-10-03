@@ -25,4 +25,20 @@ public:
 	UMGAbilitySystemComponent* GetMGAbilitySystemComponent() const;
 
 	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	UFUNCTION(BlueprintCallable)
+	void SetCameraTilt(float TiltAngle, float InterpSpeed);
+
+	UFUNCTION(BlueprintCallable)
+	void TiltCamera(float DeltaTime);
+
+protected:
+
+	UPROPERTY(BlueprintReadOnly, Transient)
+	float CameraTiltAngle;
+
+	UPROPERTY(BlueprintReadOnly, Transient)
+	float CameraTiltInterpSpeed;
 };
