@@ -38,7 +38,7 @@ void UMGKillMessage::OnPlayerKilled(AActor* KillerActor, AActor* AssistActor, AA
 
 	if (const UMGRangedWeaponInstance* Weapon = Cast<UMGRangedWeaponInstance>(DamageContext.GetSourceObject()))
 	{
-		WeaponImage->SetBrushFromTexture(Weapon->KillFeedIcon);
+		WeaponImage->SetBrushFromTexture(Weapon->KillFeedIcon, true);
 	}
 	else
 	{
