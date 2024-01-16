@@ -114,6 +114,8 @@ UMGEquipmentManagerComponent::UMGEquipmentManagerComponent(const FObjectInitiali
 	SetIsReplicatedByDefault(true);
 	bWantsInitializeComponent = true;
 	bReplicateUsingRegisteredSubObjectList = true;
+	PrimaryComponentTick.bStartWithTickEnabled = true;
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UMGEquipmentManagerComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
@@ -207,6 +209,16 @@ void UMGEquipmentManagerComponent::ReadyForReplication()
 		{
 			AddReplicatedSubObject(Instance);
 		}
+	}
+}
+
+void UMGEquipmentManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (UMGEquipmentInstance* CurrentEquipment = Cast<UMGEquipmentInstance>(GetFirstInstanceOfType(UMGEquipmentInstance::StaticClass())))
+	{
+		CurrentEquipment->Tick(DeltaTime);
 	}
 }
 

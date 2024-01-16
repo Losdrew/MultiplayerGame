@@ -120,6 +120,7 @@ public:
 	virtual void InitializeComponent() override;
 	virtual void UninitializeComponent() override;
 	virtual void ReadyForReplication() override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	//~End of UActorComponent interface
 
 	// Returns the first equipped instance of a given type, or nullptr if none are found

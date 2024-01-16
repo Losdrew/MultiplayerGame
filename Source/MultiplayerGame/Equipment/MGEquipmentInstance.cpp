@@ -26,6 +26,10 @@ UWorld* UMGEquipmentInstance::GetWorld() const
 	return nullptr;
 }
 
+void UMGEquipmentInstance::Tick(float DeltaSeconds)
+{
+}
+
 APawn* UMGEquipmentInstance::GetPawn() const
 {
 	return Cast<APawn>(GetOuter());

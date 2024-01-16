@@ -9,7 +9,7 @@
 class UMGRangedWeaponInstance;
 
 /**
- * UMGGameplayAbility_Equipment
+ * UMGGameplayAbility_RangedWeapon
  *
  *	An ability granted by and associated with ranged weapon instance
  */

@@ -21,6 +21,8 @@ public:
 	virtual bool IsSupportedForNetworking() const override { return true; }
 	virtual UWorld* GetWorld() const override final;
 	//~End of UObject interface
+	
+	virtual void Tick(float DeltaSeconds);
 
 	UFUNCTION(BlueprintPure, Category = "Equipment")
 	APawn* GetPawn() const;
