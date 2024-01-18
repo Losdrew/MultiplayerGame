@@ -27,6 +27,13 @@ struct FMGAppliedEquipmentEntry : public FFastArraySerializerItem
 
 	FMGAppliedEquipmentEntry() {}
 
+	bool operator==(const FMGAppliedEquipmentEntry& Other) const
+	{
+		return EquipmentDefinition == Other.EquipmentDefinition
+			&& Instance == Other.Instance
+			&& GrantedHandles.StaticStruct() == Other.GrantedHandles.StaticStruct();
+	}
+
 private:
 
 	friend FMGEquipmentList;
@@ -72,13 +79,18 @@ public:
 	}
 
 	UMGEquipmentInstance* AddEntry(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition);
-	void RemoveEntry(UMGEquipmentInstance* Instance);
+	void ActivateEntry(const UMGEquipmentInstance* EquipmentInstance);
+	void DeactivateEntry(const UMGEquipmentInstance* EquipmentInstance);
+	void RemoveEntry(const UMGEquipmentInstance* EquipmentInstance);
 
 private:
 
 	friend UMGEquipmentManagerComponent;
 
 	UMGAbilitySystemComponent* GetAbilitySystemComponent() const;
+
+	FMGAppliedEquipmentEntry* FindEntryByDefinition(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition);
+	FMGAppliedEquipmentEntry* FindEntryByInstance(const UMGEquipmentInstance* EquipmentInstance);
 
 private:
 	// Replicated list of equipment entries
@@ -111,10 +123,16 @@ public:
 	UMGEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	UMGEquipmentInstance* EquipItem(TSubclassOf<UMGEquipmentDefinition> EquipmentClass);
+	UMGEquipmentInstance* AddItem(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	void UnequipItem(UMGEquipmentInstance* ItemInstance);
+	void RemoveItem(UMGEquipmentInstance* ItemInstance);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	void EquipItem(const UMGEquipmentInstance* ItemInstance);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	void UnequipCurrentItem();
 
 	//~UActorComponent interface
 	virtual void InitializeComponent() override;
@@ -123,9 +141,16 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	//~End of UActorComponent interface
 
+	UFUNCTION(BlueprintCallable)
+	UMGEquipmentInstance* GetEquippedItem() const { return EquippedItem; }
+
 	// Returns the first equipped instance of a given type, or nullptr if none are found
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	UMGEquipmentInstance* GetFirstInstanceOfType(TSubclassOf<UMGEquipmentInstance> InstanceType);
+	UMGEquipmentInstance* GetFirstInstanceOfType(TSubclassOf<UMGEquipmentInstance> InstanceType) const;
+
+	// Returns the first equipped instance by equipment definition, or nullptr if none are found
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UMGEquipmentInstance* GetFirstInstanceByDefinition(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition) const;
 
  	// Returns all equipped instances of a given type, or an empty array if none are found
  	UFUNCTION(BlueprintCallable, BlueprintPure)
@@ -142,10 +167,6 @@ protected:
 	UFUNCTION()
 	void OnRep_EquippedItem();
 
-private:
-
-	void UnequipCurrentItem();
-
 public:
 	// Delegate fired when a new item is equipped
 	UPROPERTY(BlueprintAssignable)
@@ -155,11 +176,14 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FMGEquipment_EquippedChanged OnUnequipped;
 
-private:
+public:
+
+	UPROPERTY(ReplicatedUsing = OnRep_EquippedItem)
+	TObjectPtr<UMGEquipmentInstance> EquippedItem;
+
+protected:
 
 	UPROPERTY(Replicated)
 	FMGEquipmentList EquipmentList;
-
-	UPROPERTY(ReplicatedUsing=OnRep_EquippedItem)
-	TObjectPtr<UMGEquipmentInstance> EquippedItem;
+	
 };

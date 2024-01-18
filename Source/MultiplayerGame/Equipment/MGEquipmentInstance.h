@@ -34,6 +34,7 @@ public:
 	TArray<AActor*> GetSpawnedActorsFirstPerson() const { return SpawnedActorsFirstPerson; }
 
 	virtual void SpawnEquipmentActors(const TArray<FMGEquipmentActorToSpawn>& ActorsToSpawn);
+	void SetEquipmentActorsVisibility(bool bIsVisible);
 	virtual void DestroyEquipmentActors();
 
 	virtual void OnEquipped();

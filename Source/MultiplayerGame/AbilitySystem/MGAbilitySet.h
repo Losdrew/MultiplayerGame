@@ -88,6 +88,13 @@ public:
 
 	void TakeFromAbilitySystem(UMGAbilitySystemComponent* MGASC);
 
+	bool operator==(const FMGAbilitySet_GrantedHandles& Other) const
+	{
+		return AbilitySpecHandles == Other.AbilitySpecHandles
+			&& GameplayEffectHandles == Other.GameplayEffectHandles
+			&& GrantedAttributeSets == Other.GrantedAttributeSets;
+	}
+
 protected:
 	// Handles to the granted abilities
 	UPROPERTY()

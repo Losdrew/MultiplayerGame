@@ -57,6 +57,26 @@ void UMGEquipmentInstance::SpawnEquipmentActors(const TArray<FMGEquipmentActorTo
 	}
 }
 
+void UMGEquipmentInstance::SetEquipmentActorsVisibility(bool bIsVisible)
+{
+	for (AActor* Actor : SpawnedActorsThirdPerson)
+	{
+		if (Actor)
+		{
+			Actor->SetActorHiddenInGame(!bIsVisible);
+		}
+	}
+
+	for (AActor* Actor : SpawnedActorsFirstPerson)
+	{
+		if (Actor)
+		{
+			Actor->SetActorHiddenInGame(!bIsVisible);
+		}
+	}
+}
+
+
 void UMGEquipmentInstance::DestroyEquipmentActors()
 {
 	for (AActor* Actor : SpawnedActorsThirdPerson)
@@ -67,6 +87,8 @@ void UMGEquipmentInstance::DestroyEquipmentActors()
 		}
 	}
 
+	SpawnedActorsThirdPerson.Empty();
+
 	for (AActor* Actor : SpawnedActorsFirstPerson)
 	{
 		if (Actor)
@@ -74,6 +96,8 @@ void UMGEquipmentInstance::DestroyEquipmentActors()
 			Actor->Destroy();
 		}
 	}
+
+	SpawnedActorsFirstPerson.Empty();
 }
 
 void UMGEquipmentInstance::OnEquipped()

@@ -56,9 +56,9 @@ UMGEquipmentInstance* FMGEquipmentList::AddEntry(TSubclassOf<UMGEquipmentDefinit
  	check(OwnerComponent);
 	check(OwnerComponent->GetOwner()->HasAuthority());
 	
-	const UMGEquipmentDefinition* EquipmentDef = GetDefault<UMGEquipmentDefinition>(EquipmentDefinition);
+	const UMGEquipmentDefinition* EquipmentCDO = GetDefault<UMGEquipmentDefinition>(EquipmentDefinition);
 
-	TSubclassOf<UMGEquipmentInstance> InstanceType = EquipmentDef->InstanceType;
+	TSubclassOf<UMGEquipmentInstance> InstanceType = EquipmentCDO->InstanceType;
 	if (InstanceType == nullptr)
 	{
 		InstanceType = UMGEquipmentInstance::StaticClass();
@@ -69,39 +69,71 @@ UMGEquipmentInstance* FMGEquipmentList::AddEntry(TSubclassOf<UMGEquipmentDefinit
 	NewEntry.Instance = NewObject<UMGEquipmentInstance>(OwnerComponent->GetOwner(), InstanceType);
 	Result = NewEntry.Instance;
 
-	if (UMGAbilitySystemComponent* ASC = GetAbilitySystemComponent())
-	{
-		for (const TObjectPtr<const UMGAbilitySet> AbilitySet : EquipmentDef->AbilitySetsToGrant)
-		{
-			AbilitySet->GiveToAbilitySystem(ASC, &NewEntry.GrantedHandles, Result);
-		}
-	}
-
-	Result->SpawnEquipmentActors(EquipmentDef->ActorsToSpawn);
+	NewEntry.Instance->SpawnEquipmentActors(EquipmentCDO->ActorsToSpawn);
+	NewEntry.Instance->SetEquipmentActorsVisibility(false);
 
 	MarkItemDirty(NewEntry);
 
 	return Result;
 }
 
-void FMGEquipmentList::RemoveEntry(UMGEquipmentInstance* Instance)
+void FMGEquipmentList::ActivateEntry(const UMGEquipmentInstance* EquipmentInstance)
 {
-	for (auto EntryIt = Items.CreateIterator(); EntryIt; ++EntryIt)
+	if (FMGAppliedEquipmentEntry* Entry = FindEntryByInstance(EquipmentInstance))
 	{
-		FMGAppliedEquipmentEntry& Entry = *EntryIt;
-		if (Entry.Instance == Instance)
+		const UMGEquipmentDefinition* EquipmentCDO = GetDefault<UMGEquipmentDefinition>(Entry->EquipmentDefinition);
+
+		if (UMGAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 		{
-			if (UMGAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+			for (const TObjectPtr<const UMGAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsToGrant)
 			{
-				Entry.GrantedHandles.TakeFromAbilitySystem(ASC);
+				AbilitySet->GiveToAbilitySystem(ASC, &Entry->GrantedHandles, Entry->Instance);
 			}
+		}
 
-			Instance->DestroyEquipmentActors();
+		Entry->Instance->SetEquipmentActorsVisibility(true);
+	}
+}
 
-			EntryIt.RemoveCurrent();
-			MarkArrayDirty();
+void FMGEquipmentList::DeactivateEntry(const UMGEquipmentInstance* EquipmentInstance)
+{
+	if (FMGAppliedEquipmentEntry* Entry = FindEntryByInstance(EquipmentInstance))
+	{
+		if (UMGAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+		{
+			Entry->GrantedHandles.TakeFromAbilitySystem(ASC);
+		}
+
+		Entry->Instance->SetEquipmentActorsVisibility(false);
+	}
+}
+
+void FMGEquipmentList::RemoveEntry(const UMGEquipmentInstance* EquipmentInstance)
+{
+	if (FMGAppliedEquipmentEntry* Entry = FindEntryByInstance(EquipmentInstance))
+	{
+		if (UMGAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+		{
+			Entry->GrantedHandles.TakeFromAbilitySystem(ASC);
+		}
+
+		Entry->Instance->DestroyEquipmentActors();
+		
+		Items.RemoveSingle(*Entry);
+		MarkArrayDirty();
+	}
+}
+
+FMGAppliedEquipmentEntry* FMGEquipmentList::FindEntryByInstance(const UMGEquipmentInstance* EquipmentInstance)
+{
+	for (FMGAppliedEquipmentEntry& Entry : Items)
+	{
+		if (Entry.Instance == EquipmentInstance)
+		{
+			return &Entry;
 		}
 	}
+	return nullptr;
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -118,42 +150,34 @@ UMGEquipmentManagerComponent::UMGEquipmentManagerComponent(const FObjectInitiali
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UMGEquipmentManagerComponent::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+void UMGEquipmentManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ThisClass, EquipmentList);
-	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, EquippedItem, COND_OwnerOnly, REPNOTIFY_OnChanged);
+	DOREPLIFETIME(ThisClass, EquippedItem);
 }
 
-UMGEquipmentInstance* UMGEquipmentManagerComponent::EquipItem(TSubclassOf<UMGEquipmentDefinition> EquipmentClass)
+UMGEquipmentInstance* UMGEquipmentManagerComponent::AddItem(TSubclassOf<UMGEquipmentDefinition> EquipmentClass)
 {
 	ensure(EquipmentClass);
 
-	UMGEquipmentInstance* Result = nullptr;
-
-	Result = EquipmentList.AddEntry(EquipmentClass);
+	UMGEquipmentInstance* Result = EquipmentList.AddEntry(EquipmentClass);
 
 	if (Result != nullptr)
 	{
-		Result->OnEquipped();
-
-		EquippedItem = Result;
-
 		if (IsReadyForReplication())
 		{
 			AddReplicatedSubObject(Result);
-			AddReplicatedSubObject(EquippedItem);
-			OnRep_EquippedItem();
 		}
 	}
 
 	return Result;
 }
 
-void UMGEquipmentManagerComponent::UnequipItem(UMGEquipmentInstance* ItemInstance)
+void UMGEquipmentManagerComponent::RemoveItem(UMGEquipmentInstance* ItemInstance)
 {
-	if (ItemInstance)
+	if (ItemInstance != nullptr)
 	{
 		RemoveReplicatedSubObject(ItemInstance);
 		ItemInstance->OnUnequipped();
@@ -161,11 +185,32 @@ void UMGEquipmentManagerComponent::UnequipItem(UMGEquipmentInstance* ItemInstanc
 	}
 }
 
+void UMGEquipmentManagerComponent::EquipItem(const UMGEquipmentInstance* ItemInstance)
+{
+	if (ItemInstance)
+	{
+		if (UMGEquipmentInstance* ExistingItem = GetFirstInstanceOfType(ItemInstance->GetClass()))
+		{
+			EquipmentList.ActivateEntry(ExistingItem);
+			EquippedItem = ExistingItem;
+			EquippedItem->OnEquipped();
+
+			if (IsReadyForReplication())
+			{
+				AddReplicatedSubObject(EquippedItem);
+				OnRep_EquippedItem();
+			}
+		}
+	}
+}
+
 void UMGEquipmentManagerComponent::UnequipCurrentItem()
 {
-	if (EquippedItem)
+	if (EquippedItem != nullptr)
 	{
 		RemoveReplicatedSubObject(EquippedItem);
+		EquipmentList.DeactivateEntry(EquippedItem);
+		EquippedItem->OnUnequipped();
 		EquippedItem = nullptr;
 		OnRep_EquippedItem();
 	}
@@ -180,7 +225,7 @@ void UMGEquipmentManagerComponent::UninitializeComponent()
 {
 	TArray<UMGEquipmentInstance*> AllEquipmentInstances;
 
-	// Gathering all instances before removal to avoid side effects affecting the equipment list iterator	
+	// Gathering all instances before removal to avoid side effects affecting the equipment list iterator
 	for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
 	{
 		AllEquipmentInstances.Add(Entry.Instance);
@@ -188,7 +233,7 @@ void UMGEquipmentManagerComponent::UninitializeComponent()
 
 	for (UMGEquipmentInstance* EquipInstance : AllEquipmentInstances)
 	{
-		UnequipItem(EquipInstance);
+		RemoveItem(EquipInstance);
 	}
 
 	UnequipCurrentItem();
@@ -216,15 +261,15 @@ void UMGEquipmentManagerComponent::TickComponent(float DeltaTime, ELevelTick Tic
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (UMGEquipmentInstance* CurrentEquipment = Cast<UMGEquipmentInstance>(GetFirstInstanceOfType(UMGEquipmentInstance::StaticClass())))
+	if (UMGEquipmentInstance* CurrentEquipment = Cast<UMGEquipmentInstance>(EquippedItem))
 	{
 		CurrentEquipment->Tick(DeltaTime);
 	}
 }
 
-UMGEquipmentInstance* UMGEquipmentManagerComponent::GetFirstInstanceOfType(TSubclassOf<UMGEquipmentInstance> InstanceType)
+UMGEquipmentInstance* UMGEquipmentManagerComponent::GetFirstInstanceOfType(TSubclassOf<UMGEquipmentInstance> InstanceType) const
 {
-	for (FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
+	for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
 	{
 		if (UMGEquipmentInstance* Instance = Entry.Instance)
 		{
@@ -232,6 +277,19 @@ UMGEquipmentInstance* UMGEquipmentManagerComponent::GetFirstInstanceOfType(TSubc
 			{
 				return Instance;
 			}
+		}
+	}
+
+	return nullptr;
+}
+
+UMGEquipmentInstance* UMGEquipmentManagerComponent::GetFirstInstanceByDefinition(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition) const
+{
+	for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
+	{
+		if (Entry.EquipmentDefinition == EquipmentDefinition)
+		{
+			return Entry.Instance;
 		}
 	}
 
@@ -256,7 +314,7 @@ TArray<UMGEquipmentInstance*> UMGEquipmentManagerComponent::GetEquipmentInstance
 
 void UMGEquipmentManagerComponent::OnRep_EquippedItem()
 {
-	if (EquippedItem)
+	if (EquippedItem != nullptr)
 	{
 		OnEquipped.Broadcast(this, EquippedItem);
 	}
