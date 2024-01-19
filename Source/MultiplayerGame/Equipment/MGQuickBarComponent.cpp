@@ -125,9 +125,12 @@ int32 UMGQuickBarComponent::FindQuickSlotByEquipmentDefinition(TSubclassOf<UMGEq
 
 UMGEquipmentManagerComponent* UMGQuickBarComponent::GetEquipmentManager() const
 {
-	if (APawn* Pawn = Cast<APawn>(GetOwner()))
+	if (AController* Controller = Cast<AController>(GetOwner()))
 	{
-		return Pawn->FindComponentByClass<UMGEquipmentManagerComponent>();
+		if (APawn* Pawn = Cast<APawn>(Controller->GetPawn()))
+		{
+			return Pawn->FindComponentByClass<UMGEquipmentManagerComponent>();
+		}
 	}
 	return nullptr;
 }

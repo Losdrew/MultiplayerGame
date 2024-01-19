@@ -6,6 +6,16 @@
 #include "MGAbilitySystemComponent.h"
 #include "MGPlayerState.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "MGQuickBarComponent.h"
+
+AMGPlayerController::AMGPlayerController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	CameraTiltAngle = 0.0f;
+	CameraTiltInterpSpeed = 0.0f;
+
+	QuickBarComponent = CreateDefaultSubobject<UMGQuickBarComponent>(TEXT("QuickBarComponent"));
+}
 
 AMGPlayerState* AMGPlayerController::GetMGPlayerState() const
 {
