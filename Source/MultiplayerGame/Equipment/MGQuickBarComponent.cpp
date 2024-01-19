@@ -159,8 +159,10 @@ void UMGQuickBarComponent::EnequipItemInActiveSlot()
 
 void UMGQuickBarComponent::OnRep_Slots()
 {
+	OnSlotsChanged.Broadcast(Slots);
 }
 
 void UMGQuickBarComponent::OnRep_ActiveSlotIndex()
 {
+	OnActiveSlotIndexChanged.Broadcast(ActiveSlotIndex);
 }

@@ -9,7 +9,10 @@ class UMGEquipmentInstance;
 class UMGEquipmentDefinition;
 class UMGEquipmentManagerComponent;
 
-UENUM()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGQuickBar_SlotsChanged, const TArray<UMGEquipmentInstance*>&, Slots);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGQuickBar_ActiveSlotIndexChanged, int32, ActiveSlotIndex);
+
+UENUM(BlueprintType)
 enum EMGQuickSlots
 {
 	QuickSlot1,
@@ -90,7 +93,17 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TArray<FMGQuickSlotEquipmentDefinition> QuickSlotEquipmentDefinitions;
-	
+
+public:
+
+	// Delegate fired when slots are changed
+	UPROPERTY(BlueprintAssignable)
+	FMGQuickBar_SlotsChanged OnSlotsChanged;
+
+	// Delegate fired when active slot index is changed
+	UPROPERTY(BlueprintAssignable)
+	FMGQuickBar_ActiveSlotIndexChanged OnActiveSlotIndexChanged;
+
 private:
 	
 	UPROPERTY(ReplicatedUsing=OnRep_Slots)

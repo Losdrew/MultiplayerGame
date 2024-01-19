@@ -47,7 +47,7 @@ private:
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Appearance")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Appearance")
 	TObjectPtr<UTexture2D> EquipmentIcon;
 
 private:
