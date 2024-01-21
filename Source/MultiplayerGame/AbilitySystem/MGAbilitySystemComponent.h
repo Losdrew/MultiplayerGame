@@ -42,4 +42,7 @@ protected:
 
 	// Handles to abilities that have their input held
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
+
+	// Handles to abilities that were triggered by input
+	TArray<FGameplayAbilitySpecHandle> InputTriggeredSpecHandles;
 };

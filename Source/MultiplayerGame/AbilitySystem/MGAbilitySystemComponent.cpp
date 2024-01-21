@@ -76,7 +76,11 @@ void UMGAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 
 					if (AbilityCDO->GetActivationPolicy() == EMGAbilityActivationPolicy::OnInputTriggered)
 					{
-						AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
+						if (!InputTriggeredSpecHandles.Contains(AbilitySpec->Handle))
+						{
+							AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
+							InputTriggeredSpecHandles.AddUnique(AbilitySpec->Handle);
+						}
 					}
 				}
 			}
@@ -99,6 +103,11 @@ void UMGAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGameP
 			if (AbilitySpec->Ability)
 			{
 				AbilitySpec->InputPressed = false;
+				
+				if (InputTriggeredSpecHandles.Contains(AbilitySpec->Handle))
+				{
+					InputTriggeredSpecHandles.Remove(AbilitySpec->Handle);
+				}
 
 				if (AbilitySpec->IsActive())
 				{
