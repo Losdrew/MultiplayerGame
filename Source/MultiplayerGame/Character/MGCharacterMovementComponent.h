@@ -17,6 +17,30 @@ enum ECustomMovementMode
 };
 
 /**
+ * FMGCharacterGroundInfo
+ *
+ *	Information about the ground under the character
+ */
+USTRUCT(BlueprintType)
+struct FMGCharacterGroundInfo
+{
+	GENERATED_BODY()
+
+	FMGCharacterGroundInfo()
+		: LastUpdateFrame(0)
+		, GroundDistance(0.0f)
+	{}
+
+	uint64 LastUpdateFrame;
+
+	UPROPERTY(BlueprintReadOnly)
+	FHitResult GroundHitResult;
+
+	UPROPERTY(BlueprintReadOnly)
+	float GroundDistance;
+};
+
+/**
  * UMGCharacterMovementComponent
  *
  *	The base character movement component class used by this project
@@ -44,6 +68,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AMGCharacter* GetMGCharacterOwner() const;
+
+	// Returns the current ground info. Calling this will update the ground info if it's out of date.
+	UFUNCTION(BlueprintCallable)
+	const FMGCharacterGroundInfo& GetGroundInfo();
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool IsSliding() const;
@@ -141,6 +169,9 @@ public:
 	uint32 bShouldWallrun : 1;
 
 protected:
+
+	// Cached ground info for the character
+	FMGCharacterGroundInfo CachedGroundInfo;
 
 	FTimerHandle AutoWallrunTimerHandle;
 	uint32 bAutoWallrunActive : 1;
