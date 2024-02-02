@@ -4,11 +4,11 @@
 
 #include "Net/Serialization/FastArraySerializer.h"
 #include "MGAbilitySet.h"
+#include "MGEquipmentDefinition.h"
 
 #include "MGEquipmentManagerComponent.generated.h"
 
 class UMGEquipmentInstance;
-class UMGEquipmentDefinition;
 class UMGAbilitySystemComponent;
 class UMGEquipmentManagerComponent;
 struct FMGEquipmentList;
@@ -89,7 +89,6 @@ private:
 
 	UMGAbilitySystemComponent* GetAbilitySystemComponent() const;
 
-	FMGAppliedEquipmentEntry* FindEntryByDefinition(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition);
 	FMGAppliedEquipmentEntry* FindEntryByInstance(const UMGEquipmentInstance* EquipmentInstance);
 
 private:
@@ -165,7 +164,7 @@ public:
 protected:
 
 	UFUNCTION()
-	void OnRep_EquippedItem();
+	void OnRep_EquippedItem(UMGEquipmentInstance* OldItem);
 
 public:
 	// Delegate fired when a new item is equipped

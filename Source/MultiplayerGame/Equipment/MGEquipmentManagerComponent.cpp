@@ -177,43 +177,48 @@ UMGEquipmentInstance* UMGEquipmentManagerComponent::AddItem(TSubclassOf<UMGEquip
 
 void UMGEquipmentManagerComponent::RemoveItem(UMGEquipmentInstance* ItemInstance)
 {
-	if (ItemInstance != nullptr)
+	if (ItemInstance == nullptr)
 	{
-		RemoveReplicatedSubObject(ItemInstance);
-		ItemInstance->OnUnequipped();
-		EquipmentList.RemoveEntry(ItemInstance);
+		return;
 	}
+
+	RemoveReplicatedSubObject(ItemInstance);
+	ItemInstance->OnUnequipped();
+	EquipmentList.RemoveEntry(ItemInstance);
 }
 
 void UMGEquipmentManagerComponent::EquipItem(const UMGEquipmentInstance* ItemInstance)
 {
-	if (ItemInstance)
+	if (ItemInstance == nullptr)
 	{
-		if (UMGEquipmentInstance* ExistingItem = GetFirstInstanceOfType(ItemInstance->GetClass()))
-		{
-			EquipmentList.ActivateEntry(ExistingItem);
-			EquippedItem = ExistingItem;
-			EquippedItem->OnEquipped();
+		return;
+	}
 
-			if (IsReadyForReplication())
-			{
-				AddReplicatedSubObject(EquippedItem);
-				OnRep_EquippedItem();
-			}
+	if (UMGEquipmentInstance* ExistingItem = GetFirstInstanceOfType(ItemInstance->GetClass()))
+	{
+		UMGEquipmentInstance* OldItem = EquippedItem;
+		EquipmentList.ActivateEntry(ExistingItem);
+		EquippedItem = ExistingItem;
+
+		if (IsReadyForReplication())
+		{
+			AddReplicatedSubObject(EquippedItem);
+			OnRep_EquippedItem(OldItem);
 		}
 	}
 }
 
 void UMGEquipmentManagerComponent::UnequipCurrentItem()
 {
-	if (EquippedItem != nullptr)
+	if (EquippedItem == nullptr)
 	{
-		RemoveReplicatedSubObject(EquippedItem);
-		EquipmentList.DeactivateEntry(EquippedItem);
-		EquippedItem->OnUnequipped();
-		EquippedItem = nullptr;
-		OnRep_EquippedItem();
+		return;
 	}
+
+	RemoveReplicatedSubObject(EquippedItem);
+	EquipmentList.DeactivateEntry(EquippedItem);
+	OnRep_EquippedItem(EquippedItem);
+	EquippedItem = nullptr;
 }
 
 void UMGEquipmentManagerComponent::InitializeComponent()
@@ -312,14 +317,16 @@ TArray<UMGEquipmentInstance*> UMGEquipmentManagerComponent::GetEquipmentInstance
 	return Results;
 }
 
-void UMGEquipmentManagerComponent::OnRep_EquippedItem()
+void UMGEquipmentManagerComponent::OnRep_EquippedItem(UMGEquipmentInstance* OldItem)
 {
 	if (EquippedItem != nullptr)
 	{
 		OnEquipped.Broadcast(this, EquippedItem);
+		EquippedItem->OnEquipped();
 	}
 	else
 	{
 		OnUnequipped.Broadcast(this, nullptr);
+		OldItem->OnUnequipped();
 	}
 }
