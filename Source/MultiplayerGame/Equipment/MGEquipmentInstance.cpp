@@ -119,10 +119,13 @@ void UMGEquipmentInstance::OnEquipped()
 		USkeletalMeshComponent* ActorMesh = Cast<USkeletalMeshComponent>(Actor->GetRootComponent());
 		ActorMesh->SetOwnerNoSee(true);
 	}
+
+	K2_OnEquipped();
 }
 
 void UMGEquipmentInstance::OnUnequipped()
 {
+	K2_OnUnequipped();
 }
 
 void UMGEquipmentInstance::OnRep_Instigator()

@@ -4,6 +4,7 @@
 
 #include "MGEquipmentInstance.generated.h"
 
+class UAnimInstance;
 struct FMGEquipmentActorToSpawn;
 
 /**
@@ -40,6 +41,14 @@ public:
 	virtual void OnEquipped();
 	virtual void OnUnequipped();
 
+protected:
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Equipment", meta = (DisplayName = "OnEquipped"))
+	void K2_OnEquipped();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Equipment", meta = (DisplayName = "OnUnequipped"))
+	void K2_OnUnequipped();
+
 private:
 
 	UFUNCTION()
@@ -49,6 +58,14 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Appearance")
 	TObjectPtr<UTexture2D> EquipmentIcon;
+
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	TSubclassOf<UAnimInstance> EquippedAnimLayer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	TSubclassOf<UAnimInstance> UnequippedAnimLayer;
 
 private:
 
