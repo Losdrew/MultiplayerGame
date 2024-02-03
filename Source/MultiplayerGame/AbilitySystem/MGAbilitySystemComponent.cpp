@@ -4,6 +4,7 @@
 #include "MGAbilitySystemComponent.h"
 
 #include "MGGameplayAbility.h"
+#include "Animation/MGAnimInstance.h"
 
 void UMGAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
@@ -160,6 +161,11 @@ void UMGAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActo
 			{
 				MGAbilityCDO->OnPawnAvatarSet();
 			}
+		}
+
+		if (UMGAnimInstance* AnimInstance = Cast<UMGAnimInstance>(ActorInfo->GetAnimInstance()))
+		{
+			AnimInstance->InitializeWithAbilitySystem(this);
 		}
 
 		TryActivateAbilitiesOnSpawn();
