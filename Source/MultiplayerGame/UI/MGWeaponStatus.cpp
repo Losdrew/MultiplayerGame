@@ -3,9 +3,9 @@
 
 #include "MGWeaponStatus.h"
 
-#include "MGCharacter.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
+#include "MGCharacter.h"
 #include "MGEquipmentManagerComponent.h"
 #include "MGRangedWeaponInstance.h"
 
@@ -26,6 +26,8 @@ void UMGWeaponStatus::NativeConstruct()
 
 void UMGWeaponStatus::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
+	SetVisibility(ESlateVisibility::Hidden);
+
 	// Unbind equipped/unequipped events from old pawn's equipment manager component
 	if (const AMGCharacter* PlayerCharacter = Cast<AMGCharacter>(OldPawn))
 	{

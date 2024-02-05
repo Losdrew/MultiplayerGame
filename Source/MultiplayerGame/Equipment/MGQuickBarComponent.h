@@ -66,10 +66,16 @@ public:
 	void SetActiveSlotIndex(int32 NewIndex);
 
 	UFUNCTION(BlueprintCallable)
+	TArray<UMGEquipmentInstance*> GetSlots() const { return Slots; }
+
+	UFUNCTION(BlueprintCallable)
 	int32 GetActiveSlotIndex() const { return ActiveSlotIndex; }
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void AddItemToSlot(TSubclassOf<UMGEquipmentDefinition> EquipmentClass);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	void RemoveItemFromSlot(int32 SlotIndex);
 
 protected:
 
@@ -87,7 +93,7 @@ private:
 	int32 FindQuickSlotByEquipmentDefinition(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition);
 
 	void EquipItemInActiveSlot();
-	void EnequipItemInActiveSlot();
+	void UnequipItemInActiveSlot();
 
 public:
 

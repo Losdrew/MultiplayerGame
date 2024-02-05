@@ -3,10 +3,10 @@
 
 #include "MGQuickBarComponent.h"
 
-#include "MGEquipmentManagerComponent.h"
-#include "Net/UnrealNetwork.h"
 #include "MGEquipmentDefinition.h"
 #include "MGEquipmentInstance.h"
+#include "MGEquipmentManagerComponent.h"
+#include "Net/UnrealNetwork.h"
 
 UMGQuickBarComponent::UMGQuickBarComponent()
 {
@@ -83,7 +83,7 @@ void UMGQuickBarComponent::SetActiveSlotIndex_Implementation(int32 NewIndex)
 	{
 		if (Slots.IsValidIndex(NewIndex) && (ActiveSlotIndex != NewIndex))
 		{
-			EnequipItemInActiveSlot();
+			UnequipItemInActiveSlot();
 			ActiveSlotIndex = NewIndex;
 			EquipItemInActiveSlot();
 			OnRep_ActiveSlotIndex();
@@ -106,6 +106,25 @@ void UMGQuickBarComponent::AddItemToSlot(TSubclassOf<UMGEquipmentDefinition> Equ
 				SetActiveSlotIndex(SlotIndex);
 				OnRep_Slots();
 			}
+		}
+	}
+}
+
+void UMGQuickBarComponent::RemoveItemFromSlot(int32 SlotIndex)
+{
+	if (ActiveSlotIndex == SlotIndex)
+	{
+		UnequipItemInActiveSlot();
+		ActiveSlotIndex = -1;
+	}
+
+	if (Slots.IsValidIndex(SlotIndex) && Slots[SlotIndex] != nullptr)
+	{
+		if (UMGEquipmentManagerComponent* EquipmentManager = GetEquipmentManager())
+		{
+			EquipmentManager->RemoveItem(Slots[SlotIndex]);
+			Slots[SlotIndex] = nullptr;
+			OnRep_Slots();
 		}
 	}
 }
@@ -149,7 +168,7 @@ void UMGQuickBarComponent::EquipItemInActiveSlot()
 	}
 }
 
-void UMGQuickBarComponent::EnequipItemInActiveSlot()
+void UMGQuickBarComponent::UnequipItemInActiveSlot()
 {
 	if (UMGEquipmentManagerComponent* EquipmentManager = GetEquipmentManager())
 	{
