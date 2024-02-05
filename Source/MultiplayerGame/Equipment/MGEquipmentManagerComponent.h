@@ -67,11 +67,6 @@ struct FMGEquipmentList : public FFastArraySerializer
 	FMGEquipmentList(UActorComponent* InOwnerComponent) : OwnerComponent(InOwnerComponent) {}
 
 public:
-	//~FFastArraySerializer contract
-	void PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize);
-	void PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize);
-	void PostReplicatedChange(const TArrayView<int32> ChangedIndices, int32 FinalSize);
-	//~End of FFastArraySerializer contract
 
 	bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParms)
 	{
@@ -164,7 +159,7 @@ public:
 protected:
 
 	UFUNCTION()
-	void OnRep_EquippedItem(UMGEquipmentInstance* OldItem);
+	void OnRep_EquippedItem(UMGEquipmentInstance* PreviousItem);
 
 public:
 	// Delegate fired when a new item is equipped
@@ -184,5 +179,4 @@ protected:
 
 	UPROPERTY(Replicated)
 	FMGEquipmentList EquipmentList;
-	
 };

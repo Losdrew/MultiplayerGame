@@ -76,7 +76,6 @@ void UMGEquipmentInstance::SetEquipmentActorsVisibility(bool bIsVisible)
 	}
 }
 
-
 void UMGEquipmentInstance::DestroyEquipmentActors()
 {
 	for (AActor* Actor : SpawnedActorsThirdPerson)

@@ -3,43 +3,15 @@
 
 #include "MGEquipmentManagerComponent.h"
 
-#include "MGAbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "MGAbilitySet.h"
-#include "Net/UnrealNetwork.h"
-#include "MGEquipmentInstance.h"
+#include "MGAbilitySystemComponent.h"
 #include "MGEquipmentDefinition.h"
+#include "MGEquipmentInstance.h"
+#include "Net/UnrealNetwork.h"
 
 //////////////////////////////////////////////////////////////////////
 // FMGEquipmentList
-
-void FMGEquipmentList::PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize)
-{
- 	for (const int32 Index : RemovedIndices)
- 	{
- 		const FMGAppliedEquipmentEntry& Entry = Items[Index];
-		if (Entry.Instance != nullptr)
-		{
-			Entry.Instance->OnUnequipped();
-		}
- 	}
-}
-
-void FMGEquipmentList::PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize)
-{
-	for (const int32 Index : AddedIndices)
-	{
-		const FMGAppliedEquipmentEntry& Entry = Items[Index];
-		if (Entry.Instance != nullptr)
-		{
-			Entry.Instance->OnEquipped();
-		}
-	}
-}
-
-void FMGEquipmentList::PostReplicatedChange(const TArrayView<int32> ChangedIndices, int32 FinalSize)
-{
-}
 
 UMGAbilitySystemComponent* FMGEquipmentList::GetAbilitySystemComponent() const
 {
@@ -177,14 +149,16 @@ UMGEquipmentInstance* UMGEquipmentManagerComponent::AddItem(TSubclassOf<UMGEquip
 
 void UMGEquipmentManagerComponent::RemoveItem(UMGEquipmentInstance* ItemInstance)
 {
-	if (ItemInstance == nullptr)
+	if (ItemInstance == EquippedItem)
 	{
-		return;
+		UnequipCurrentItem();
 	}
 
-	RemoveReplicatedSubObject(ItemInstance);
-	ItemInstance->OnUnequipped();
-	EquipmentList.RemoveEntry(ItemInstance);
+	if (ItemInstance != nullptr)
+	{
+		RemoveReplicatedSubObject(ItemInstance);
+		EquipmentList.RemoveEntry(ItemInstance);
+	}
 }
 
 void UMGEquipmentManagerComponent::EquipItem(const UMGEquipmentInstance* ItemInstance)
@@ -196,15 +170,10 @@ void UMGEquipmentManagerComponent::EquipItem(const UMGEquipmentInstance* ItemIns
 
 	if (UMGEquipmentInstance* ExistingItem = GetFirstInstanceOfType(ItemInstance->GetClass()))
 	{
-		UMGEquipmentInstance* OldItem = EquippedItem;
+		UMGEquipmentInstance* PreviousItem = EquippedItem;
 		EquipmentList.ActivateEntry(ExistingItem);
 		EquippedItem = ExistingItem;
-
-		if (IsReadyForReplication())
-		{
-			AddReplicatedSubObject(EquippedItem);
-			OnRep_EquippedItem(OldItem);
-		}
+		OnRep_EquippedItem(PreviousItem);
 	}
 }
 
@@ -215,10 +184,11 @@ void UMGEquipmentManagerComponent::UnequipCurrentItem()
 		return;
 	}
 
+	UMGEquipmentInstance* PreviousItem = EquippedItem;
 	RemoveReplicatedSubObject(EquippedItem);
 	EquipmentList.DeactivateEntry(EquippedItem);
-	OnRep_EquippedItem(EquippedItem);
 	EquippedItem = nullptr;
+	OnRep_EquippedItem(PreviousItem);
 }
 
 void UMGEquipmentManagerComponent::InitializeComponent()
@@ -240,8 +210,6 @@ void UMGEquipmentManagerComponent::UninitializeComponent()
 	{
 		RemoveItem(EquipInstance);
 	}
-
-	UnequipCurrentItem();
 
 	Super::UninitializeComponent();
 }
@@ -317,16 +285,17 @@ TArray<UMGEquipmentInstance*> UMGEquipmentManagerComponent::GetEquipmentInstance
 	return Results;
 }
 
-void UMGEquipmentManagerComponent::OnRep_EquippedItem(UMGEquipmentInstance* OldItem)
+void UMGEquipmentManagerComponent::OnRep_EquippedItem(UMGEquipmentInstance* PreviousItem)
 {
+	if (PreviousItem != nullptr)
+	{
+		PreviousItem->OnUnequipped();
+		OnUnequipped.Broadcast(this, PreviousItem);
+	}
+
 	if (EquippedItem != nullptr)
 	{
-		OnEquipped.Broadcast(this, EquippedItem);
 		EquippedItem->OnEquipped();
-	}
-	else
-	{
-		OnUnequipped.Broadcast(this, nullptr);
-		OldItem->OnUnequipped();
+		OnEquipped.Broadcast(this, EquippedItem);
 	}
 }
