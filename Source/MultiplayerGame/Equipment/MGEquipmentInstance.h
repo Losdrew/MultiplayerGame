@@ -62,7 +62,10 @@ public:
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
-	TSubclassOf<UAnimInstance> EquippedAnimLayer;
+	TSubclassOf<UAnimInstance> EquippedAnimLayerThirdPerson;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	TSubclassOf<UAnimInstance> EquippedAnimLayerFirstPerson;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
 	TSubclassOf<UAnimInstance> UnequippedAnimLayer;
