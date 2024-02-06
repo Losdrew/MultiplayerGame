@@ -173,7 +173,12 @@ void UMGEquipmentManagerComponent::EquipItem(const UMGEquipmentInstance* ItemIns
 		UMGEquipmentInstance* PreviousItem = EquippedItem;
 		EquipmentList.ActivateEntry(ExistingItem);
 		EquippedItem = ExistingItem;
-		OnRep_EquippedItem(PreviousItem);
+
+		if (IsReadyForReplication())
+		{
+			AddReplicatedSubObject(EquippedItem);
+			OnRep_EquippedItem(PreviousItem);
+		}
 	}
 }
 
