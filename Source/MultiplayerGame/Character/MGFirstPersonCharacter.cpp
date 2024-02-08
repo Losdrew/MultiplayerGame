@@ -24,6 +24,7 @@ AMGFirstPersonCharacter::AMGFirstPersonCharacter(const FObjectInitializer& Objec
 	FirstPersonBodyMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 	FirstPersonBodyMesh->SetOwnerNoSee(true);
 	FirstPersonBodyMesh->SetOnlyOwnerSee(true);
+	FirstPersonBodyMesh->bPauseAnims = true;
 }
 
 void AMGFirstPersonCharacter::RecalculateBaseEyeHeight()
