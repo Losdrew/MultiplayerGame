@@ -31,7 +31,7 @@ namespace MGGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_Reset, "GameplayEvent.Reset", "Event that fires once a player reset is executed.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_RequestReset, "GameplayEvent.RequestReset", "Event to request a player's pawn to be instantly replaced with a new one at a valid spawn location.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_StartWallrun, "GameplayEvent.StartWallrun", "Event that fires when starting to wallrun. This event only fires on the server.");
-	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_StopWallrun, "GameplayEvent.StopWallrun", "Event that fires when starting to wallrun. This event only fires on the server.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(GameplayEvent_StopWallrun, "GameplayEvent.StopWallrun", "Event that fires when stopping wallrun. This event only fires on the server.");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Status_Crouching, "Status.Crouching", "Target is crouching.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Status_Death, "Status.Death", "Target has the death status.");
