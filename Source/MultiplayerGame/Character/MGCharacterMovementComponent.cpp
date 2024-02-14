@@ -437,7 +437,7 @@ const FMGCharacterGroundInfo& UMGCharacterMovementComponent::GetGroundInfo()
 		CachedGroundInfo.GroundHitResult = HitResult;
 		CachedGroundInfo.GroundDistance = MGCharacter::GroundTraceDistance;
 
-		if (MovementMode == MOVE_Falling)
+		if (MovementMode == MOVE_NavWalking)
 		{
 			CachedGroundInfo.GroundDistance = 0.0f;
 		}
