@@ -244,6 +244,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Spread|Player Params")
 	float TransitionRate_Wallrunning = 5.0f;
 
+	// Multiplier when aiming
+	UPROPERTY(EditAnywhere, Category = "Spread|Player Params", meta = (ForceUnits = x))
+	float SpreadAngleMultiplier_Aiming = 1.0f;
+
 	// The maximum distance at which this weapon can deal damage
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Config", meta = (ForceUnits = cm))
 	float MaxDamageRange = 25000.0f;

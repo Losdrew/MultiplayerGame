@@ -3,12 +3,18 @@
 
 #include "MGRangedWeaponInstance.h"
 
-#include "MGPhysicalMaterialWithTags.h"
-#include "Net/UnrealNetwork.h"
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
+#include "Engine/GameEngine.h"
+#include "GameFramework/Pawn.h"
 #include "GameplayTagContainer.h"
 #include "MGCharacterMovementComponent.h"
-#include "GameFramework/Pawn.h"
-#include "Engine/GameEngine.h"
+#include "MGPhysicalMaterialWithTags.h"
+#include "NativeGameplayTags.h"
+#include "Net/UnrealNetwork.h"
+
+UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Status_Aiming, "Status.Aiming");
+
 
 void UMGRangedWeaponInstance::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -190,10 +196,22 @@ bool UMGRangedWeaponInstance::UpdateMultipliers(float DeltaSeconds)
 	WallrunningMultiplier = FMath::FInterpTo(WallrunningMultiplier, WallrunningTargetValue, DeltaSeconds, TransitionRate_Wallrunning);
 	const bool bWallrunningMultiplerIs1 = FMath::IsNearlyEqual(WallrunningMultiplier, 1.0f, MultiplierNearlyEqualThreshold);
 
+	// Determine if we are aiming down sights, and apply the bonus
+	float AimingAlpha = 0.0f;
+	if (const UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Pawn))
+	{
+		AimingAlpha = ASC->HasMatchingGameplayTag(TAG_Status_Aiming) ? 1.0f : 0.0f;
+	}
+	const float AimingMultiplier = FMath::GetMappedRangeValueClamped(
+		/*InputRange=*/ FVector2D(0.0f, 1.0f),
+		/*OutputRange=*/ FVector2D(1.0f, SpreadAngleMultiplier_Aiming),
+		/*Alpha=*/ AimingAlpha);
+	const bool bAimingMultiplierAtTarget = FMath::IsNearlyEqual(AimingMultiplier, SpreadAngleMultiplier_Aiming, KINDA_SMALL_NUMBER);
+
 	// Combine all the multipliers
-	const float CombinedMultiplier = StandingStillMultiplier * SlidingMultiplier * JumpFallMultiplier * WallrunningMultiplier;
+	const float CombinedMultiplier = StandingStillMultiplier * SlidingMultiplier * JumpFallMultiplier * WallrunningMultiplier * AimingMultiplier;
 	CurrentSpreadAngleMultiplier = CombinedMultiplier;
 
 	// Need to handle these spread multipliers indicating we are not at min spread
-	return bStandingStillMultiplierAtMin && bSlidingMultiplierIs1 && bJumpFallMultiplerIs1 && bWallrunningMultiplerIs1;
+	return bStandingStillMultiplierAtMin && bSlidingMultiplierIs1 && bJumpFallMultiplerIs1 && bWallrunningMultiplerIs1 && bAimingMultiplierAtTarget;
 }
