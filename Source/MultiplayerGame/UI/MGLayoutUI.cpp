@@ -14,6 +14,19 @@ void UMGLayoutUI::SetWidgetToSlot(UUserWidget* Widget, FGameplayTag SlotTag)
 	}
 }
 
+void UMGLayoutUI::SetSlotVisibility(FGameplayTag SlotTag, ESlateVisibility NewVisibility)
+{
+	if (const UNamedSlot* NamedSlot = Cast<UNamedSlot>(Slots.FindRef(SlotTag)))
+	{
+		FName SlotName = NamedSlot->GetFName();
+
+		if (UWidget* Widget = Cast<UWidget>(GetContentForSlot(SlotName)))
+		{
+			Widget->SetVisibility(NewVisibility);
+		}
+	}
+}
+
 void UMGLayoutUI::NativeOnInitialized()
 {
 	TArray<FName> SlotNames;

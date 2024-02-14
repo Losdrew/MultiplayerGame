@@ -36,6 +36,22 @@ UUserWidget* AMGHUD::CreateWidgetInSlot(TSubclassOf<UUserWidget> WidgetClass, FG
 	return nullptr;
 }
 
+void AMGHUD::ShowWidgetInSlot(FGameplayTag SlotTag)
+{
+	if (LayoutUI)
+	{
+		LayoutUI->SetSlotVisibility(SlotTag, ESlateVisibility::Visible);
+	}
+}
+
+void AMGHUD::HideWidgetInSlot(FGameplayTag SlotTag)
+{
+	if (LayoutUI)
+	{
+		LayoutUI->SetSlotVisibility(SlotTag, ESlateVisibility::Hidden);
+	}
+}
+
 void AMGHUD::ClearSlot(FGameplayTag SlotTag)
 {
 	if (LayoutUI)

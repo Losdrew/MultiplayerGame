@@ -22,6 +22,7 @@ class UMGLayoutUI : public UUserWidget
 public:
 
 	virtual void SetWidgetToSlot(UUserWidget* Widget, FGameplayTag SlotTag);
+	virtual void SetSlotVisibility(FGameplayTag SlotTag, ESlateVisibility NewVisibility);
 
 protected:
 

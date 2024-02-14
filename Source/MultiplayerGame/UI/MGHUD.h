@@ -31,6 +31,12 @@ public:
 	virtual UUserWidget* CreateWidgetInSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag);
 
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+	virtual void ShowWidgetInSlot(FGameplayTag SlotTag);
+
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
+	virtual void HideWidgetInSlot(FGameplayTag SlotTag);
+
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
 	virtual void ClearSlot(FGameplayTag SlotTag);
 
 public:
