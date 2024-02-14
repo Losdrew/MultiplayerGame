@@ -7,6 +7,12 @@
 #include "MGPlayerController.h"
 #include "MGCharacter.h"
 
+UMGGameplayAbility::UMGGameplayAbility(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+}
+
 APlayerController* UMGGameplayAbility::GetPlayerControllerFromActorInfo() const
 {
 	if (CurrentActorInfo)
