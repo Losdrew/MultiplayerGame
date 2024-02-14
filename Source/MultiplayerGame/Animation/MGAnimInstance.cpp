@@ -18,7 +18,11 @@ UMGAnimInstance::UMGAnimInstance(const FObjectInitializer& ObjectInitializer)
 
 void UMGAnimInstance::InitializeWithAbilitySystem(UAbilitySystemComponent* ASC)
 {
-	check(ASC);
+	if (ASC == nullptr)
+	{
+		return;
+	}
+
 	GameplayTagPropertyMap.Initialize(this, ASC);
 }
 

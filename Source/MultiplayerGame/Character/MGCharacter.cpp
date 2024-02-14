@@ -3,15 +3,16 @@
 
 #include "MGCharacter.h"
 
-#include "MGEnhancedInputComponent.h"
-#include "MGGameplayTags.h"
-#include "MGPlayerState.h"
-#include "EnhancedInputSubsystems.h"
+#include "Animation/MGAnimInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "MGAbilitySystemComponent.h"
 #include "MGCharacterMovementComponent.h"
+#include "MGEnhancedInputComponent.h"
 #include "MGEquipmentManagerComponent.h"
+#include "MGGameplayTags.h"
 #include "MGHealthComponent.h"
+#include "MGPlayerState.h"
 #include "Net/UnrealNetwork.h"
 
 AMGCharacter::AMGCharacter(const FObjectInitializer& ObjectInitializer)
@@ -96,10 +97,20 @@ void AMGCharacter::InitPlayer()
 	{
         AbilitySystemComponent = Cast<UMGAbilitySystemComponent>(PS->GetAbilitySystemComponent());
 
-		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
 	}
 
     HealthComponent->InitializeWithAbilitySystem(AbilitySystemComponent);
+
+	if (UMGAnimInstance* AnimInstance = Cast<UMGAnimInstance>(GetMesh()->GetAnimInstance()))
+	{
+		AnimInstance->InitializeWithAbilitySystem(AbilitySystemComponent);
+	}
+
+	if (UMGAnimInstance* AnimInstance = Cast<UMGAnimInstance>(GetFirstPersonArms()->GetAnimInstance()))
+	{
+		AnimInstance->InitializeWithAbilitySystem(AbilitySystemComponent);
+	}
 }
 
 void AMGCharacter::OnRep_PlayerState()
