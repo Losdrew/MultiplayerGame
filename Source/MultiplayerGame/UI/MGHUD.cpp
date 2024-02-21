@@ -3,10 +3,10 @@
 
 #include "MGHUD.h"
 
+#include "GameplayTagContainer.h"
 #include "MGGameState.h"
 #include "MGHUDDataAsset.h"
 #include "MGLayoutUI.h"
-#include "GameplayTagContainer.h"
 
 void AMGHUD::BeginPlay()
 {
@@ -14,14 +14,26 @@ void AMGHUD::BeginPlay()
 
 	if (const AMGGameState* GameState = Cast<AMGGameState>(GetWorld()->GetGameState()))
 	{
-		LayoutUI = Cast<UMGLayoutUI>(CreateWidget(PlayerOwner, GameState->HUDDataAsset->Layout, "LayoutUI"));
-		LayoutUI->AddToViewport();
+		CreateLayout(GameState->HUDDataAsset->Layout);
 
 		for (const FMGWidgetInSlot WidgetInSlot : GameState->HUDDataAsset->Widgets)
 		{
 			CreateWidgetInSlot(WidgetInSlot.Widget, WidgetInSlot.SlotTag);
 		}
 	}
+}
+
+UUserWidget* AMGHUD::CreateLayout(TSubclassOf<UUserWidget> LayoutWidgetClass)
+{
+	if (LayoutWidgetClass == nullptr)
+	{
+		return nullptr;
+	}
+
+	LayoutUI = Cast<UMGLayoutUI>(CreateWidget(PlayerOwner, LayoutWidgetClass, "LayoutUI"));
+	LayoutUI->AddToViewport();
+
+	return LayoutUI;
 }
 
 UUserWidget* AMGHUD::CreateWidgetInSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag)

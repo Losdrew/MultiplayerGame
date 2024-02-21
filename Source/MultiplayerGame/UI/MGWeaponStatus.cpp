@@ -5,33 +5,37 @@
 
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
-#include "MGCharacter.h"
 #include "MGEquipmentManagerComponent.h"
 #include "MGRangedWeaponInstance.h"
 
-void UMGWeaponStatus::NativeConstruct()
+void UMGWeaponStatus::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 
-	if (APlayerController* PlayerController = GetOwningPlayer())
+	APlayerController* PlayerController = GetOwningPlayer();
+	PlayerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::OnPossessedPawnChanged);
+
+	if (APawn* PlayerPawn = PlayerController->GetPawn())
 	{
-		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::OnPossessedPawnChanged);
-
-		if (APawn* PlayerPawn = PlayerController->GetPawn())
+		if (UMGEquipmentManagerComponent* EquipmentManagerComponent = PlayerPawn->FindComponentByClass<UMGEquipmentManagerComponent>())
 		{
-			OnPossessedPawnChanged(nullptr, PlayerPawn);
+			// Weapon might be have been already equipped before this widget is initialized, so we try to update this widget manually
+			if (UMGEquipmentInstance* EquippedItem = EquipmentManagerComponent->GetEquippedItem())
+			{
+				OnWeaponEquipped(EquipmentManagerComponent, EquippedItem);
+			}
 		}
+
+		OnPossessedPawnChanged(nullptr, PlayerPawn);
 	}
 }
 
 void UMGWeaponStatus::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
-	SetVisibility(ESlateVisibility::Hidden);
-
 	// Unbind equipped/unequipped events from old pawn's equipment manager component
-	if (const AMGCharacter* PlayerCharacter = Cast<AMGCharacter>(OldPawn))
+	if (OldPawn != nullptr)
 	{
-		if (UMGEquipmentManagerComponent* EquipmentManagerComponent = PlayerCharacter->FindComponentByClass<UMGEquipmentManagerComponent>())
+		if (UMGEquipmentManagerComponent* EquipmentManagerComponent = OldPawn->FindComponentByClass<UMGEquipmentManagerComponent>())
 		{
 			EquipmentManagerComponent->OnEquipped.RemoveDynamic(this, &ThisClass::OnWeaponEquipped);
 			EquipmentManagerComponent->OnUnequipped.RemoveDynamic(this, &ThisClass::OnWeaponUnequipped);
@@ -39,9 +43,9 @@ void UMGWeaponStatus::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 	}
 
 	// Bind equipped/unequipped events to new pawn's equipment manager component
-	if (const AMGCharacter* PlayerCharacter = Cast<AMGCharacter>(NewPawn))
+	if (NewPawn != nullptr)
 	{
-		if (UMGEquipmentManagerComponent* EquipmentManagerComponent = PlayerCharacter->FindComponentByClass<UMGEquipmentManagerComponent>())
+		if (UMGEquipmentManagerComponent* EquipmentManagerComponent = NewPawn->FindComponentByClass<UMGEquipmentManagerComponent>())
 		{
 			EquipmentManagerComponent->OnEquipped.AddUniqueDynamic(this, &ThisClass::OnWeaponEquipped);
 			EquipmentManagerComponent->OnUnequipped.AddUniqueDynamic(this, &ThisClass::OnWeaponUnequipped);
@@ -51,36 +55,27 @@ void UMGWeaponStatus::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 
 void UMGWeaponStatus::OnWeaponEquipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* NewEquipmentInstance)
 {
-	CurrentWeaponInstance = Cast<UMGRangedWeaponInstance>(NewEquipmentInstance);
-
-	if (CurrentWeaponInstance)
+	if (UMGRangedWeaponInstance* EquippedWeapon = Cast<UMGRangedWeaponInstance>(NewEquipmentInstance))
 	{
-		if (!IsVisible())
-		{
-			SetVisibility(ESlateVisibility::SelfHitTestInvisible);
-		}
+		SetVisibility(ESlateVisibility::Visible);
 
-		WeaponImage->SetBrushFromTexture(CurrentWeaponInstance->EquipmentIcon);
-		CurrentAmmoNumber->SetText(FText::AsNumber(CurrentWeaponInstance->GetCurrentAmmo()));
-		TotalAmmoNumber->SetText(FText::AsNumber(CurrentWeaponInstance->GetTotalAmmo()));
+		WeaponImage->SetBrushFromTexture(EquippedWeapon->EquipmentIcon);
+		CurrentAmmoNumber->SetText(FText::AsNumber(EquippedWeapon->GetCurrentAmmo()));
+		TotalAmmoNumber->SetText(FText::AsNumber(EquippedWeapon->GetTotalAmmo()));
 
-		CurrentWeaponInstance->OnCurrentAmmoChanged.AddUniqueDynamic(this, &ThisClass::OnCurrentAmmoChanged);
-		CurrentWeaponInstance->OnTotalAmmoChanged.AddUniqueDynamic(this, &ThisClass::OnTotalAmmoChanged);
+		EquippedWeapon->OnCurrentAmmoChanged.AddUniqueDynamic(this, &ThisClass::OnCurrentAmmoChanged);
+		EquippedWeapon->OnTotalAmmoChanged.AddUniqueDynamic(this, &ThisClass::OnTotalAmmoChanged);
 	}
 }
 
-void UMGWeaponStatus::OnWeaponUnequipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* NewEquipmentInstance)
+void UMGWeaponStatus::OnWeaponUnequipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* OldEquipmentInstance)
 {
-	if (CurrentWeaponInstance)
+	if (UMGRangedWeaponInstance* UnequippedWeapon = Cast<UMGRangedWeaponInstance>(OldEquipmentInstance))
 	{
-		if (IsVisible())
-		{
-			SetVisibility(ESlateVisibility::Hidden);
-		}
+		SetVisibility(ESlateVisibility::Collapsed);
 
-		CurrentWeaponInstance->OnCurrentAmmoChanged.RemoveDynamic(this, &ThisClass::OnCurrentAmmoChanged);
-		CurrentWeaponInstance->OnTotalAmmoChanged.RemoveDynamic(this, &ThisClass::OnTotalAmmoChanged);
-		CurrentWeaponInstance = nullptr;
+		UnequippedWeapon->OnCurrentAmmoChanged.RemoveDynamic(this, &ThisClass::OnCurrentAmmoChanged);
+		UnequippedWeapon->OnTotalAmmoChanged.RemoveDynamic(this, &ThisClass::OnTotalAmmoChanged);
 	}
 }
 

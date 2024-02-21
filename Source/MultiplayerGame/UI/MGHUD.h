@@ -27,17 +27,20 @@ protected:
 
 public:
 
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-	virtual UUserWidget* CreateWidgetInSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag);
+	UFUNCTION(BlueprintCallable)
+	UUserWidget* CreateLayout(TSubclassOf<UUserWidget> LayoutWidgetClass);
 
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-	virtual void ShowWidgetInSlot(FGameplayTag SlotTag);
+	UFUNCTION(BlueprintCallable)
+	UUserWidget* CreateWidgetInSlot(TSubclassOf<UUserWidget> WidgetClass, FGameplayTag SlotTag);
 
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-	virtual void HideWidgetInSlot(FGameplayTag SlotTag);
+	UFUNCTION(BlueprintCallable)
+	void ShowWidgetInSlot(FGameplayTag SlotTag);
 
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic)
-	virtual void ClearSlot(FGameplayTag SlotTag);
+	UFUNCTION(BlueprintCallable)
+	void HideWidgetInSlot(FGameplayTag SlotTag);
+
+	UFUNCTION(BlueprintCallable)
+	void ClearSlot(FGameplayTag SlotTag);
 
 public:
 

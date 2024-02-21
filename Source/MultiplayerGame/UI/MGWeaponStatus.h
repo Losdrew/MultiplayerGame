@@ -29,19 +29,19 @@ public:
 
 protected:
 
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void OnWeaponEquipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* NewEquipmentInstance);
+	void OnWeaponEquipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* NewEquipmentInstance);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void OnWeaponUnequipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* NewEquipmentInstance);
+	void OnWeaponUnequipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* OldEquipmentInstance);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void OnCurrentAmmoChanged(UMGRangedWeaponInstance* WeaponInstance, int NewValue);
+	void OnCurrentAmmoChanged(UMGRangedWeaponInstance* WeaponInstance, int NewValue);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void OnTotalAmmoChanged(UMGRangedWeaponInstance* WeaponInstance, int NewValue);
+	void OnTotalAmmoChanged(UMGRangedWeaponInstance* WeaponInstance, int NewValue);
 
 public:
 
@@ -53,9 +53,4 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> TotalAmmoNumber;
-
-private:
-
-	UPROPERTY()
-	TObjectPtr<UMGRangedWeaponInstance> CurrentWeaponInstance;
 };
