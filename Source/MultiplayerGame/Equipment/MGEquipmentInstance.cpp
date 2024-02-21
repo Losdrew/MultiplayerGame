@@ -107,17 +107,8 @@ void UMGEquipmentInstance::OnEquipped()
 		Character->GetFirstPersonArms()->SetHiddenInGame(false);
 	}
 
-	for (const AActor* Actor : SpawnedActorsFirstPerson)
-	{
-		USkeletalMeshComponent* ActorMesh = Cast<USkeletalMeshComponent>(Actor->GetRootComponent());
-		ActorMesh->SetOnlyOwnerSee(true);
-	}
-
-	for (const AActor* Actor : SpawnedActorsThirdPerson)
-	{
-		USkeletalMeshComponent* ActorMesh = Cast<USkeletalMeshComponent>(Actor->GetRootComponent());
-		ActorMesh->SetOwnerNoSee(true);
-	}
+	OnRep_SpawnedActorsFirstPerson();
+	OnRep_SpawnedActorsThirdPerson();
 
 	K2_OnEquipped();
 }
@@ -129,4 +120,28 @@ void UMGEquipmentInstance::OnUnequipped()
 
 void UMGEquipmentInstance::OnRep_Instigator()
 {
+}
+
+void UMGEquipmentInstance::OnRep_SpawnedActorsThirdPerson()
+{
+	for (const AActor* Actor : SpawnedActorsThirdPerson)
+	{
+		if (Actor)
+		{
+			USkeletalMeshComponent* ActorMesh = Cast<USkeletalMeshComponent>(Actor->GetRootComponent());
+			ActorMesh->SetOwnerNoSee(true);
+		}
+	}
+}
+
+void UMGEquipmentInstance::OnRep_SpawnedActorsFirstPerson()
+{
+	for (const AActor* Actor : SpawnedActorsFirstPerson)
+	{
+		if (Actor)
+		{
+			USkeletalMeshComponent* ActorMesh = Cast<USkeletalMeshComponent>(Actor->GetRootComponent());
+			ActorMesh->SetOnlyOwnerSee(true);
+		}
+	}
 }

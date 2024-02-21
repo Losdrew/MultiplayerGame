@@ -54,6 +54,12 @@ private:
 	UFUNCTION()
 	void OnRep_Instigator();
 
+	UFUNCTION()
+	void OnRep_SpawnedActorsThirdPerson();
+
+	UFUNCTION()
+	void OnRep_SpawnedActorsFirstPerson();
+
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Appearance")
@@ -75,9 +81,9 @@ private:
 	UPROPERTY(ReplicatedUsing=OnRep_Instigator)
 	TObjectPtr<UObject> Instigator;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=OnRep_SpawnedActorsThirdPerson)
 	TArray<TObjectPtr<AActor>> SpawnedActorsThirdPerson;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_SpawnedActorsFirstPerson)
 	TArray<TObjectPtr<AActor>> SpawnedActorsFirstPerson;
 };
