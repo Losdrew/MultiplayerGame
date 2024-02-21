@@ -157,22 +157,27 @@ FTransform UMGGameplayAbility_WeaponFire::GetTargetingTransform(const APawn* Sou
 	FVector CameraLocation;
 	FRotator CameraRotation;
 
-	if (Controller)
+	if (Controller != nullptr)
 	{
-		Controller->GetPlayerViewPoint(CameraLocation, CameraRotation);
-	}
-	else
-	{
-		CameraLocation = SourceLocation;
-		CameraRotation = Controller->GetControlRotation();
-	}
+		const APlayerController* PlayerController = Cast<APlayerController>(Controller);
 
-	// The AI controller doesn't need focal adjustments, so we do it only for the player
-	if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		const FVector AimDirection = CameraRotation.Vector().GetSafeNormal();
-		const FVector FocalLocation = CameraLocation + (AimDirection * FocalDistance);
-		CameraLocation = FocalLocation + (((SourceLocation - FocalLocation) | AimDirection) * AimDirection);
+		if (PlayerController != nullptr)
+		{
+			PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+		}
+		else
+		{
+			CameraLocation = SourceLocation;
+			CameraRotation = Controller->GetControlRotation();
+		}
+
+		// The AI controller doesn't need focal adjustments, so we do it only for the player
+		if (PlayerController != nullptr)
+		{
+			const FVector AimDirection = CameraRotation.Vector().GetSafeNormal();
+			const FVector FocalLocation = CameraLocation + (AimDirection * FocalDistance);
+			CameraLocation = FocalLocation + (((SourceLocation - FocalLocation) | AimDirection) * AimDirection);
+		}
 	}
 
 	return FTransform(CameraRotation, CameraLocation);
