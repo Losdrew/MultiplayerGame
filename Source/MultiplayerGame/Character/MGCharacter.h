@@ -90,6 +90,7 @@ public:
 protected:
 
 	void DisableMovementAndCollision();
+	void DestroyDueToDeath();
 	void UninitializeAndDestroy();
 	void UninitializeAbilitySystem();
 

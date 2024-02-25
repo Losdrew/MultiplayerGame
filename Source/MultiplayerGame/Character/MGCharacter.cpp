@@ -190,7 +190,7 @@ void AMGCharacter::OnDeathStarted(AActor*)
 
 void AMGCharacter::OnDeathFinished(AActor*)
 {
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::UninitializeAndDestroy);
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &ThisClass::DestroyDueToDeath);
 }
 
 void AMGCharacter::Jump()
@@ -229,6 +229,13 @@ void AMGCharacter::DisableMovementAndCollision()
 	UCharacterMovementComponent* CharacterMovementComponent = CastChecked<UCharacterMovementComponent>(GetCharacterMovement());
 	CharacterMovementComponent->StopMovementImmediately();
 	CharacterMovementComponent->DisableMovement();
+}
+
+void AMGCharacter::DestroyDueToDeath()
+{
+	K2_OnDeathFinished();
+
+	UninitializeAndDestroy();
 }
 
 void AMGCharacter::UninitializeAndDestroy()
