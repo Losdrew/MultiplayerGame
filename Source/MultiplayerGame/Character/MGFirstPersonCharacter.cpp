@@ -19,6 +19,8 @@ AMGFirstPersonCharacter::AMGFirstPersonCharacter(const FObjectInitializer& Objec
 
 	FirstPersonArms = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonArms"));
 	FirstPersonArms->AttachToComponent(FirstPersonCamera, FAttachmentTransformRules::KeepRelativeTransform);
+	FirstPersonArms->SetOwnerNoSee(true);
+	FirstPersonArms->SetOnlyOwnerSee(true);
 
 	FirstPersonBodyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FirstPersonBodyMesh"));
 	FirstPersonBodyMesh->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
@@ -34,7 +36,17 @@ void AMGFirstPersonCharacter::RecalculateBaseEyeHeight()
 	FirstPersonCamera->SetRelativeLocation(FVector(0.0f, 0.0f, BaseEyeHeight));
 }
 
-void AMGFirstPersonCharacter::SetLowerBodyVisibility(bool bVisible)
+void AMGFirstPersonCharacter::SetMeshOwnerVisibility(bool bVisible)
+{
+	GetMesh()->SetOwnerNoSee(!bVisible);
+}
+
+void AMGFirstPersonCharacter::SetLowerBodyOwnerVisibility(bool bVisible)
 {
 	FirstPersonBodyMesh->SetOwnerNoSee(!bVisible);
+}
+
+void AMGFirstPersonCharacter::SetArmsOwnerVisibility(bool bVisible)
+{
+	FirstPersonArms->SetOwnerNoSee(!bVisible);
 }

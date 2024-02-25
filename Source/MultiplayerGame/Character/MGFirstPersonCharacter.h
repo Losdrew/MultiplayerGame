@@ -24,8 +24,17 @@ public:
 
 	virtual void RecalculateBaseEyeHeight() override;
 
+	// Modifies bOwnerNoSee on Mesh
 	UFUNCTION(BlueprintCallable)
-	void SetLowerBodyVisibility(bool bVisible);
+	void SetMeshOwnerVisibility(bool bVisible);
+
+	// Modifies bOwnerNoSee on FirstPersonBodyMesh
+	UFUNCTION(BlueprintCallable)
+	void SetLowerBodyOwnerVisibility(bool bVisible);
+
+	// Modifies bOwnerNoSee on FirstPersonArms
+	UFUNCTION(BlueprintCallable)
+	void SetArmsOwnerVisibility(bool bVisible);
 
 protected:
 

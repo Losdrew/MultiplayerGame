@@ -102,9 +102,9 @@ void UMGEquipmentInstance::DestroyEquipmentActors()
 void UMGEquipmentInstance::OnEquipped()
 {
 	// First person arms are hidden before equipping an item, so we start showing them
-	if (const AMGFirstPersonCharacter* Character = Cast<AMGFirstPersonCharacter>(GetPawn()))
+	if (AMGFirstPersonCharacter* Character = Cast<AMGFirstPersonCharacter>(GetPawn()))
 	{
-		Character->GetFirstPersonArms()->SetHiddenInGame(false);
+		Character->SetArmsOwnerVisibility(true);
 	}
 
 	OnRep_SpawnedActorsFirstPerson();
