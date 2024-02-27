@@ -12,7 +12,7 @@ struct FDamageStatics
 
 	FDamageStatics()
 	{
-		BaseDamageDefinition = FGameplayEffectAttributeCaptureDefinition(FGameplayEffectAttributeCaptureDefinition(UMGHealthSet::GetDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true));
+		BaseDamageDefinition = FGameplayEffectAttributeCaptureDefinition(UMGHealthSet::GetDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
 };
 
