@@ -53,7 +53,7 @@ bool UMGGameplayAbility_WeaponFire::CheckCost(const FGameplayAbilitySpecHandle H
 
 	if (const UMGRangedWeaponInstance* WeaponInstance = GetWeaponInstance())
 	{
-		bCanApplyCost = WeaponInstance->GetCurrentAmmo() - WeaponInstance->GetBulletsInOneShot() >= 0;
+		bCanApplyCost = WeaponInstance->GetCurrentAmmo() - 1 >= 0;
 	}
 
 	return bCanApplyCost;
@@ -68,8 +68,7 @@ void UMGGameplayAbility_WeaponFire::ApplyCost(const FGameplayAbilitySpecHandle H
 		if (UMGRangedWeaponInstance* WeaponInstance = GetWeaponInstance())
 		{
 			const int CurrentAmmo = WeaponInstance->GetCurrentAmmo();
-			const int BulletsInOneShot = WeaponInstance->GetBulletsInOneShot();
-			WeaponInstance->SetCurrentAmmo(CurrentAmmo - BulletsInOneShot);
+			WeaponInstance->SetCurrentAmmo(CurrentAmmo - 1);
 		}
 	}
 }
@@ -210,7 +209,7 @@ void UMGGameplayAbility_WeaponFire::TraceBulletsInOneShot(const FRangedWeaponFir
 		{
 			if (AllHits.Num() > 0)
 			{
-				OutHits = MoveTemp(AllHits);
+				OutHits.Append(AllHits);
 			}
 		}
 
