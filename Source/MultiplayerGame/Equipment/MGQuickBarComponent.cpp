@@ -135,7 +135,7 @@ int32 UMGQuickBarComponent::FindQuickSlotByEquipmentDefinition(TSubclassOf<UMGEq
 	{
 		if (Current.EquipmentDefinition == EquipmentDefinition)
 		{
-			return Current.QuickSlot;
+			return Current.QuickSlot.GetIntValue();
 		}
 	}
 

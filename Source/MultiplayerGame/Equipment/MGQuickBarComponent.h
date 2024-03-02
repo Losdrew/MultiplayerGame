@@ -13,12 +13,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGQuickBar_SlotsChanged, const TArr
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGQuickBar_ActiveSlotIndexChanged, int32, ActiveSlotIndex);
 
 UENUM(BlueprintType)
-enum EMGQuickSlots
+enum class EMGQuickSlots : uint8
 {
 	QuickSlot1,
 	QuickSlot2,
 	QuickSlot3,
-	QuickSlot4
+	QuickSlot4,
+	QuickSlot5
 };
 
 /**
