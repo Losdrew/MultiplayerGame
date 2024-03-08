@@ -22,25 +22,27 @@ class UMGWeaponStatus : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
+protected:
+
+	//~UUserWidget interface
+	virtual void NativeOnInitialized() override;
+	//~End of UUserWidget interface
+
+	void UpdateWeaponStatus(UMGEquipmentManagerComponent* EquipmentManagerComponent);
 
 	UFUNCTION()
 	void OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn);
 
-protected:
-
-	virtual void NativeOnInitialized() override;
-
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnWeaponEquipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* NewEquipmentInstance);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnWeaponUnequipped(UMGEquipmentManagerComponent* EquipmentManagerComponent, UMGEquipmentInstance* OldEquipmentInstance);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnCurrentAmmoChanged(UMGRangedWeaponInstance* WeaponInstance, int NewValue);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnTotalAmmoChanged(UMGRangedWeaponInstance* WeaponInstance, int NewValue);
 
 public:

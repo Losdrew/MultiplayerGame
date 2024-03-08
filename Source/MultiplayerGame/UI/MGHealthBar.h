@@ -6,7 +6,6 @@
 
 #include "MGHealthBar.generated.h"
 
-class USizeBox;
 class UTextBlock;
 class UProgressBar;
 class UMGHealthComponent;
@@ -21,28 +20,24 @@ class UMGHealthBar : public UUserWidget
 {
 	GENERATED_BODY()
 
-public:
+protected:
+
+	//~UUserWidget interface
+	virtual void NativeOnInitialized() override;
+	//~End of UUserWidget interface
+
+	void UpdateHealthBar(UMGHealthComponent* HealthComponent);
 
 	UFUNCTION()
 	void OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn);
-
+	
 	UFUNCTION()
-	void InitializeHealthBarVisuals();
-
-protected:
-
-	UFUNCTION(BlueprintCallable)
 	void OnHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	void OnMaxHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator);
 
-	virtual void NativeConstruct() override;
-
 public:
-
-	UPROPERTY(meta = (BindWidget))
-	TObjectPtr<USizeBox> SizeBox;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UProgressBar> HealthBar;
@@ -60,13 +55,4 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Color")
 	FLinearColor LowHealthColor;
-
-	UPROPERTY(BlueprintReadOnly)
-	float Health;
-
-	UPROPERTY(BlueprintReadOnly)
-	float HealthNormalized;
-
-	UPROPERTY(BlueprintReadOnly)
-	float MaxHealth;
 };

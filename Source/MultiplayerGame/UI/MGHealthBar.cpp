@@ -3,108 +3,64 @@
 
 #include "MGHealthBar.h"
 
-#include "Components/SizeBox.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
-#include "MGCharacter.h"
 #include "MGHealthComponent.h"
 
-void UMGHealthBar::NativeConstruct()
+void UMGHealthBar::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 
-	if (APlayerController* PlayerController = GetOwningPlayer())
+	APlayerController* PlayerController = GetOwningPlayer();
+	PlayerController->OnPossessedPawnChanged.AddUniqueDynamic(this, &ThisClass::OnPossessedPawnChanged);
+
+	if (APawn* PlayerPawn = PlayerController->GetPawn())
 	{
-		PlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::UMGHealthBar::OnPossessedPawnChanged);
-
-		if (APawn* PlayerPawn = PlayerController->GetPawn())
-		{
-			OnPossessedPawnChanged(nullptr, PlayerPawn);
-		}
+		OnPossessedPawnChanged(nullptr, PlayerPawn);
 	}
 }
 
 void UMGHealthBar::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 {
 	// Unbind health events from old pawn's health component
-	if (const AMGCharacter* PlayerCharacter = Cast<AMGCharacter>(OldPawn))
+	if (OldPawn != nullptr)
 	{
-		if (UMGHealthComponent* HealthComponent = PlayerCharacter->FindComponentByClass<UMGHealthComponent>())
+		if (UMGHealthComponent* HealthComponent = OldPawn->FindComponentByClass<UMGHealthComponent>())
 		{
 			HealthComponent->OnHealthChanged.RemoveDynamic(this, &ThisClass::OnHealthChanged);
 			HealthComponent->OnMaxHealthChanged.RemoveDynamic(this, &ThisClass::OnMaxHealthChanged);
 		}
 	}
 
-	// Bind health events to new pawn's health component, save health values and initialize HealthBar visuals
-	if (const AMGCharacter* PlayerCharacter = Cast<AMGCharacter>(NewPawn))
+	// Bind health events to new pawn's health component
+	if (NewPawn != nullptr)
 	{
-		if (UMGHealthComponent* HealthComponent = PlayerCharacter->FindComponentByClass<UMGHealthComponent>())
+		if (UMGHealthComponent* HealthComponent = NewPawn->FindComponentByClass<UMGHealthComponent>())
 		{
 			HealthComponent->OnHealthChanged.AddUniqueDynamic(this, &ThisClass::OnHealthChanged);
 			HealthComponent->OnMaxHealthChanged.AddUniqueDynamic(this, &ThisClass::OnMaxHealthChanged);
 
-			Health = HealthComponent->GetHealth();
-			HealthNormalized = HealthComponent->GetHealthNormalized();
-			MaxHealth = HealthComponent->GetMaxHealth();
-
-			InitializeHealthBarVisuals();
+			UpdateHealthBar(HealthComponent);
 		}
 	}
 }
 
+void UMGHealthBar::UpdateHealthBar(UMGHealthComponent* HealthComponent)
+{
+	OnHealthChanged(HealthComponent, 0.0f, HealthComponent->GetHealth(), nullptr);
+	OnMaxHealthChanged(HealthComponent, 0.0f, HealthComponent->GetMaxHealth(), nullptr);
+}
+
 void UMGHealthBar::OnHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator)
 {
-	if (HealthBar)
-	{
-		HealthNormalized = HealthComponent->GetHealthNormalized();
-
-		HealthBar->SetPercent(HealthNormalized);
-
-		// Linearly interpolate between colors
-		HealthBar->SetFillColorAndOpacity(FLinearColor::LerpUsingHSV(LowHealthColor, FullHealthColor, HealthNormalized));
-	}
-
-	if (HealthNumber)
-	{
-		HealthNumber->SetText(FText::AsNumber(NewValue));
-	}
+	float HealthNormalized = HealthComponent->GetHealthNormalized();
+	HealthBar->SetPercent(HealthNormalized);
+	HealthBar->SetFillColorAndOpacity(FLinearColor::LerpUsingHSV(LowHealthColor, FullHealthColor, HealthNormalized));
+	HealthNumber->SetText(FText::AsNumber(NewValue));
 }
 
 void UMGHealthBar::OnMaxHealthChanged(UMGHealthComponent* HealthComponent, float OldValue, float NewValue, AActor* Instigator)
 {
-	if (SizeBox)
-	{
-		const float OldWidthOverrideScale = SizeBox->GetWidthOverride() / OldValue;
-
-		const float NewWidthOverride = NewValue * OldWidthOverrideScale;
-
-		SizeBox->SetWidthOverride(NewWidthOverride);
-	}
-
-	if (MaxHealthNumber)
-	{
-		MaxHealthNumber->SetText(FText::AsNumber(NewValue));
-	}
-}
-
-void UMGHealthBar::InitializeHealthBarVisuals()
-{
-	if (HealthBar)
-	{
-		HealthBar->SetPercent(HealthNormalized);
-
-		// Linearly interpolate between colors
-		HealthBar->SetFillColorAndOpacity(FLinearColor::LerpUsingHSV(LowHealthColor, FullHealthColor, HealthNormalized));
-	}
-
-	if (HealthNumber)
-	{
-		HealthNumber->SetText(FText::AsNumber(Health));
-	}
-
-	if (MaxHealthNumber)
-	{
-		MaxHealthNumber->SetText(FText::AsNumber(MaxHealth));
-	}
+	MaxHealthNumber->SetText(FText::AsNumber(NewValue));
+	OnHealthChanged(HealthComponent, 0.0f, HealthComponent->GetHealth(), nullptr);
 }

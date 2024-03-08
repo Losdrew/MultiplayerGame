@@ -17,15 +17,6 @@ void UMGWeaponStatus::NativeOnInitialized()
 
 	if (APawn* PlayerPawn = PlayerController->GetPawn())
 	{
-		if (UMGEquipmentManagerComponent* EquipmentManagerComponent = PlayerPawn->FindComponentByClass<UMGEquipmentManagerComponent>())
-		{
-			// Weapon might be have been already equipped before this widget is initialized, so we try to update this widget manually
-			if (UMGEquipmentInstance* EquippedItem = EquipmentManagerComponent->GetEquippedItem())
-			{
-				OnWeaponEquipped(EquipmentManagerComponent, EquippedItem);
-			}
-		}
-
 		OnPossessedPawnChanged(nullptr, PlayerPawn);
 	}
 }
@@ -49,7 +40,17 @@ void UMGWeaponStatus::OnPossessedPawnChanged(APawn* OldPawn, APawn* NewPawn)
 		{
 			EquipmentManagerComponent->OnEquipped.AddUniqueDynamic(this, &ThisClass::OnWeaponEquipped);
 			EquipmentManagerComponent->OnUnequipped.AddUniqueDynamic(this, &ThisClass::OnWeaponUnequipped);
+
+			UpdateWeaponStatus(EquipmentManagerComponent);
 		}
+	}
+}
+
+void UMGWeaponStatus::UpdateWeaponStatus(UMGEquipmentManagerComponent* EquipmentManagerComponent)
+{
+	if (UMGEquipmentInstance* EquippedWeapon = EquipmentManagerComponent->GetEquippedItem())
+	{
+		OnWeaponEquipped(EquipmentManagerComponent, EquippedWeapon);
 	}
 }
 
