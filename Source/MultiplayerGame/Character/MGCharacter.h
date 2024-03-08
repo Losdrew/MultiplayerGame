@@ -16,7 +16,7 @@ class UMGCharacterMovementComponent;
 struct FGameplayTag;
 struct FInputActionValue;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMGCharacter_PlayerStateReplicated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMGCharacter_AbilitySystemReady, AMGCharacter*, Character, UAbilitySystemComponent*, AbilitySystemComponent);
 
 /**
  * AMGCharacter
@@ -50,11 +50,10 @@ public:
 
 	//~APawn interface
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 	//~End of APawn interface
 
 	void InitPlayer();
-
-	virtual void OnRep_PlayerState() override;
 
 	void InputAbilityInputTagPressed(FGameplayTag InputTag);
 	void InputAbilityInputTagReleased(FGameplayTag InputTag);
@@ -98,6 +97,11 @@ protected:
 
 	UFUNCTION()
 	void OnRep_bSliding();
+
+public:
+
+	UPROPERTY(BlueprintAssignable)
+	FMGCharacter_AbilitySystemReady OnAbilitySystemReady;
 
 public:
 	// Set by character movement to specify that this Character is currently sliding

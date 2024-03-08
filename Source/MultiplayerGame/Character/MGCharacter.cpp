@@ -91,6 +91,12 @@ void AMGCharacter::PossessedBy(AController * NewController)
 	InitPlayer();
 }
 
+void AMGCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+	InitPlayer();
+}
+
 void AMGCharacter::InitPlayer()
 {
 	if (AMGPlayerState* PS = GetPlayerState<AMGPlayerState>())
@@ -111,12 +117,8 @@ void AMGCharacter::InitPlayer()
 	{
 		AnimInstance->InitializeWithAbilitySystem(AbilitySystemComponent);
 	}
-}
 
-void AMGCharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-	InitPlayer();
+	OnAbilitySystemReady.Broadcast(this, AbilitySystemComponent);
 }
 
 void AMGCharacter::InputAbilityInputTagPressed(FGameplayTag InputTag)
