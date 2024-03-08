@@ -3,11 +3,9 @@
 
 #include "MGHealthSet.h"
 
-#include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
-#include "GameplayEffectTypes.h"
-#include "AbilitySystemComponent.h"
 #include "MGAbilitySystemComponent.h"
+#include "Net/UnrealNetwork.h"
 
 UMGHealthSet::UMGHealthSet()
 {

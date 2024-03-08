@@ -3,7 +3,6 @@
 #pragma once
 
 #include "MGAttributeSet.h"
-#include "AbilitySystemComponent.h"
 
 #include "MGHealthSet.generated.h"
 
@@ -26,7 +25,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UMGHealthSet, Healing);
 	ATTRIBUTE_ACCESSORS(UMGHealthSet, Damage);
 
-	// Delegate to broadcast when the health attribute reaches zero
+	// Delegate to broadcast when receiving damage
 	mutable FMGAttributeEvent OnReceiveDamage;
 
 	// Delegate to broadcast when the health attribute reaches zero

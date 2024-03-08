@@ -3,6 +3,7 @@
 #pragma once
 
 #include "AttributeSet.h"
+#include "AbilitySystemComponent.h"
 
 #include "MGAttributeSet.generated.h"
 
