@@ -93,9 +93,12 @@ void UMGDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 	float DistanceAttenuation = 1.0f;
 	if (const IMGAbilitySourceInterface* AbilitySource = Cast<IMGAbilitySourceInterface>(Spec.GetContext().GetSourceObject()))
 	{
-		if (const UPhysicalMaterial* PhysMaterial = HitActorResult->PhysMaterial.Get())
+		if (HitActorResult != nullptr)
 		{
-			PhysicalMaterialAttenuation = AbilitySource->GetPhysicalMaterialAttenuation(PhysMaterial);
+			if (const UPhysicalMaterial* PhysMaterial = HitActorResult->PhysMaterial.Get())
+			{
+				PhysicalMaterialAttenuation = AbilitySource->GetPhysicalMaterialAttenuation(PhysMaterial);
+			}
 		}
 
 		DistanceAttenuation = AbilitySource->GetDistanceAttenuation(Distance);

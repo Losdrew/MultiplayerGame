@@ -6,6 +6,16 @@
 
 #include "MGGameplayAbility_WeaponFire.generated.h"
 
+/** Defines where an ability starts its trace from and where it should face */
+UENUM(BlueprintType)
+enum class EMGAbilityTargetingSource : uint8
+{
+	// From the player's camera towards camera focus
+	CameraTowardsFocus,
+	// From the weapon's muzzle or location, towards camera focus
+	WeaponTowardsFocus
+};
+
 /**
  * UMGGameplayAbility_WeaponFire
  *
@@ -49,10 +59,11 @@ protected:
 
 protected:
 
-	void PerformLocalTargeting(OUT TArray<FHitResult>& OutHits);
-	FTransform GetTargetingTransform(const APawn* SourcePawn);
-	void TraceBulletsInOneShot(const FRangedWeaponFiringInput& InputData, OUT TArray<FHitResult>& OutHits);
-	FVector GetRandomDirectionWithinCone(const FVector& BaseDirection, const float ConeHalfAngleRad, const float DistributionExponent);
+	void PerformLocalTargeting(OUT TArray<FHitResult>& OutHits) const;
+	FTransform GetTargetingTransform(const APawn* SourcePawn) const;
+	FVector GetTargetingSourceLocation() const;
+	void TraceBulletsInOneShot(const FRangedWeaponFiringInput& InputData, OUT TArray<FHitResult>& OutHits) const;
+	FVector GetRandomDirectionWithinCone(const FVector& BaseDirection, const float ConeHalfAngleRad, const float DistributionExponent) const;
 	FHitResult WeaponTrace(const FVector& StartTrace, const FVector& EndTrace, OUT TArray<FHitResult>& OutHits) const;
 	void AddAdditionalTraceIgnoreActors(FCollisionQueryParams& TraceParams) const;
 	void OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& InData, FGameplayTag ApplicationTag);
@@ -64,6 +75,15 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnRangedWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
 
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting")
+	EMGAbilityTargetingSource TargetingSource;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting")
+	FVector TargetingOffset;
+
 private:
+
 	FDelegateHandle OnTargetDataReadyCallbackDelegateHandle;
 };

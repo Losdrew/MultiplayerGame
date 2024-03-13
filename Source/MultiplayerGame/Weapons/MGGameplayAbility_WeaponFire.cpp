@@ -126,7 +126,7 @@ void UMGGameplayAbility_WeaponFire::StartRangedWeaponTargeting()
 	OnTargetDataReadyCallback(TargetData, FGameplayTag());
 }
 
-void UMGGameplayAbility_WeaponFire::PerformLocalTargeting(OUT TArray<FHitResult>& OutHits)
+void UMGGameplayAbility_WeaponFire::PerformLocalTargeting(OUT TArray<FHitResult>& OutHits) const
 {
 	const APawn* AvatarPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
 	UMGRangedWeaponInstance* WeaponData = GetWeaponInstance();
@@ -144,19 +144,20 @@ void UMGGameplayAbility_WeaponFire::PerformLocalTargeting(OUT TArray<FHitResult>
 	}
 }
 
-FTransform UMGGameplayAbility_WeaponFire::GetTargetingTransform(const APawn* SourcePawn)
+FTransform UMGGameplayAbility_WeaponFire::GetTargetingTransform(const APawn* SourcePawn) const
 {
 	check(SourcePawn);
 
 	const AController* Controller = SourcePawn->GetController();
-	const FVector SourceLocation = SourcePawn->GetActorLocation();
+	FVector SourceLocation = GetTargetingSourceLocation();
 
 	const double FocalDistance = 1024.0f;
 
 	FVector CameraLocation;
+	FVector FocalLocation;
 	FRotator CameraRotation;
 
-	if (Controller != nullptr)
+	if (Controller != nullptr && (TargetingSource == EMGAbilityTargetingSource::CameraTowardsFocus || TargetingSource == EMGAbilityTargetingSource::WeaponTowardsFocus))
 	{
 		const APlayerController* PlayerController = Cast<APlayerController>(Controller);
 
@@ -174,15 +175,37 @@ FTransform UMGGameplayAbility_WeaponFire::GetTargetingTransform(const APawn* Sou
 		if (PlayerController != nullptr)
 		{
 			const FVector AimDirection = CameraRotation.Vector().GetSafeNormal();
-			const FVector FocalLocation = CameraLocation + (AimDirection * FocalDistance);
+			FocalLocation = CameraLocation + (AimDirection * FocalDistance);
 			CameraLocation = FocalLocation + (((SourceLocation - FocalLocation) | AimDirection) * AimDirection);
 		}
+	}
+
+	if (TargetingSource == EMGAbilityTargetingSource::WeaponTowardsFocus)
+	{
+		return FTransform((FocalLocation - SourceLocation).Rotation(), SourceLocation);
 	}
 
 	return FTransform(CameraRotation, CameraLocation);
 }
 
-void UMGGameplayAbility_WeaponFire::TraceBulletsInOneShot(const FRangedWeaponFiringInput& InputData, OUT TArray<FHitResult>& OutHits)
+FVector UMGGameplayAbility_WeaponFire::GetTargetingSourceLocation() const
+{
+	// Use Pawn's location as a base
+	APawn* const AvatarPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
+	check(AvatarPawn);
+
+	const FVector SourceLocation = AvatarPawn->GetActorLocation();
+	const FQuat SourceRotation = AvatarPawn->GetActorQuat();
+
+	FVector TargetingSourceLocation = SourceLocation;
+	
+	const FVector LocalOffset = SourceRotation.RotateVector(TargetingOffset);
+	TargetingSourceLocation += LocalOffset;
+
+	return TargetingSourceLocation;
+}
+
+void UMGGameplayAbility_WeaponFire::TraceBulletsInOneShot(const FRangedWeaponFiringInput& InputData, OUT TArray<FHitResult>& OutHits) const
 {
 	UMGRangedWeaponInstance* WeaponData = InputData.WeaponData;
 	check(WeaponData);
@@ -227,7 +250,7 @@ void UMGGameplayAbility_WeaponFire::TraceBulletsInOneShot(const FRangedWeaponFir
 	}
 }
 
-FVector UMGGameplayAbility_WeaponFire::GetRandomDirectionWithinCone(const FVector& BaseDirection, const float ConeHalfAngleRad, const float DistributionExponent)
+FVector UMGGameplayAbility_WeaponFire::GetRandomDirectionWithinCone(const FVector& BaseDirection, const float ConeHalfAngleRad, const float DistributionExponent) const
 {
 	if (ConeHalfAngleRad <= 0.f)
 	{
