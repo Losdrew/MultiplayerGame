@@ -146,6 +146,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	UMGEquipmentInstance* GetFirstInstanceByDefinition(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition) const;
 
+	// Returns the first equipped definition by equipment instance, or nullptr if none are found
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	TSubclassOf<UMGEquipmentDefinition> GetFirstDefinitionByInstance(const UMGEquipmentInstance* EquipmentInstance) const;
+
  	// Returns all equipped instances of a given type, or an empty array if none are found
  	UFUNCTION(BlueprintCallable, BlueprintPure)
 	TArray<UMGEquipmentInstance*> GetEquipmentInstancesOfType(TSubclassOf<UMGEquipmentInstance> InstanceType) const;

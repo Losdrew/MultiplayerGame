@@ -13,7 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGQuickBar_SlotsChanged, const TArr
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMGQuickBar_ActiveSlotIndexChanged, int32, ActiveSlotIndex);
 
 UENUM(BlueprintType)
-enum class EMGQuickSlots : uint8
+enum EMGQuickSlots
 {
 	QuickSlot1,
 	QuickSlot2,
@@ -74,7 +74,7 @@ public:
 	int32 GetActiveSlotIndex() const { return ActiveSlotIndex; }
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
-	void AddItemToSlot(TSubclassOf<UMGEquipmentDefinition> EquipmentClass);
+	UMGEquipmentInstance* AddItemToSlot(TSubclassOf<UMGEquipmentDefinition> EquipmentClass);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void RemoveItemFromSlot(int32 SlotIndex);

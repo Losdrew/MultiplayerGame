@@ -4,6 +4,7 @@
 
 #include "MGEquipmentDefinition.generated.h"
 
+class UStaticMesh;
 class UMGAbilitySet;
 class UMGEquipmentInstance;
 
@@ -11,23 +12,41 @@ class UMGEquipmentInstance;
  * FMGEquipmentActorToSpawn
  *
  *	Holds information about actor to spawn from equipment
+ *  Gets attached to the pawn when equipment is equipped
  */
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FMGEquipmentActorToSpawn
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = "Equipment")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Equipment")
 	TSubclassOf<AActor> ActorToSpawn;
 
-	UPROPERTY(EditAnywhere, Category = "Equipment")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Equipment")
 	FName AttachSocket;
 
-	UPROPERTY(EditAnywhere, Category = "Equipment")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Equipment")
 	FTransform AttachTransform;
 
-	UPROPERTY(EditAnywhere, Category = "Equipment")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Equipment")
 	bool bFirstPersonView;
+};
+
+/**
+ * FMGPickupActor
+ *
+ *	Holds information about pickup actor to spawn from equipment
+ */
+USTRUCT(BlueprintType)
+struct FMGPickupActor
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Equipment")
+	TSubclassOf<AActor> PickupActor;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
+	TObjectPtr<UStaticMesh> PickupMesh;
 };
 
 
@@ -44,14 +63,18 @@ class UMGEquipmentDefinition : public UObject
 public:
 
 	// Class to spawn
-	UPROPERTY(EditDefaultsOnly, Category = "Equipment")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
 	TSubclassOf<UMGEquipmentInstance> InstanceType;
 
 	// Gameplay ability sets to grant when this is equipped
-	UPROPERTY(EditDefaultsOnly, Category = "Equipment")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
 	TArray<TObjectPtr<const UMGAbilitySet>> AbilitySetsToGrant;
 
 	// Actors to spawn on the pawn when this is equipped
-	UPROPERTY(EditDefaultsOnly, Category = "Equipment")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
 	TArray<FMGEquipmentActorToSpawn> ActorsToSpawn;
+
+	// MIGHT WANT TO CHANGE! Actor to spawn as a pickup when this is dropped
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Equipment")
+	FMGPickupActor PickupActor;
 };

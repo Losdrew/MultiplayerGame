@@ -91,7 +91,7 @@ void UMGQuickBarComponent::SetActiveSlotIndex_Implementation(int32 NewIndex)
 	}
 }
 
-void UMGQuickBarComponent::AddItemToSlot(TSubclassOf<UMGEquipmentDefinition> EquipmentClass)
+UMGEquipmentInstance* UMGQuickBarComponent::AddItemToSlot(TSubclassOf<UMGEquipmentDefinition> EquipmentClass)
 {
 	int32 SlotIndex = FindQuickSlotByEquipmentDefinition(EquipmentClass);
 
@@ -106,8 +106,11 @@ void UMGQuickBarComponent::AddItemToSlot(TSubclassOf<UMGEquipmentDefinition> Equ
 				SetActiveSlotIndex(SlotIndex);
 				OnRep_Slots();
 			}
+			return EquipmentInstance;
 		}
 	}
+
+	return nullptr;
 }
 
 void UMGQuickBarComponent::RemoveItemFromSlot(int32 SlotIndex)

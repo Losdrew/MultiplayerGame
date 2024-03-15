@@ -274,6 +274,19 @@ UMGEquipmentInstance* UMGEquipmentManagerComponent::GetFirstInstanceByDefinition
 	return nullptr;
 }
 
+TSubclassOf<UMGEquipmentDefinition> UMGEquipmentManagerComponent::GetFirstDefinitionByInstance(const UMGEquipmentInstance* EquipmentInstance) const
+{
+	for (const FMGAppliedEquipmentEntry& Entry : EquipmentList.Items)
+	{
+		if (Entry.Instance == EquipmentInstance)
+		{
+			return Entry.EquipmentDefinition;
+		}
+	}
+
+	return nullptr;
+}
+
 TArray<UMGEquipmentInstance*> UMGEquipmentManagerComponent::GetEquipmentInstancesOfType(TSubclassOf<UMGEquipmentInstance> InstanceType) const
 {
 	TArray<UMGEquipmentInstance*> Results;
