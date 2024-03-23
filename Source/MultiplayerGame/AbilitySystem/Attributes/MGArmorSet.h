@@ -31,9 +31,9 @@ public:
 
 	// ~UAttributeSet interface
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
-	void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const;
-	void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue);
-	void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue);
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	// ~End of UAttributeSet interface
 
 	void ClampAttribute(const FGameplayAttribute& Attribute, float& NewValue) const;
