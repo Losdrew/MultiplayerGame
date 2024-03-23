@@ -2,10 +2,13 @@
 
 #pragma once
 
+#include "MGAbilitySet.h"
+
 #include "MGEquipmentInstance.generated.h"
 
 class UAnimInstance;
 struct FMGEquipmentActorToSpawn;
+struct FMGAbilitySet_GrantedHandles;
 
 /**
  * UMGEquipmentInstance
@@ -38,10 +41,19 @@ public:
 	void SetEquipmentActorsVisibility(bool bIsVisible);
 	virtual void DestroyEquipmentActors();
 
+	virtual void OnActivated(FMGAbilitySet_GrantedHandles& GrantedHandles);
+	virtual void OnDeactivated();
+
 	virtual void OnEquipped();
 	virtual void OnUnequipped();
 
 protected:
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Equipment", meta = (DisplayName = "OnActivated"))
+	void K2_OnActivated();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Equipment", meta = (DisplayName = "OnDeactivated"))
+	void K2_OnDeactivated();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Equipment", meta = (DisplayName = "OnEquipped"))
 	void K2_OnEquipped();
@@ -59,6 +71,11 @@ private:
 
 	UFUNCTION()
 	void OnRep_SpawnedActorsFirstPerson();
+
+public:
+
+	UPROPERTY(BlueprintReadWrite)
+	FMGAbilitySet_GrantedHandles EquipmentGrantedHandles;
 
 public:
 

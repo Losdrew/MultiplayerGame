@@ -24,15 +24,15 @@ struct FMGAbilitySet_GameplayAbility
 	GENERATED_BODY()
 
 	// Gameplay ability to grant
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UMGGameplayAbility> Ability = nullptr;
 
 	// Level of ability to grant
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 AbilityLevel = 1;
 
 	// Tag used to process input for the ability
-	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "InputTag"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;
 };
 
@@ -47,11 +47,11 @@ struct FMGAbilitySet_GameplayEffect
 	GENERATED_BODY()
 
 	// Gameplay effect to grant
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UGameplayEffect> GameplayEffect = nullptr;
 
 	// Level of gameplay effect to grant
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float EffectLevel = 1.0f;
 };
 
@@ -66,7 +66,7 @@ struct FMGAbilitySet_AttributeSet
 	GENERATED_BODY()
 
 	// Gameplay effect to grant
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<UAttributeSet> AttributeSet;
 };
 
@@ -97,15 +97,15 @@ public:
 
 protected:
 	// Handles to the granted abilities
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
 
 	// Handles to the granted gameplay effects
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TArray<FActiveGameplayEffectHandle> GameplayEffectHandles;
 
 	// Pointers to the granted attribute sets
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	TArray<TObjectPtr<UAttributeSet>> GrantedAttributeSets;
 };
 

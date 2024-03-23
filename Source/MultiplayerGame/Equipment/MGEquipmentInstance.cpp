@@ -3,6 +3,7 @@
 
 #include "MGEquipmentInstance.h"
 
+#include "MGAbilitySet.h"
 #include "MGFirstPersonCharacter.h"
 #include "MGEquipmentDefinition.h"
 #include "Net/UnrealNetwork.h"
@@ -97,6 +98,19 @@ void UMGEquipmentInstance::DestroyEquipmentActors()
 	}
 
 	SpawnedActorsFirstPerson.Empty();
+}
+
+void UMGEquipmentInstance::OnActivated(FMGAbilitySet_GrantedHandles& GrantedHandles)
+{
+	EquipmentGrantedHandles = GrantedHandles;
+	SetEquipmentActorsVisibility(true);
+	K2_OnActivated();
+}
+
+void UMGEquipmentInstance::OnDeactivated()
+{
+	SetEquipmentActorsVisibility(false);
+	K2_OnDeactivated();
 }
 
 void UMGEquipmentInstance::OnEquipped()

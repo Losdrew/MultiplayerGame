@@ -120,6 +120,9 @@ public:
 	UMGEquipmentInstance* AddItem(TSubclassOf<UMGEquipmentDefinition> EquipmentDefinition);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
+	void ActivateItem(const UMGEquipmentInstance* ItemInstance);
+
+	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)
 	void RemoveItem(UMGEquipmentInstance* ItemInstance);
 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly)

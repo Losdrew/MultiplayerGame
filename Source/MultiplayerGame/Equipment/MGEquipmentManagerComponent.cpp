@@ -63,7 +63,7 @@ void FMGEquipmentList::ActivateEntry(const UMGEquipmentInstance* EquipmentInstan
 			}
 		}
 
-		Entry->Instance->SetEquipmentActorsVisibility(true);
+		Entry->Instance->OnActivated(Entry->GrantedHandles);
 	}
 }
 
@@ -76,7 +76,7 @@ void FMGEquipmentList::DeactivateEntry(const UMGEquipmentInstance* EquipmentInst
 			Entry->GrantedHandles.TakeFromAbilitySystem(ASC);
 		}
 
-		Entry->Instance->SetEquipmentActorsVisibility(false);
+		Entry->Instance->OnDeactivated();
 	}
 }
 
@@ -147,6 +147,16 @@ UMGEquipmentInstance* UMGEquipmentManagerComponent::AddItem(TSubclassOf<UMGEquip
 	return Result;
 }
 
+void UMGEquipmentManagerComponent::ActivateItem(const UMGEquipmentInstance* ItemInstance)
+{
+	if (ItemInstance == nullptr)
+	{
+		return;
+	}
+
+	EquipmentList.ActivateEntry(ItemInstance);
+}
+
 void UMGEquipmentManagerComponent::RemoveItem(UMGEquipmentInstance* ItemInstance)
 {
 	if (ItemInstance == EquippedItem)
@@ -171,7 +181,7 @@ void UMGEquipmentManagerComponent::EquipItem(const UMGEquipmentInstance* ItemIns
 	if (UMGEquipmentInstance* ExistingItem = GetFirstInstanceOfType(ItemInstance->GetClass()))
 	{
 		UMGEquipmentInstance* PreviousItem = EquippedItem;
-		EquipmentList.ActivateEntry(ExistingItem);
+		ActivateItem(ExistingItem);
 		EquippedItem = ExistingItem;
 
 		if (IsReadyForReplication())
