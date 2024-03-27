@@ -6,6 +6,7 @@
 #include "MGAbilitySourceInterface.h"
 #include "MGHealthSet.h"
 #include "MGArmorSet.h"
+#include "MGCombatSet.h"
 
 struct FDamageStatics
 {
@@ -104,6 +105,12 @@ void UMGDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 		DistanceAttenuation = AbilitySource->GetDistanceAttenuation(Distance);
 	}
 
+	float DamageMultiplier = 1.0f;
+	if (const UMGCombatSet* CombatSet = ExecutionParams.GetSourceAbilitySystemComponent()->GetSet<UMGCombatSet>())
+	{
+		DamageMultiplier = CombatSet->GetDamageMultiplier();
+	}
+
 	float Armor = 0.0f;
 	float ArmorAbsorptionRate = 0.0f;
 	if (const UMGArmorSet* ArmorSet = TargetAbilitySystemComponent->GetSet<UMGArmorSet>())
@@ -112,7 +119,7 @@ void UMGDamageExecution::Execute_Implementation(const FGameplayEffectCustomExecu
 		ArmorAbsorptionRate = ArmorSet->GetCurrentAbsorptionRate();
 	}
 
-	const float DamageDone = FMath::Max(BaseDamage * DistanceAttenuation * PhysicalMaterialAttenuation, 0.0f);
+	const float DamageDone = FMath::Max(BaseDamage * DamageMultiplier * DistanceAttenuation * PhysicalMaterialAttenuation, 0.0f);
 	const float DamageToHealth = FMath::Min(DamageDone - DamageDone * ArmorAbsorptionRate, DamageDone);
 
 	if (DamageDone > 0.0f)

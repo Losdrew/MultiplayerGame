@@ -23,6 +23,10 @@ public:
 	ATTRIBUTE_ACCESSORS(UMGArmorSet, Armor);
 	ATTRIBUTE_ACCESSORS(UMGArmorSet, MaxArmor);
 
+	float GetCurrentAbsorptionRate() const;
+
+protected:
+
 	UFUNCTION()
 	void OnRep_Armor(const FGameplayAttributeData& OldValue);
 
@@ -37,8 +41,6 @@ public:
 	// ~End of UAttributeSet interface
 
 	void ClampAttribute(const FGameplayAttribute& Attribute, float& NewValue) const;
-
-	float GetCurrentAbsorptionRate() const;
 
 private:
 	// The current armor attribute

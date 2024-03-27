@@ -31,6 +31,8 @@ public:
 	// Delegate to broadcast when the health attribute reaches zero
 	mutable FMGAttributeEvent OnOutOfHealth;
 
+protected:
+
 	UFUNCTION()
 	void OnRep_Health(const FGameplayAttributeData& OldValue);
 

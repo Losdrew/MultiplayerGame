@@ -22,6 +22,8 @@ public:
 
 	ATTRIBUTE_ACCESSORS(UMGMovementSet, MaxJumpCount);
 
+protected:
+
 	UFUNCTION()
 	void OnRep_MaxJumpCount(const FGameplayAttributeData& OldValue);
 
