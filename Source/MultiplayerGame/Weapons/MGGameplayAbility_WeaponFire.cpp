@@ -104,7 +104,7 @@ void UMGGameplayAbility_WeaponFire::StartRangedWeaponTargeting()
 	UAbilitySystemComponent* AbilityComponent = CurrentActorInfo->AbilitySystemComponent.Get();
 	check(AbilityComponent);
 
-	const AController* Controller = GetPlayerControllerFromActorInfo();
+	const AController* Controller = GetControllerFromActorInfo();
 	check(Controller);
 
 	FScopedPredictionWindow ScopedPrediction(AbilityComponent, CurrentActivationInfo.GetActivationPredictionKey());

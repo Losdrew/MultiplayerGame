@@ -13,8 +13,6 @@ AMGPlayerController::AMGPlayerController(const FObjectInitializer& ObjectInitial
 {
 	CameraTiltAngle = 0.0f;
 	CameraTiltInterpSpeed = 0.0f;
-
-	QuickBarComponent = CreateDefaultSubobject<UMGQuickBarComponent>(TEXT("QuickBarComponent"));
 }
 
 AMGPlayerState* AMGPlayerController::GetMGPlayerState() const
