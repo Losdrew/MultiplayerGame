@@ -6,7 +6,6 @@
 
 class AMGPlayerState;
 class UMGAbilitySystemComponent;
-class UMGQuickBarComponent;
 
 /**
  * AMGPlayerController
@@ -35,11 +34,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void TiltCamera(float DeltaTime);
-
-protected:
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UMGQuickBarComponent> QuickBarComponent;
 
 protected:
 
