@@ -13,11 +13,31 @@ UMGGameplayAbility::UMGGameplayAbility(const FObjectInitializer& ObjectInitializ
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
-APlayerController* UMGGameplayAbility::GetPlayerControllerFromActorInfo() const
+AController* UMGGameplayAbility::GetControllerFromActorInfo() const
 {
 	if (CurrentActorInfo)
 	{
-		return CurrentActorInfo->PlayerController.Get();
+		if (AController* PlayerController = CurrentActorInfo->PlayerController.Get())
+		{
+			return PlayerController;
+		}
+
+		// Look for a player controller or pawn in the owner chain.
+		AActor* TestActor = CurrentActorInfo->OwnerActor.Get();
+		while (TestActor)
+		{
+			if (AController* Controller = Cast<AController>(TestActor))
+			{
+				return Controller;
+			}
+
+			if (APawn* Pawn = Cast<APawn>(TestActor))
+			{
+				return Pawn->GetController();
+			}
+
+			TestActor = TestActor->GetOwner();
+		}
 	}
 
 	return nullptr;

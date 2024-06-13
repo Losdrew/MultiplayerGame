@@ -44,7 +44,7 @@ public:
 	UMGGameplayAbility(const FObjectInitializer& ObjectInitializer);
 
 	UFUNCTION(BlueprintCallable)
-	APlayerController* GetPlayerControllerFromActorInfo() const;
+	AController* GetControllerFromActorInfo() const;
 
 	UFUNCTION(BlueprintCallable)
 	AMGPlayerController* GetMGPlayerControllerFromActorInfo() const;
